@@ -1,0 +1,68 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+'le joueur AMI est défini dans le main (car il ne change pas d'une partie à l'autre)
+' le deck du joueur AMI est instancié dans le main
+class Partie {
+
+    - Adversaire joueurAd (bouge pas entre les parties)
+    - Plateau gamebord
+    + <<create>> Partie ( Plateau, Joueur)
+
+}
+
+class PlateauDeJeu{
+    - ligne_adversaire : Emplacements[]
+    - ligne_centrale : Emplacements[]
+    - ligne_ami : Emplacements[]
+    ' les constructeurs créent les emplacements de carte -> dans le constructeur ils appellent le constructeur de l'emplacement de carte pour chaque case du tableau
+    + PlateauDeJeu(Obstacle) : PlateauDeJeu 'gestion de l'obstacle, ne peut etre placé que sur la ligne centrale ou amie
+    + PlateauDeJeu() : PlateauDeJeu
+
+
+}
+
+class Pioche {
+
+}
+
+class EmplacementCarte{
+    - m_place : Optional<carte>
+    - m_numeroPlace : Integer
+    + <<create>> EmplacementCarte(Obstacle) : EmplacementCarte
+    + <<create>> Emplacement() : EmplacementCarte
+    +
+
+}
+
+class Joueur{
+    - Deck m_deck
+    - m_ptsVie
+    + Joueur(ArrayList<cartes> )
+}
+
+class Deck{
+    + ArrayList<Carte>
+    + <<create>> Deck()
+    + Schuffle() :
+}
+
+class Ami extends Joueur{
+}
+
+class Adversaire extends Joueur{
+
+}
+
+
+
+'PARTIE :
+'-> COMPOSITION : 1 plateau de jeu (appelle avec un constructeur (pour placer un obstacle) ou non…
+'-> MAIN du
+
+'PLATEAU DE JEU :
+'-> 3 lignes : 4 emplacements de cartes
+'->
+
+
+@enduml
