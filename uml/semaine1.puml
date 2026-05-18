@@ -4,40 +4,40 @@
 skinparam style strictuml
 
 ' abstract car on veut toujours instancier un adversaire ou un ami pas un joueur générique...
-abstract class Joueur <<abstract>> {
+abstract class Player <<abstract>> {
     'les points de vie sont définies au départ sans avoir besoin de les passer en paramètres
-    - m_ptsVie : Integer
-    + <<create>> Joueur(deck : Deck)
+    - m_healthPoints : Integer
+    + <<create>> Player(deck : Deck)
     + toString() : String
 }
 
-class Ami extends Joueur {
-    + <<create>> Ami(deck : Deck)
+class Friend extends Player {
+    + <<create>> Friend(deck : Deck)
 }
 
-class Adversaire extends Joueur {
-    + <<create>> Adversaire(deck : Deck)
+class Opponent extends Player {
+    + <<create>> Opponent(deck : Deck)
 }
 'le joueur AMI est défini dans le main (car il ne change pas d'une partie à l'autre)
 ' le deck du joueur AMI est instancié dans le main car il est propre à l'ami
-class Partie {
+class Game {
     - m_score : Integer
-    + <<create>> Partie(plateau : PlateauDeJeu, joueur : Ami, adversaire : Adversaire)
+    + <<create>> Game (plateau : GameBord, joueur : Friend, adversaire : Opponent)
     + toString() : String
 }
 
-class PlateauDeJeu {
+class GameBord {
     ' les constructeurs créent les emplacements de carte -> dans le constructeur ils appellent le constructeur de l'emplacement de carte pour chaque case du tableau
-    + <<create>> PlateauDeJeu()
-    + <<create>> PlateauDeJeu(obstacle : Obstacle)
+    + <<create>> GameBord()
+    + <<create>> GameBord(obstacle : Obstacle)
     + toString() : String
 }
 
-class EmplacementCarte {
-    - m_numeroPlace : Integer
-    - m_place : Optional<Carte>
-    + <<create>> EmplacementCarte(numero : Integer)
-    + <<create>> EmplacementCarte(numero : Integer, obstacle : Obstacle)
+class CardSlot {
+    - m_slotNumber : Integer
+    - m_place : Optional<Card>
+    + <<create>> CardSlot (number : Integer)
+    + <<create>> CardSlot (number : Integer, obstacle : Obstacle)
     + toString() : String
 }
 
@@ -54,19 +54,17 @@ class Card {
 }
 
 class Animal extends Card {
-    - m_name : String
     - m_attackPoints : Integer
     - m_bloodCost : Integer
     - m_boneCost : Integer
-    - m_abilites : ArrayList<abilities>
-
-    + Animal(name : String, attackPoints : Integer, bloodCost : Integer) : Animal
-    + Animal(name : String, attackPoints : Integer, bloodCost : Integer, abilities : Ability) : Animal
+    ' le constructeur de la classe mère est utilisé dans le constructeur enfant
+    + <<create>> Animal(name : String, attackPoints : Integer, bloodCost : Integer) : Animal
+    + <<create>> Animal(name : String, attackPoints : Integer, bloodCost : Integer, abilities : Ability) : Animal
     + addAbility(ability : Ability)
 }
 
 class Obstacle extends Card {
-
+    + <<create>> Card (nom : String)
 }
 
 interface Ability {
@@ -81,22 +79,25 @@ class FlyingCard implements Ability {
 ' -> RELATIONS :
 
 ' Une partie utilise un plateau et des joueurs
-Partie "1" *--> "1\n- m_gameboard" PlateauDeJeu : possède
-Partie "1" o--> "1\n- m_player" Ami : joue avec
+Game "1" *--> "1\n- m_gameboard" GameBord : possède
+Game "1" o--> "1\n- m_player" Friend : plays with
 'chaque match détruit l'adversaire précédent pour en créer un nouveau, le Main crée la nouvelle instance et la donne à la nouvelle Partie.
-Partie "1" *--> "1\n- m_opponent" Adversaire : affronte
+Game "1" *--> "1\n- m_opponent" Opponent : affronte
 
 ' Le plateau est composé de plusieurs lignes d'emplacements
 ' On utilise la multiplicité pour remplacer les tableaux Emplacements[]
-PlateauDeJeu "1" *--> "4\n- m_opponentLine" EmplacementCarte
-PlateauDeJeu "1" *--> "4\n- m_centralLine" EmplacementCarte
-PlateauDeJeu "1" *--> "4\n- m_playerLine" EmplacementCarte
+GameBord "1" *--> "4\n- m_opponentLine" CardSlot
+GameBord "1" *--> "4\n- m_centralLine" CardSlot
+GameBord "1" *--> "4\n- m_playerLine" CardSlot
 
 ' Un joueur possède un Deck
-Joueur "1" *--> "1\n- m_deck" Deck
+Player "1" *--> "1\n- m_deck" Deck
 
 ' Un Deck contient plusieurs cartes (multiplicité *)
-Deck "1" o--> "*\n- m_cards" Carte
+Deck "1" o--> "*\n- m_cards" Card
+
+Animal "1" o-->"*\n -m_abilities" Ability
+' m_abilities : ArrayList<ability>
 
 ' -> NOTES
 
