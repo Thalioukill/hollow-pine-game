@@ -3,11 +3,26 @@
 
 skinparam style strictuml
 
-' abstract car on veut toujours instancier un adversaire ou un ami pas un joueur générique...
+/'The GameManager creates the unique instance of Friend.
+It launches a while loop for the 3 games.
+At each iteration, it instantiates a new Game object (the current game), a new Opponent and a new GameBoard.
+At the end of a Game object, if the player has won, the GameManager allows them to add a card to their deck before launching the next Game.'/
+
+class GameManager{
+    'we will instantiate the Friend player, the opponent players and the games here...
+
+
+}
+
+' abstract because we always want to instantiate an opponent or a friend, not a generic player...
 abstract class Player <<abstract>> {
-    'les points de vie sont définies au départ sans avoir besoin de les passer en paramètres
-    - m_healthPoints : Integer
+    'health points are defined at the start without needing to pass them as parameters
+    '- m_healthPoints : Integer
+    'bones earned when killing an Animal...
+    - m_bonesTokens : Integer
     + <<create>> Player(deck : Deck)
+    + placeCard()
+    + drawCard()
     + toString() : String
 }
 
@@ -18,18 +33,24 @@ class Friend extends Player {
 class Opponent extends Player {
     + <<create>> Opponent(deck : Deck)
 }
-'le joueur AMI est défini dans le main (car il ne change pas d'une partie à l'autre)
-' le deck du joueur AMI est instancié dans le main car il est propre à l'ami
+'the FRIEND player is defined in the main (because it does not change from one game to another)
+' the FRIEND player's deck is instantiated in the main because it belongs specifically to the friend
 class Game {
     - m_score : Integer
     + <<create>> Game (plateau : GameBord, joueur : Friend, adversaire : Opponent)
+    '+ setScore(pvAmi : Integer ; pvEnnemi : Integer)
+    + gameStatus () : enum
+    + checkVictory() : gameStatus
+    + playCard(p : Player, cardIndex : Integer, position : Integer)
     + toString() : String
 }
 
-class GameBord {
-    ' les constructeurs créent les emplacements de carte -> dans le constructeur ils appellent le constructeur de l'emplacement de carte pour chaque case du tableau
-    + <<create>> GameBord()
-    + <<create>> GameBord(obstacle : Obstacle)
+class GameBoard {
+    ' the constructors create the card slots -> in the constructor they call the card slot constructor for each cell of the array
+    + <<create>> GameBoard()
+    + <<create>> GameBoard(obstacle : Obstacle)
+    ' we search in the hand/Hand for the card to place
+    + addCard( c : Integer, position  : Integer) : Boolean
     + toString() : String
 }
 
@@ -44,10 +65,12 @@ class CardSlot {
 class Deck {
     + <<create>> Deck()
     + shuffle()
+    + addCard() (card : Card)
+    + removeCard(card : Card)
     + toString() : String
 }
 
-class Card {
+abstract class Card {
     - m_name : String
     - m_healthPoints : Integer
     + <<create>> Card (nom : String)
@@ -57,9 +80,10 @@ class Animal extends Card {
     - m_attackPoints : Integer
     - m_bloodCost : Integer
     - m_boneCost : Integer
-    ' le constructeur de la classe mère est utilisé dans le constructeur enfant
+    ' the constructor of the parent class is used in the child constructor
     + <<create>> Animal(name : String, attackPoints : Integer, bloodCost : Integer) : Animal
     + <<create>> Animal(name : String, attackPoints : Integer, bloodCost : Integer, abilities : Ability) : Animal
+    + attack(target : CardSlot)
     + addAbility(ability : Ability)
 }
 
@@ -68,45 +92,46 @@ class Obstacle extends Card {
 }
 
 interface Ability {
-    + void doAbility
+    + applyAbility(attacker : Animal, target : CardSlot, game : Game)
 }
 
-class FlyingCard implements Ability {
+class FlyingAbility implements Ability {
     - m_card : Card
-    + FlyingCard(card : Card)
+    + FlyingAbility(card : Card)
 }
 
-' -> RELATIONS :
 
-' Une partie utilise un plateau et des joueurs
-Game "1" *--> "1\n- m_gameboard" GameBord : possède
+class Hand{
+    + addCard(card : Card)
+    + removeCard(card : Card)
+}
+
+' -> RELATIONSHIPS :
+
+' A game uses a board and players
+Game "1" *--> "1\n- m_gameboard" GameBoard : possède
 Game "1" o--> "1\n- m_player" Friend : plays with
-'chaque match détruit l'adversaire précédent pour en créer un nouveau, le Main crée la nouvelle instance et la donne à la nouvelle Partie.
+'each match destroys the previous opponent to create a new one, the Main creates the new instance and gives it to the new Game.
 Game "1" *--> "1\n- m_opponent" Opponent : affronte
 
-' Le plateau est composé de plusieurs lignes d'emplacements
-' On utilise la multiplicité pour remplacer les tableaux Emplacements[]
-GameBord "1" *--> "4\n- m_opponentLine" CardSlot
-GameBord "1" *--> "4\n- m_centralLine" CardSlot
-GameBord "1" *--> "4\n- m_playerLine" CardSlot
+' The board is composed of several slot lines
+' Multiplicity is used to replace the Slot[] arrays
+GameBoard "1" *--> "4\n- m_opponentLine" CardSlot
+GameBoard "1" *--> "4\n- m_centralLine" CardSlot
+GameBoard "1" *--> "4\n- m_playerLine" CardSlot
 
-' Un joueur possède un Deck
+' A player owns a Deck
 Player "1" *--> "1\n- m_deck" Deck
 
-' Un Deck contient plusieurs cartes (multiplicité *)
+' A Deck contains several cards (multiplicity *)
 Deck "1" o--> "*\n- m_cards" Card
+' m_hand is an ArrayList of Card but we must check that they belong to the Deck
+Hand "1" o-->"*\n -m_hand" Card
 
 Animal "1" o-->"*\n -m_abilities" Ability
 ' m_abilities : ArrayList<ability>
 
-' -> NOTES
+GameManager "1" o--> "1\n- m_player" Friend : plays with
 
-'PARTIE :
-'-> COMPOSITION : 1 plateau de jeu (appelle avec un constructeur (pour placer un obstacle) ou non…
-'-> MAIN du
-
-'PLATEAU DE JEU :
-'-> 3 lignes : 4 emplacements de cartes
-'->
 
 @enduml
