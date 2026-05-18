@@ -1,66 +1,130 @@
 @startuml
 'https://plantuml.com/class-diagram
 
-'le joueur AMI est défini dans le main (car il ne change pas d'une partie à l'autre)
-' le deck du joueur AMI est instancié dans le main
-class Partie {
-    - m_score
-    - Adversaire joueurAd (bouge pas entre les parties)
-    - Plateau gamebord
-    + <<create>> Partie ( Plateau, Joueur)
+skinparam style strictuml
 
-}
-
-class PlateauDeJeu{
-    - ligne_adversaire : Emplacements[]
-    - ligne_centrale : Emplacements[]
-    - ligne_ami : Emplacements[]
-    ' les constructeurs créent les emplacements de carte -> dans le constructeur ils appellent le constructeur de l'emplacement de carte pour chaque case du tableau
-    + PlateauDeJeu(Obstacle) : PlateauDeJeu 'gestion de l'obstacle, ne peut etre placé que sur la ligne centrale ou amie
-    + PlateauDeJeu() : PlateauDeJeu
-
-
-}
-
-class Pioche {
-
-}
-
-class EmplacementCarte{
-    - m_place : Optional<carte>
-    - m_numeroPlace : Integer
-    + <<create>> EmplacementCarte(Obstacle) : EmplacementCarte
-    + <<create>> Emplacement() : EmplacementCarte
-    +
-
-}
 ' abstract car on veut toujours instancier un adversaire ou un ami pas un joueur générique...
-abstract class Joueur{
-    - Deck m_deck
-    - m_ptsVie
-    + Joueur(ArrayList<cartes> )
+abstract class Joueur <<abstract>> {
+    'les points de vie sont définies au départ sans avoir besoin de les passer en paramètres
+    - m_ptsVie : Integer
+    + <<create>> Joueur(deck : Deck)
+    + toString() : String
 }
 
-class Deck{
-    + ArrayList<Carte>
+class Ami extends Joueur {
+    + <<create>> Ami(deck : Deck)
+}
+
+class Adversaire extends Joueur {
+    + <<create>> Adversaire(deck : Deck)
+}
+'le joueur AMI est défini dans le main (car il ne change pas d'une partie à l'autre)
+' le deck du joueur AMI est instancié dans le main car il est propre à l'ami
+class Partie {
+    - m_score : Integer
+    + <<create>> Partie(plateau : PlateauDeJeu, joueur : Ami, adversaire : Adversaire)
+    + toString() : String
+}
+
+class PlateauDeJeu {
+    ' les constructeurs créent les emplacements de carte -> dans le constructeur ils appellent le constructeur de l'emplacement de carte pour chaque case du tableau
+    + <<create>> PlateauDeJeu()
+    + <<create>> PlateauDeJeu(obstacle : Obstacle)
+    + toString() : String
+}
+
+class EmplacementCarte {
+    - m_numeroPlace : Integer
+    - m_place : Optional<Carte>
+    + <<create>> EmplacementCarte(numero : Integer)
+    + <<create>> EmplacementCarte(numero : Integer, obstacle : Obstacle)
+    + toString() : String
+}
+
+class Deck {
     + <<create>> Deck()
-    + Schuffle() :
+    + shuffle()
+    + toString() : String
 }
 
-class Ami extends Joueur{
+class Card {
+    - m_name : String
+    - m_healthPoints : Integer
+    + <<create>> Card (nom : String)
 }
 
-class Adversaire extends Joueur{
-
-}
-
-class Carte{
-    - m_attackPoints
-    - m_hp
+class Animal extends Card {
+    - m_name : String
+    - m_attackPoints : Integer
     - m_bloodCost : Integer
-    - m_boneCost : Intager
+    - m_boneCost : Integer
+    - m_abilites : ArrayList<abilities>
+
+    + Animal(name : String, attackPoints : Integer, bloodCost : Integer) : Animal
+    + Animal(name : String, attackPoints : Integer, bloodCost : Integer, abilities : Ability) : Animal
+    + addAbility(ability : Ability)
 }
 
+class Obstacle extends Card {
+
+}
+
+interface Ability {
+    + void doAbility
+}
+/*
+interface Ability {
+    void doAbility();
+}
+
+class Firebending implements Ability {
+    private Mob mob;
+
+    public Firebending(Mob mob) {
+        this.mob = mob;
+    }
+
+    void doAbility() {
+        // mutate mob's state to spit fire, and attack the world
+    }
+} // repeat this for each ability you have, flying, x-ray vision, doing taxes etc
+
+class Mob {
+    private Ability[] abilities;
+
+    public Mob(Ability[] abilities) {
+        this.abilities = abilities;
+    }
+}
+
+*/
+
+class FlyingCard implements Ability {
+    - m_card : Card
+    + FlyingCard(card : Card)
+}
+
+' -> RELATIONS :
+
+' Une partie utilise un plateau et des joueurs
+Partie "1" *--> "1\n- m_gameboard" PlateauDeJeu : possède
+Partie "1" o--> "1\n- m_player" Ami : joue avec
+'chaque match détruit l'adversaire précédent pour en créer un nouveau, le Main crée la nouvelle instance et la donne à la nouvelle Partie.
+Partie "1" *--> "1\n- m_opponent" Adversaire : affronte
+
+' Le plateau est composé de plusieurs lignes d'emplacements
+' On utilise la multiplicité pour remplacer les tableaux Emplacements[]
+PlateauDeJeu "1" *--> "4\n- m_opponentLine" EmplacementCarte
+PlateauDeJeu "1" *--> "4\n- m_centralLine" EmplacementCarte
+PlateauDeJeu "1" *--> "4\n- m_playerLine" EmplacementCarte
+
+' Un joueur possède un Deck
+Joueur "1" *--> "1\n- m_deck" Deck
+
+' Un Deck contient plusieurs cartes (multiplicité *)
+Deck "1" o--> "*\n- m_cards" Carte
+
+' -> NOTES
 
 'PARTIE :
 '-> COMPOSITION : 1 plateau de jeu (appelle avec un constructeur (pour placer un obstacle) ou non…
@@ -69,6 +133,5 @@ class Carte{
 'PLATEAU DE JEU :
 '-> 3 lignes : 4 emplacements de cartes
 '->
-
 
 @enduml
