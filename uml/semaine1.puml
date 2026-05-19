@@ -8,8 +8,17 @@ It launches a while loop for the 3 games.
 At each iteration, it instantiates a new Game object (the current game), a new Opponent and a new GameBoard.
 At the end of a Game object, if the player has won, the GameManager allows them to add a card to their deck before launching the next Game.'/
 
+class main{
+    + {static} main( args:String[*] )
+
+    'FRiend + deck
+}
+
 class GameManager{
     'we will instantiate the Friend player, the opponent players and the games here...
+}
+
+class Round{
 
 
 }
@@ -62,7 +71,13 @@ class CardSlot {
     + toString() : String
 }
 
+class CardStock{
+    +ArrayList<Card>() -> 10 cartes
+
+}
+
 class Deck {
+'Au moins 8 ecureuils + on cherche dans le CardStock
     + <<create>> Deck()
     + shuffle()
     + addCard() (card : Card)
@@ -134,4 +149,6 @@ Animal "1" o-->"*\n -m_abilities" Ability
 GameManager "1" o--> "1\n- m_player" Friend : plays with
 
 
+
+'deck -> TOUTES les cartes
 @enduml
