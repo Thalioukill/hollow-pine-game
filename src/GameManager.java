@@ -2,9 +2,9 @@ import java.util.Scanner;
 
 public class GameManager {
     // Attributs privés (Encapsulation forte)
-    private Friend m_player;
-    private int m_matchCount;
-    private final int MAX_MATCHES = 3;
+    private User m_player;
+    private int m_gamesCount;
+    private final int MAX_GAMES = 3;
 
     /**
      * Le constructeur instancie les entités persistantes.
@@ -13,8 +13,8 @@ public class GameManager {
     public GameManager() {
         // Initialisation à l'extérieur des objets Game pour la persistance
         Deck playerDeck = new Deck();
-        this.m_player = new Friend(playerDeck);
-        this.m_matchCount = 1;
+        this.m_player = new User(playerDeck);
+        this.m_gamesCount = 1;
     }
 
     /**
@@ -23,16 +23,16 @@ public class GameManager {
     public void startCampaign() {
         boolean campaignWon = true;
 
-        while (m_matchCount <= MAX_MATCHES && campaignWon) {
+        while (m_gamesCount <= MAX_GAMES && campaignWon) {
             // Orchestration : on crée les nouveaux objets nécessaires à chaque match
             campaignWon = playNewMatch();
 
             if (campaignWon) {
                 // Gestion de la progression entre les matchs
-                if (m_matchCount == 2) {
+                if (m_gamesCount == 2) {
                     this.offerNewCard();
                 }
-                m_matchCount++;
+                m_gamesCount++;
             }
         }
 
@@ -43,7 +43,7 @@ public class GameManager {
      * Initialise et lance une instance de match unique.
      * @return true si le joueur a gagné le match, false sinon.
      */
-    private boolean playNewMatch() {
+    private boolean playNewGame() {
         // Création des objets spécifiques au match (Composition)
         GameBoard board = new GameBoard();
         Opponent opponent = new Opponent(new Deck());
@@ -52,7 +52,7 @@ public class GameManager {
         Game currentGame = new Game(board, m_player, opponent);
 
         // Appel de la logique du match (boucle de rounds)
-        return currentGame.runMatch();
+        return currentGame.runGame();
     }
 
     /**
@@ -73,6 +73,6 @@ public class GameManager {
 
     @Override
     public String toString() {
-        return "GameManager(match=" + m_matchCount + ", player=" + m_player + ")";
+        return "GameManager(match=" + m_gamesCount + ", player=" + m_player + ")";
     }
 }

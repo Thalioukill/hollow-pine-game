@@ -21,5 +21,16 @@ public class Animal extends Card {
         if(target)
     }
 
+    @Override
+    public Card cloneCard() {
+        return new Animal(this); // Utilise le constructeur de copie
+    }
+    // Constructeur de copie
+    public Animal(Animal other) {
+        super(other); // Copie le nom et les PV via la classe mère
+        this.m_attackPoints = other.m_attackPoints;
+        this.m_bloodCost = other.m_bloodCost;
+        this.m_boneCost = other.m_boneCost;
+    }
 
 }

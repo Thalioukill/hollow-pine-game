@@ -1,4 +1,4 @@
-@startuml
+JC@startuml
 'https://plantuml.com/class-diagram
 
 skinparam style strictuml
@@ -11,29 +11,35 @@ At the end of a Game object, if the player has won, the GameManager allows them 
 class main{
     + {static} main( args:String[*] )
 
-    'FRiend + deck
+    'Friend + deck ?
 }
 
 class GameManager{
-    'we will instantiate the Friend player, the opponent players and the games here...
+    'we will instantiate the Friend player(in the main ? ), the opponent players and the games here...
 }
 
-class Round{
+class Round {
 
 
 }
+
+'4 cartes qu'il a joués
+'4 cartes qu'il va jouer
 
 ' abstract because we always want to instantiate an opponent or a friend, not a generic player...
 abstract class Player <<abstract>> {
     'health points are defined at the start without needing to pass them as parameters
     '- m_healthPoints : Integer
     'bones earned when killing an Animal...
+    - m_cardsPlayed 'tableau de Card
     - m_bonesTokens : Integer
     + <<create>> Player(deck : Deck)
     + placeCard()
     + drawCard()
     + toString() : String
 }
+'Chaque player a un tableau de Optional<Card> qui représente les cartes qu'il va jouer, si les emplacements sont
+
 
 class Friend extends Player {
     + <<create>> Friend(deck : Deck)
@@ -54,6 +60,9 @@ class Game {
     + toString() : String
 }
 
+'affichage de la partie
+'si tableau transmis c'est une copie
+'
 class GameBoard {
     ' the constructors create the card slots -> in the constructor they call the card slot constructor for each cell of the array
     + <<create>> GameBoard()
@@ -63,13 +72,13 @@ class GameBoard {
     + toString() : String
 }
 
-class CardSlot {
-    - m_slotNumber : Integer
-    - m_place : Optional<Card>
-    + <<create>> CardSlot (number : Integer)
-    + <<create>> CardSlot (number : Integer, obstacle : Obstacle)
-    + toString() : String
-}
+'class CardSlot {
+'    - m_slotNumber : Integer
+'    - m_place : Optional<Card>
+'    + <<create>> CardSlot (number : Integer)
+'    + <<create>> CardSlot (number : Integer, obstacle : Obstacle)
+'    + toString() : String
+'}
 
 class CardStock{
     +ArrayList<Card>() -> 10 cartes
@@ -131,9 +140,9 @@ Game "1" *--> "1\n- m_opponent" Opponent : affronte
 
 ' The board is composed of several slot lines
 ' Multiplicity is used to replace the Slot[] arrays
-GameBoard "1" *--> "4\n- m_opponentLine" CardSlot
-GameBoard "1" *--> "4\n- m_centralLine" CardSlot
-GameBoard "1" *--> "4\n- m_playerLine" CardSlot
+GameBoard "1" *--> "4\n- m_opponentLine" Card
+GameBoard "1" *--> "4\n- m_centralLine" Card
+GameBoard "1" *--> "4\n- m_playerLine" Card
 
 ' A player owns a Deck
 Player "1" *--> "1\n- m_deck" Deck

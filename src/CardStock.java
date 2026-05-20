@@ -30,8 +30,10 @@ public class CardStock {
     public Optional<Card> getCard(String name) {
         for (Card template : m_templates) {
             if (template.getName().equals(name)) {
-                // Utilisation du constructeur de copie pour la sécurité
-
+                // Utilisation du constructeur de copie pour la sécurité :
+                // On appelle cloneCard() qui renvoie une COPIE PROFONDE
+                // du type concret correspondant
+                return Optional.of(template.cloneCard());
             }
         }
         return Optional.empty(); // Utilisation d'Optional au lieu de null
@@ -42,4 +44,4 @@ public class CardStock {
         return "CardStock(available=" + m_templates.size() + ")";
     }
 }
-}
+
