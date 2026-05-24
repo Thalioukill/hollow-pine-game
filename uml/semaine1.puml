@@ -1,4 +1,4 @@
-JC@startuml
+@startuml
 'https://plantuml.com/class-diagram
 
 skinparam style strictuml
@@ -81,9 +81,13 @@ class GameBoard {
 '}
 
 class CardStock{
-    +ArrayList<Card>() -> 10 cartes
+    + CardStock()
+    + getCard(name : String) : Card
 
 }
+' CardStock possède 1 ArrayList<Card> et renvoie une copie profonde !!! pas une référence.
+CardStock "1" *--> "10..*\n- m_templates" Card : possède
+
 
 class Deck {
 'Au moins 8 ecureuils + on cherche dans le CardStock

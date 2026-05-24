@@ -1,6 +1,6 @@
 public abstract class Card {
-    public String m_name;
-    public Integer m_healthPoints;
+    private final String m_name; // nom cahneg pas
+    private Integer m_healthPoints;
 
     public Card(String name, Integer hp){
         this.m_name = name;
@@ -13,8 +13,20 @@ public abstract class Card {
         this.m_healthPoints = other.m_healthPoints;
     }
 
-    public Card getCard(String name){
+    public String getName() {
+        return m_name;
+    }
 
+    public int getHealthPoints() {
+        return m_healthPoints;
+    }
+
+    public void takeDamage(int damage) {
+        m_healthPoints -= damage;
+    }
+
+    public boolean isDead() {
+        return m_healthPoints <= 0;
     }
 
     // Méthode abstraite pour forcer la copie polymorphique
