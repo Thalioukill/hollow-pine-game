@@ -1,6 +1,6 @@
 public abstract class Card {
-    private final String m_name; // nom cahneg pas
-    private Integer m_healthPoints;
+    protected final String m_name; // nom cahneg pas
+    protected Integer m_healthPoints;
 
     public Card(String name, Integer hp){
         this.m_name = name;
@@ -28,6 +28,7 @@ public abstract class Card {
     public boolean isDead() {
         return m_healthPoints <= 0;
     }
+    public abstract boolean isSacrificable();
 
     // Méthode abstraite pour forcer la copie polymorphique
     public abstract Card cloneCard();

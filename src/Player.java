@@ -38,6 +38,8 @@ public abstract class Player {
         m_boardLine.placeCardAt(card, position);
     }
 
+    public abstract void takeTurn(Interactions dialogue);
+
     @Override
     public String toString() {
         // Utilisation de getClass().getSimpleName() pour différencier User/Opponent

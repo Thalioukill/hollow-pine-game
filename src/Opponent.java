@@ -12,8 +12,7 @@ public class Opponent extends Player{
         }
     }
 
-    @Override
-    public void takeTurn() {
+    public void takeTurn(Interactions dialogue) {
         // Déplacer les cartes de la ligne de prévision vers la boardLine
         // Remplir la ligne de prévision pour le tour suivant
     }

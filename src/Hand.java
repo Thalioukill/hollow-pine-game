@@ -12,15 +12,18 @@ public class Hand {
         m_cards.add(card);
     }
 
-    // retire la carte de la main et retourne l'élément qui était dedans (ici la Card)
-    public Card removeCardAt(int index) {
-        validateIndex(index);
-        return m_cards.remove(index);
-    }
-
     public int getSize() {
         return m_cards.size();
     }
+
+     // Convertit lettre (A, B, C...) en index (0, 1, 2...)
+
+    private int toIndex(char letter) {
+        // Character.toUpperCase pour accepter 'a' ou 'A'
+        // On utilise l'ASCII pour trouver l'index  'A' = 65
+        return Character.toUpperCase(letter) - 'A';
+    }
+
 
     // Validation pour éviter les IndexOutOfBoundsException
     private void validateIndex(int index) {
@@ -30,8 +33,28 @@ public class Hand {
         }
     }
 
+    public Card getCard(char letter) {
+        int index = toIndex(letter);
+        validateIndex(index);
+        return m_cards.get(index);
+    }
+
+     // retire la carte de la main et retourne l'élément qui était dedans à l'index de la lettre donnée (ici la Card)
+    public Card removeCard(char letter) {
+        int index = toIndex(letter);
+        validateIndex(index);
+        return m_cards.remove(index);
+    }
+
+
     @Override
     public String toString() {
-        return m_cards.toString(); // Utilise le toString de chaque Card
+        // affichage pour montrer les lettres
+        StringBuilder sb = new StringBuilder("Main : ");
+        for (int i = 0; i < m_cards.size(); i++) {
+            char letter = (char) ('A' + i);
+            sb.append("[").append(letter).append("] ").append(m_cards.get(i).getName()).append(" ");
+        }
+        return sb.toString();
     }
 }
