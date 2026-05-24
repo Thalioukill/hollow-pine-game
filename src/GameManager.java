@@ -6,10 +6,6 @@ public class GameManager {
     private int m_gamesCount;
     private final int MAX_GAMES = 3;
 
-    /**
-     * Le constructeur instancie les entités persistantes.
-     * Le joueur et son deck sont créés ici une seule fois pour toute la campagne.
-     */
     public GameManager() {
         // Initialisation à l'extérieur des objets Game pour la persistance
         Deck playerDeck = new Deck();
@@ -17,9 +13,6 @@ public class GameManager {
         this.m_gamesCount = 1;
     }
 
-    /**
-     * Lance la boucle principale de la campagne (les 3 parties).
-     */
     public void startCampaign() {
         boolean campaignWon = true;
 
@@ -39,10 +32,6 @@ public class GameManager {
         this.displayFinalResult(campaignWon);
     }
 
-    /**
-     * Initialise et lance une instance de match unique.
-     * @return true si le joueur a gagné le match, false sinon.
-     */
     private boolean playNewGame() {
         // Création des objets spécifiques au match (Composition)
         GameBoard board = new GameBoard();
@@ -55,9 +44,6 @@ public class GameManager {
         return currentGame.runGame();
     }
 
-    /**
-     * Logique de progression : ajout d'une carte après le 2ème match.
-     */
     private void offerNewCard() {
         // Selon le README : proposer deux cartes et en ajouter une au deck
         // m_player.getDeck().addCard(...)

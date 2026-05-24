@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class CardStock {
     private final ArrayList<Card> m_templates = new ArrayList<>();
@@ -45,13 +46,11 @@ public class CardStock {
     public Optional<Card> getCard(String name) {
         for (Card template : m_templates) {
             if (template.getName().equals(name)) {
-                // Utilisation du constructeur de copie pour la sécurité :
-                // On appelle cloneCard() qui renvoie une COPIE PROFONDE
-                // du type concret correspondant
+                // Utilisation du constructeur de copie pour la sécurité :on appelle cloneCard() qui renvoie une COPIE PROFNDE du type concret correspondant !!!!!
                 return Optional.of(template.cloneCard());
             }
         }
-        return Optional.empty(); // Utilisation d'Optional au lieu de null
+        return Optional.empty();
     }
 
 

@@ -8,9 +8,6 @@ public class Game {
     private User m_player;
     private Opponent m_opponent;
 
-    /**
-     * Constructeur initialisant une partie avec ses dépendances injectées.
-     */
     public Game(GameBoard board, User player, Opponent opponent) {
         this.m_gameboard = board;
         this.m_player = player;
@@ -18,11 +15,6 @@ public class Game {
         this.m_score = 0; // La balance commence à l'équilibre
     }
 
-    /**
-     * Boucle principale d'un match.
-     *
-     * @return true si le joueur Ami a gagné, false s'il a perdu.
-     */
     public boolean runGame() {
         // La partie s'arrête si l'écart atteint 5 points
         while (Math.abs(this.m_score) < 5) {
@@ -38,9 +30,6 @@ public class Game {
         return this.m_score >= 5;
     }
 
-    /**
-     * Méthode obligatoire pour le débuggage selon les guidelines
-     */
     @Override
     public String toString() {
         return "Game(score=" + m_score + ", board=" + m_gameboard + ")";

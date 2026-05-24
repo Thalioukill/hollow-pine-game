@@ -1,4 +1,12 @@
+import java.util.Optional;
+
 public class Animal extends Card {
+
+    /*
+            Méthode pour ajouter des Abilities dans le m_templates !!!!
+            + addAbility(ability : Ability)
+     */
+
     private Integer m_attackPoints;
     private Integer m_bloodCost;
     private Integer m_boneCost;
@@ -21,11 +29,6 @@ public class Animal extends Card {
         for (Ability a : other.m_abilities) {
             this.addAbility(a); // Ability sans état → pas besoin de copier
         }
-    }
-
-    public Animal(String name, Integer pv, Integer attack, Integer blood, Integer bone) {
-        this(name, pv, attack, blood, bone);
-        this.m_abilities.add(ty);
     }
 
     public void attack(int position, Player opponent, Game game) {

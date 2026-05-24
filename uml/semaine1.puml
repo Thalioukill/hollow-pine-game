@@ -30,20 +30,28 @@ class Round {
 abstract class Player <<abstract>> {
     'health points are defined at the start without needing to pass them as parameters
     '- m_healthPoints : Integer
+
     'bones earned when killing an Animal...
-    - m_cardsPlayed 'tableau de Card
-    - m_bonesTokens : Integer
-    + <<create>> Player(deck : Deck)
+    # m_bonesToken : Integer
+    + <<create>> Player(deck : Deck) : Player
     + placeCard()
     + drawCard()
+    ' renvoie 1 Optional<Card>
+    + getCardAt(index : Integer) : Card
+    + removeCardAt(index : Integer)
+    + placeCardAt(card : Card, position : Integer)
     + toString() : String
 }
-'Chaque player a un tableau de Optional<Card> qui représente les cartes qu'il va jouer, si les emplacements sont
+'Chaque player a un tableau de Optional<Card> qui représente les cartes qu'il va jouer, si les emplacements sont déjà pris ALORS il faut PROPOSER UN SACRIFICE !!!!
+' Relations d'agrégation/composition
+Player "1" *--> "1\n# m_deck" Deck : possède >
+Player "1" *--> "0..4\n# m_boardLine" Card : possède >
 
-
-class Friend extends Player {
-    + <<create>> Friend(deck : Deck)
+class User extends Player {
+    + <<create>> User(deck : Deck)
 }
+
+User "1" *--> "1\n- m_hand" Hand
 
 class Opponent extends Player {
     + <<create>> Opponent(deck : Deck)
@@ -105,15 +113,22 @@ abstract class Card {
 }
 
 class Animal extends Card {
-    - m_attackPoints : Integer
+' Attributs hérités de la classe MERE !
+    - m_name : String
+    - m_healthPoints : Integer
+' c'est tous des int et pas des Integer parce que l'on ne veut pas qu'il puissent etre null...
+    - m_attackPoints : Interger
     - m_bloodCost : Integer
     - m_boneCost : Integer
     ' the constructor of the parent class is used in the child constructor
     + <<create>> Animal(name : String, attackPoints : Integer, bloodCost : Integer) : Animal
-    + <<create>> Animal(name : String, attackPoints : Integer, bloodCost : Integer, abilities : Ability) : Animal
-    + attack(target : CardSlot)
+    ' Constructeur de COPIE !
+    + <<create>> Animal(other : Animal)
+    + cloneCard() : Card;
+    + attack(targetPosition : Integer, opponent : Player, game : Game)
     + addAbility(ability : Ability)
 }
+
 
 class Obstacle extends Card {
     + <<create>> Card (nom : String)
@@ -138,7 +153,7 @@ class Hand{
 
 ' A game uses a board and players
 Game "1" *--> "1\n- m_gameboard" GameBoard : possède
-Game "1" o--> "1\n- m_player" Friend : plays with
+Game "1" o--> "1\n- m_player" User : plays with
 'each match destroys the previous opponent to create a new one, the Main creates the new instance and gives it to the new Game.
 Game "1" *--> "1\n- m_opponent" Opponent : affronte
 
@@ -159,7 +174,7 @@ Hand "1" o-->"*\n -m_hand" Card
 Animal "1" o-->"*\n -m_abilities" Ability
 ' m_abilities : ArrayList<ability>
 
-GameManager "1" o--> "1\n- m_player" Friend : plays with
+GameManager "1" o--> "1\n- m_player" User : plays with
 
 
 
