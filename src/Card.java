@@ -21,6 +21,8 @@ public abstract class Card {
         return m_healthPoints;
     }
 
+    public int getDamage();
+
     public void takeDamage(int damage) {
         m_healthPoints -= damage;
     }

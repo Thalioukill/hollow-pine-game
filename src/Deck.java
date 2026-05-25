@@ -3,7 +3,7 @@ import java.util.Collections;
 import java.util.Optional;
 
 public class Deck {
-    private ArrayList<Card> m_cards;
+    private ArrayList<Animal> m_cards;
 
      //initialise un deck vide
     public Deck() {
@@ -17,12 +17,12 @@ public class Deck {
 
 
     //Ajoute une carte au deck : utilisé pour l'initialisation et les récompenses
-    public void addCard(Card card) {
+    public void addCard(Animal card) {
         m_cards.add(card);
     }
 
     //Optional contenant la carte, ou Optional.empty() si vide
-    public Optional<Card> draw() {
+    public Optional<Animal> draw() {
         if (m_cards.isEmpty()) {
             return Optional.empty();
         }

@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 public class Opponent extends Player{
-    private ArrayList<Optional<Card>> m_previsionLine;
+    private ArrayList<Optional<Animal>> m_previsionLine;
 
     public Opponent(Deck deck) {
         super(deck);
@@ -15,6 +15,9 @@ public class Opponent extends Player{
     public void takeTurn(Interactions dialogue) {
         // Déplacer les cartes de la ligne de prévision vers la boardLine
         // Remplir la ligne de prévision pour le tour suivant
+        m_previsionLine.add(1,m_deck.draw());
+
+        m_previsionLine.add(2,m_deck.draw());
     }
 
     @Override

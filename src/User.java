@@ -9,8 +9,19 @@ public class User extends Player{
     }
 
     // on pioche 1 carte dans le Deck et on l'ajoute à la main.
-    public void draw() {
-        m_deck.draw().ifPresent(card -> m_hand.addCard(card));
+    public void draw(Deck deck, Interactions dialogue) {
+        // L'utilisateur a le choix
+        boolean wantsToDraw = dialogue.askConfirmation("Voulez-vous piocher une carte pour ce tour ?");
+
+        if (wantsToDraw) {
+            //pioche si le deck pas vide (gestion via Optional)
+            deck.draw().ifPresent(card -> {
+                m_hand.addCard(card);
+                dialogue.displayMessage("Vous avez pioché : " + card.getName());
+            });
+        } else {
+            dialogue.displayMessage("Vous avez décidé de ne pas piocher.");
+        }
     }
 
 
@@ -150,6 +161,14 @@ public class User extends Player{
     }
 
 
+    // Transfert définitif d'une carte de la main vers le plateau.
+    public void playCardToBoard(char handLetter, int boardPosition) {
+        Card cardToPlay = m_hand.removeCard(handLetter);
+
+        // On appelle placeCardAt pour la déposer sur la BoardLine
+        this.placeCardAt(cardToPlay, boardPosition);
+    }
+
 
     @Override
     public String toString() {
@@ -157,3 +176,7 @@ public class User extends Player{
         return "User[" + super.toString() + ", main=" + m_hand + "]";
     }
 }
+
+
+
+

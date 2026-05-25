@@ -56,7 +56,6 @@ public class Animal extends Card {
         return new Animal(this); // Utilise le constructeur de copie
     }
 
-    @Override
     public void attack(int position, Player opponent, Game game) {
         if (m_abilities.isEmpty()) {
             defaultAttack(position, opponent, game);

@@ -52,6 +52,15 @@ public class BoardLine {
         return count;
     }
 
+     // Retire la carte de l'emplacement et libère la place et lance une exception si la position est invalidee
+    public void removeCardAt(int position) {
+        if (!validatePosition(position)) {
+            throw new IndexOutOfBoundsException("Bug interne : retrait à une position hors limites (" + position + ")");
+        }
+        // on libère l'meplacement = Optional vide
+        m_slots.set(toIndex(position), Optional.empty());
+    }
+
     @Override
     public String toString() {
         return m_slots.toString();

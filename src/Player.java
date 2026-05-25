@@ -13,7 +13,7 @@ public abstract class Player {
 
     public Player(Deck d) {
         this.m_deck = d;
-        this.m_bonesToken = 0; // Initialisation explicite [4]
+        this.m_bonesToken = 0;
 
         // Initialisation de la ligne de plateau (4 emplacements vides)
         this.m_boardLine = new BoardLine();
@@ -25,6 +25,16 @@ public abstract class Player {
 
     public void removeCardAt(int position) {
         m_boardLine.removeCardAt(position);
+    }
+
+    public boolean getAttacked(int damage, int position)
+    {
+        if (m_boardLine.getCardAt(position).isPresent())
+        {
+            m_boardLine.getCardAt(position).get().takeDamage(damage);
+            return true;
+        }
+        return false;
     }
 
     public void placeCardAt(Card card, int position) {
