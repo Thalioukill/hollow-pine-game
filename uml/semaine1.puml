@@ -48,8 +48,70 @@ Player "1" *--> "1\n# m_deck" Deck : possède >
 Player "1" *--> "0..4\n# m_boardLine" Card : possède >
 
 class User extends Player {
-    + <<create>> User(deck : Deck)
+    + <<create>> User(deck : Deck) : User
+    + draw()
+    + playCardToBoard(handLetter : char, boardPosition : int)
+    + takeTurn(dialogue : Interactions)
+    + handlePlacement(dialogue : Interactions)
+    +
+
 }
+
+
+    private void handlePlacement(Interactions dialogue) {
+        // récup la lettre de la carte en main
+        char letter = dialogue.askCardLetter(m_hand.getSize());
+
+        // Récup la position sur le plateau
+        int pos = dialogue.askPosition();
+
+        // Vérif des couts (os ou sang...)
+        this.playCardToBoard(letter, pos);
+
+        dialogue.displayMessage("Carte posée en position " + pos);
+    }
+
+    private void handleSacrifice(Interactions dialogue) {
+        // Demander quelle position l'utilisateur veut libérer (1 à 4)
+        int pos = dialogue.askPosition();
+
+        // Vérifier si une carte occupe l'emplacement
+        if (m_boardLine.isOccupied(pos)) {
+            // On récupère la carte avant de la supprimer (optionnel, pour l'affichage)
+            Card card = m_boardLine.getCardAt(pos).get();
+
+            // Est ce que la carte récupérée est un Obstacle ?
+            if (!card.isSacrificable()) {
+                dialogue.displayMessage("Impossible : un obstacle (" + card.getName() + ") ne peut pas être sacrifié !");
+                return; // On arrête la méthode ici
+            }
+
+            // retirer la cart du plateau si ce n'est pas un obstacle
+            m_boardLine.removeCardAt(pos);
+
+            // Augmenter le compteur d'os de 1
+            m_bonesToken++;
+
+            // Toujours informer l'utilisateur...
+            dialogue.displayMessage("L'animal " + card.getName() + " a été sacrifié. +1 os (Total : " + m_bonesToken + ").");
+        } else {
+            // Erreur d'utilisation : l'emplacement est déjà vide
+            dialogue.displayMessage("Impossible : il n'y a aucune carte en position " + pos + ".");
+        }
+    }
+
+
+    @Override
+    public String toString() {
+        // Utilisation de super.toString() pour la cohésion
+        return "User[" + super.toString() + ", main=" + m_hand + "]";
+    }
+}
+
+
+
+
+
 
 User "1" *--> "1\n- m_hand" Hand
 

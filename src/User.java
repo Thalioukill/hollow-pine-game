@@ -1,3 +1,5 @@
+import java.util.Optional;
+
 public class User extends Player{
     private Hand m_hand;
 
@@ -12,67 +14,141 @@ public class User extends Player{
     }
 
 
-    public void playCardToBoard(char handLetter, int boardPosition) {
-        // On retire de la main via la lettre
-        Card toPlay = m_hand.removeCard(handLetter);
-        // On place sur le plateau via le chiffre (1-4)
-        this.placeCardAt(toPlay, boardPosition);
-    }
-
-
     public void takeTurn(Interactions dialogue) {
         boolean turnEnded = false;
         while (!turnEnded) {
             Actions choice = dialogue.askNextAction(); // Dialogue gère le Scanner
             switch (choice) {
                 case PLACE -> handlePlacement(dialogue);
-                case SACRIFICE -> handleSacrifice(dialogue);
+                //case SACRIFICE -> handleSacrifice(dialogue);
                 case END -> turnEnded = true;
             }
         }
     }
 
+
     private void handlePlacement(Interactions dialogue) {
-        // récup la lettre de la carte en main
-        char letter = dialogue.askCardLetter(m_hand.getSize());
+        // 1. Identification de la carte (usage de getCardSafe pour l'Optional)
+        char letter = dialogue.askCardLetter(this.m_hand.getSize());
+        Optional<Card> optCard = this.m_hand.getCard(letter);
 
-        // Récup la position sur le plateau
+        if (optCard.isEmpty()) {
+            dialogue.displayMessage("Carte inexistante.");
+            return;
+        }
+        Card card = optCard.get();
+
+        // vérif immédiate des ressources (Bones ou Sang suffisant sur le plateau)
+        if (!canAfford(card, dialogue)) return;
+
+        // Choix et préparation de l'emplacement (inclut le sacrifice si occupé)
+
+        // On initialise un compteur de sang déjà payé
+        int bloodAlreadyPaid = 0;
         int pos = dialogue.askPosition();
+        if (!prepareSlot(pos, dialogue, bloodAlreadyPaid)) return;
 
-        // Vérif des couts (os ou sang...)
+
+        // paiement du RESTE du coût
+        // On calcule combien il reste à payer (ex: 2 sang - 1 déjà payé = 1 restant)
+        int remainingBlood = Math.max(0, card.getBloodCost() - bloodAlreadyPaid);
+        int remainingBones = card.getBoneCost(); // Les os ne sont jamais payés par sacrifice direct
+
+        if (remainingBlood > 0) {
+            executeBloodPayment(remainingBlood, dialogue);
+        } else if (remainingBones > 0) {
+            // on enlève juste le nombre de
+            m_bonesToken -= remainingBones;
+        }
+
+        // On pose la carte sur le plateau.
         this.playCardToBoard(letter, pos);
-
-        dialogue.displayMessage("Carte posée en position " + pos);
+        dialogue.displayMessage(card.getName() + " est prêt au combat !");
     }
 
-    private void handleSacrifice(Interactions dialogue) {
-        // Demander quelle position l'utilisateur veut libérer (1 à 4)
-        int pos = dialogue.askPosition();
+    private boolean canAfford(Card card, Interactions dialogue) {
+        if (card.getBoneCost() > 0 && m_bonesToken < card.getBoneCost()) {
+            dialogue.displayMessage("Pas assez d'os (" + m_bonesToken + "/" + card.getBoneCost() + ").");
+            return false;
+        }
+        if (card.getBloodCost() > 0 && m_boardLine.getSacrificableCount() < card.getBloodCost()) {
+            dialogue.displayMessage("Pas assez de créatures à sacrifier pour poser cette carte, veuillez en choisir une autre coutant moins de "+ m_boardLine.getSacrificableCount());
+            return false;
+        }
+        return true;
+    }
 
-        // Vérifier si une carte occupe l'emplacement
-        if (m_boardLine.isOccupied(pos)) {
-            // On récupère la carte avant de la supprimer (optionnel, pour l'affichage)
-            Card card = m_boardLine.getCardAt(pos).get();
+    private void executeBloodPayment(int remainingBlood, Card card, Interactions dialogue) {
+        if (remainingBlood > 0) {
+            for (int i = 0; i < remainingBlood; i++) {
+                dialogue.displayMessage("Sacrifice " + (i + 1) + "/" + remainingBlood + " :");
+                int sacrificePos = dialogue.askPositionSacrifice();
 
-            // Est ce que la carte récupérée est un Obstacle ?
-            if (!card.isSacrificable()) {
-                dialogue.displayMessage("Impossible : un obstacle (" + card.getName() + ") ne peut pas être sacrifié !");
-                return; // On arrête la méthode ici
+                Optional<Card> optTarget = m_boardLine.getCardAt(sacrificePos);
+
+                // On vérifie si l'emplacement contient bien une carte
+                if (optTarget.isPresent()) {
+                    Card target = optTarget.get();
+
+                    // On vérifie si elle est sacrifiable (Obstacle ou pas ?)
+                    if (target.isSacrificable()) {
+                        m_boardLine.removeCardAt(sacrificePos);
+                        m_bonesToken++; // Règle : +1 os par sacrifice
+                        dialogue.displayMessage("Emplacement libéré. +1 os. +1 goutte de sang.");
+                    } else {
+                        dialogue.displayMessage("Impossible : un obstacle ne peut pas être sacrifié !");
+                        i--; // On redemande cette goutte de sang
+                    }
+                } else {
+                    // CAS MANQUANT : L'emplacement est vide
+                    dialogue.displayMessage("Erreur : Il n'y a aucune carte en position " + sacrificePos + ".");
+                    i--; // IMPORTANT: On décrémente pour forcer l'utilisateur à refaire ce sacrifice
+                }
             }
-
-            // retirer la cart du plateau si ce n'est pas un obstacle
-            m_boardLine.removeCardAt(pos);
-
-            // Augmenter le compteur d'os de 1
-            m_bonesToken++;
-
-            // Toujours informer l'utilisateur...
-            dialogue.displayMessage("L'animal " + card.getName() + " a été sacrifié. +1 os (Total : " + m_bonesToken + ").");
-        } else {
-            // Erreur d'utilisation : l'emplacement est déjà vide
-            dialogue.displayMessage("Impossible : il n'y a aucune carte en position " + pos + ".");
         }
     }
+
+/*
+    private boolean prepareSlot(int pos, Interactions dialogue) {
+        if (m_boardLine.isOccupied(pos)) {
+            dialogue.displayMessage("L'emplacement " + pos + " est occupé.");
+            return false;
+        }
+        return true;
+    }
+*/
+
+    private boolean prepareSlot(int pos, Interactions dialogue, int bloodAlreadyPaid) {
+        Optional<Card> optTarget = m_boardLine.getCardAt(pos);
+
+        // Si l'emplacement est vide, rien à faire = on peut poser la carte !
+        if (optTarget.isEmpty()) {
+            return true;
+        }
+
+        Card target = optTarget.get();
+
+        // Obstacle ?
+        if (!target.isSacrificable()) {
+            dialogue.displayMessage("L'emplacement est occupé par un " + target.getName() + " (Obstacle incassable).");
+            return false; // On ne peut pas poser ici
+        }
+
+        // Si pas obstacle => demander à l'utilisateur si il veut sacrifier cette carte pour poser la sienne à la place
+        boolean confirm = dialogue.askConfirmation("L'emplacement est occupé par " + target.getName() + ". Le sacrifier pour libérer la place ?");
+
+        if (confirm) {
+            m_boardLine.removeCardAt(pos);
+            bloodAlreadyPaid = 1;
+            m_bonesToken++; // Règle : tout sacrifice donne +1 os
+            dialogue.displayMessage("Sacrifice de " + target.getName() + " pour libérer la place (+1 sang).");
+            dialogue.displayMessage("Emplacement libéré. +1 os.");
+            return true; // L'emplacement est maintenant libre, on renvoie true !
+        }
+
+        return false; // L'utilisateur a annulé, on ne peut pas poser
+    }
+
 
 
     @Override

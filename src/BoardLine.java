@@ -11,35 +11,45 @@ public class BoardLine {
         }
     }
 
-    private void validatePosition(int position) {
-        if (position < 1 || position > 4) {
-            throw new IndexOutOfBoundsException("Position " + position + " invalide (1-4 requis)");
-        }
-    }
-
     private int toIndex(int position) {
         return position - 1;
     }
 
+     // Vérif inter pas besoin de l'utiliser autre part qu'ici
+    private boolean validatePosition(int position) {
+        return position >= 1 && position <= 4;
+    }
+
+    // renvoie un Optional vide si l'index est mauvais => géré dans le User avec une Interactions : froce à vérifier que tout va bien.
     public Optional<Card> getCardAt(int position) {
-        validatePosition(position);
+        if (!validatePosition(position)) {
+            return Optional.empty();
+        }
         return m_slots.get(toIndex(position));
     }
 
+     // lance une exception car si le code tente de poser une carte hors-limite après les vérifications du User, c'est un bug...
     public void placeCardAt(Card card, int position) {
-        validatePosition(position);
-        // jamais null, on utilise Optional.of
+        if (!validatePosition(position)) {
+            throw new IndexOutOfBoundsException("Bug interne : placement hors limites");
+        }
         m_slots.set(toIndex(position), Optional.of(card));
     }
 
-    public void removeCardAt(int position) {
-        validatePosition(position);
-        m_slots.set(toIndex(position), Optional.empty());
+    public boolean isOccupied(int position) {
+        // Une position invalide n'est, par définition, pas occupée.
+        return validatePosition(position) && m_slots.get(toIndex(position)).isPresent();
     }
 
-    public boolean isOccupied(int position) {
-        validatePosition(position);
-        return m_slots.get(toIndex(position)).isPresent();
+    public int getSacrificableCount() {
+        int count = 0;
+        for (Optional<Card> slot : m_slots) {
+            // Seules les Animaux sont comptés...
+            if (slot.isPresent() && slot.get().isSacrificable()) {
+                count++;
+            }
+        }
+        return count;
     }
 
     @Override

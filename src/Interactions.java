@@ -14,7 +14,7 @@ public class Interactions {
         while (true) {
             System.out.println("\n--- ACTIONS POSSIBLES ---");
             System.out.println("[P] Poser une carte");
-            System.out.println("[S] Sacrifier une carte");
+            //System.out.println("[S] Sacrifier une carte");
             System.out.println("[F] Finir le tour");
             System.out.print("Votre choix : ");
 
@@ -23,14 +23,16 @@ public class Interactions {
             if (input.equals("P")){
                 return Actions.PLACE;
             }
+            /*
             if (input.equals("S")){
                 return Actions.SACRIFICE;
             }
+            */
             if (input.equals("F")){
                 return Actions.END;
             }
             // Sinon la saisie est invalide...
-            System.out.println("Choix inconnu ! Veuillez saisir P, S ou F.");
+            System.out.println("Choix inconnu ! Veuillez saisir P ou F.");
         }
     }
 
@@ -38,6 +40,22 @@ public class Interactions {
     public int askPosition() {
         while (true) {
             System.out.print("Entrez le numéro de l'emplacement où vous souhaitez poser la carte (1, 2, 3 ou 4) : ");
+            if (m_scanner.hasNextInt()) {
+                int pos = m_scanner.nextInt();
+                if (pos >= 1 && pos <= 4) {
+                    return pos;
+                }
+            } else {
+                m_scanner.next(); // Lit le prochain mot
+            }
+            // ERREURRRR
+            System.out.println("Saisie invalide ! Vous devez entrer un chiffre entier entre 1 et 4.");
+        }
+    }
+
+    public int askPositionSacrifice() {
+        while (true) {
+            System.out.print("Entrez le numéro de l'emplacement de la carte que vous souhaitez sacrifier (1, 2, 3 ou 4) : ");
             if (m_scanner.hasNextInt()) {
                 int pos = m_scanner.nextInt();
                 if (pos >= 1 && pos <= 4) {

@@ -17,16 +17,14 @@ public class Game {
 
     public boolean runGame() {
         // La partie s'arrête si l'écart atteint 5 points
-        while (Math.abs(this.m_score) < 5) {
+        do {
             Round currentRound = new Round();
-            currentRound.startRound();
+            currentRound.opponentTurn();
+            currentRound.startRoundPlayer();
             currentRound.playerTurn();
             currentRound.combatPhase(); // Attaque des cartes et mise à jour du score
 
-            if (Math.abs(this.m_score) < 5) {
-                currentRound.opponentTurn();
-            }
-        }
+        } while (Math.abs(this.m_score) < 5)
         return this.m_score >= 5;
     }
 

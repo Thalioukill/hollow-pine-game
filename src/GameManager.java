@@ -18,7 +18,7 @@ public class GameManager {
 
         while (m_gamesCount <= MAX_GAMES && campaignWon) {
             // Orchestration : on crée les nouveaux objets nécessaires à chaque match
-            campaignWon = playNewMatch();
+            campaignWon = playNewGame();
 
             if (campaignWon) {
                 // Gestion de la progression entre les matchs

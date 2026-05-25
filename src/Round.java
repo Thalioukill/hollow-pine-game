@@ -5,7 +5,7 @@ public class Round {
 
     private void playerTurn() {
         this.m_player.drawCard(); // Pioche obligatoire en début de tour
-
+        this.m_user.takeTurn(Interactions dialogue);
         // Ici, une boucle de Scanner pour lire les commandes : [placer], [piocher], [fin]
         // Exemple simplifié d'appel de placement :
         // this.playCard(m_player, indexEnMain, positionPlateau);
@@ -29,7 +29,7 @@ public class Round {
         }
     }
 
-    public void resolveCombatPhase(Player attacker, Player opponent, Game game, Interactions dialogue) {
+    public void CombatPhase(Player attacker, Player opponent, Game game, Interactions dialogue) {
 
         for (int i = 1; i <= 4; i++) {
             final int position = i; // Pour l'usage dans les lambdas

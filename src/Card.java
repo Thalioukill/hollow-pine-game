@@ -14,7 +14,7 @@ public abstract class Card {
     }
 
     public String getName() {
-        return m_name;
+        return this.m_name;
     }
 
     public int getHealthPoints() {
