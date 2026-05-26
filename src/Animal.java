@@ -41,6 +41,10 @@ public class Animal extends Card {
         return this.m_attackPoints;
     }
 
+    public int getBoneCost(){
+        return this.m_boneCost;
+    }
+
     public boolean isDead() {
         return this.m_healthPoints <= 0;
     }
@@ -94,5 +98,9 @@ public class Animal extends Card {
         } else {
             game.updateScore(m_attackPoints);
         }
+    }
+
+    public int getBloodCost() {
+        return this.m_bloodCost;
     }
 }

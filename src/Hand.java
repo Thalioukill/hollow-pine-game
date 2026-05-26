@@ -2,13 +2,13 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 public class Hand {
-    private final ArrayList<Card> m_cards;
+    private final ArrayList<Animal> m_cards;
 
     public Hand() {
         this.m_cards = new ArrayList<>();
     }
 
-    public void addCard(Card card) {
+    public void addCard(Animal card) {
         // Une main peut techniquement grandir, contrairement au plateau
         m_cards.add(card);
     }
@@ -37,7 +37,7 @@ public class Hand {
 
      // Permet de regarder une carte sans la retirer.
      // Renvoie un Optional vide si la lettre ne correspond à aucune carte => pour gérer les soucis dans le User...
-    public Optional<Card> getCard(char letter) {
+    public Optional<Animal> getCard(char letter) {
         int index = toIndex(letter);
         // Au lieu de lancer une exception, on renvoie un indicateur de "vide"
         if (index < 0 || index >= m_cards.size()) {
@@ -50,7 +50,7 @@ public class Hand {
 
     // retire la carte de la main et retourne l'élément qui était dedans à l'index de la lettre donnée (ici la Card), on l'utilise uniquement quand yune carte est
     // jouée et donc placée autre part, donc si l'index est mauvais c'est une erreur du code...
-    public Card removeCard(char letter) {
+    public Animal removeCard(char letter) {
         int index = toIndex(letter);
         if (index < 0 || index >= m_cards.size()) {
             // Exception non-contrôlée pour signaler un bug interne [4]

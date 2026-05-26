@@ -16,11 +16,15 @@ class main{
 
 class GameManager{
     'we will instantiate the Friend player(in the main ? ), the opponent players and the games here...
-}
-
-class Round {
-
-
+    - User m_player : User
+    - m_gamesCount : int;
+    - m_gameboard : GameBoard
+    - {final} MAX_GAMES : int
+    + <<create>> GameManager() : GameManager
+    + startCampaign()
+    - playNewGame() : boolean
+    - offerNewCard()
+    - displayFinalResult(victory boolean)
 }
 
 '4 cartes qu'il a joués
@@ -66,14 +70,25 @@ class Opponent extends Player {
 'the FRIEND player is defined in the main (because it does not change from one game to another)
 ' the FRIEND player's deck is instantiated in the main because it belongs specifically to the friend
 class Game {
-    - m_score : Integer
+    'La balance : >0 pour l'Ami, <0 pour l'Adversaire
+    - m_score : int
+    - m_user : User
+    - m_opponent : Opponent
+    - m_currentPlayer : Player
+    - {final} m_dialogue Interactions
+
     + <<create>> Game (plateau : GameBord, joueur : Friend, adversaire : Opponent)
     '+ setScore(pvAmi : Integer ; pvEnnemi : Integer)
+    + runGame() : boolean
     + gameStatus () : enum
     + checkVictory() : gameStatus
     + playCard(p : Player, cardIndex : Integer, position : Integer)
     + toString() : String
+    + takeTurn(m_dialogue Interactions, human User)
+    + combatPhase(p Player) : int
+    - startRound(nbRounds int)
 }
+
 
 'affichage de la partie
 'si tableau transmis c'est une copie
@@ -97,49 +112,69 @@ class GameBoard {
 
 class CardStock{
     + CardStock()
-    + getCard(name : String) : Card
+    + getCard(name : String) : Animal
 
 }
 ' CardStock possède 1 ArrayList<Card> et renvoie une copie profonde !!! pas une référence.
 CardStock "1" *--> "10..*\n- m_templates" Card : possède
 
-
 class Deck {
 'Au moins 8 ecureuils + on cherche dans le CardStock
-    + <<create>> Deck()
+    + <<create>> Deck() : Deck
     + shuffle()
-    + addCard() (card : Card)
-    + removeCard(card : Card)
+    + addCard() (card : Animal)
+    + removeCard(card : Animal)
     + toString() : String
+    + draw() : Animal
+    + getSize() : int
+    + isEmpty() : boolean
 }
 
 abstract class Card {
-    - m_name : String
-    - m_healthPoints : Integer
-    + <<create>> Card (nom : String)
+    # m_name : String
+    # m_healthPoints : Integer
+    + <<create>> Card (nom : String, hp : Interger)
+    + Card(other Card)
+    + getName() : String
+    + getHealthPoints() : int
+    + {abstract} getAttackPoints() : int
+    + takeDamage(amout : int)
+    + isDead() : boolean
+    + {abstract} isSacrificable() : boolean
+
 }
 
 class Animal extends Card {
 ' Attributs hérités de la classe MERE !
-    - m_name : String
-    - m_healthPoints : Integer
+'    - m_name : String
+'    - m_healthPoints : int
 ' c'est tous des int et pas des Integer parce que l'on ne veut pas qu'il puissent etre null...
-    - m_attackPoints : Interger
-    - m_bloodCost : Integer
-    - m_boneCost : Integer
+    - m_attackPoints :  Integer
+    - m_bloodCost :  Integer
+    - m_boneCost :  Integer
     ' the constructor of the parent class is used in the child constructor
-    + <<create>> Animal(name : String, attackPoints : Integer, bloodCost : Integer) : Animal
+    + <<create>> Animal(name : String, pv :  Integer, attackPoints :  Integer, bloodCost : Integer, boneCost : Integer) : Animal
     ' Constructeur de COPIE !
-    + <<create>> Animal(other : Animal)
-    + cloneCard() : Card;
+    + <<create>> Animal(other : Animal) : Animal
+    + addAbility( a : Ability)
+    + getAttackPoints() : Integer
+    + getBloodCost() : Integer
+    + getBloodCost() : Integer
+    + isDead() : boolean
+    + cloneCard() : Animal;
+    + isSacrificable() : boolean
+    +takeDamage(amount int, attacker Animal, game Game)
     + attack(targetPosition : Integer, opponent : Player, game : Game)
-    + addAbility(ability : Ability)
 }
 
 
 class Obstacle extends Card {
-    + <<create>> Card (nom : String)
+    + <<create>> Obstacle (nom : String, hp : Integer)
+    + <<create>> Obstacle(other : Obstacle) : Obstacle
+    + isSacrificable() : Boolean
+    + getAttackPoints() : Integer
 }
+
 
 interface Ability {
     + applyAbility(attacker : Animal, target : CardSlot, game : Game)
@@ -152,8 +187,14 @@ class FlyingAbility implements Ability {
 
 
 class Hand{
-    + addCard(card : Card)
+    + <<create>> Hand() : Hand
+    + addCard(card : Animal)
     + removeCard(card : Card)
+    + getSize() : Integer
+    + toIndex(letter : Char) : int
+    + getCard(letter : Char) : Animal
+    + removeCard(letter : Char) : Animal
+
 }
 
 ' -> RELATIONSHIPS :

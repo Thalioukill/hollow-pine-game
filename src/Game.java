@@ -28,17 +28,18 @@ public class Game {
 
             // On met le USER comme premier joueur du round
             this.m_currentPlayer = this.m_user;
+
             // Le joueur pioche au départ du tour...
             this.m_user.draw(this.m_dialogue);
 
             // propose à l'utilisateur ce qu'il veut faire => placer une acrte ou finir son tour...
-
+            takeTurn(m_dialogue, this.m_user);
 
 
             // appelle la méthode de combat : User attaque l'Opponent
             m_score += combatPhase(this.m_opponent);
 
-            this.m_opponent.takeTurn(this.m_dialogue); // L'Opponent place ses cartes sur sa ligne de jeu.
+            this.m_opponent.placeCards(this.m_dialogue); // L'Opponent place ses cartes sur sa ligne de jeu.
 
             // appelle la méthode de combat : Opponent attaque le User
             m_score -= combatPhase(this.m_user); // Attaque des cartes + mise à jour du score
@@ -47,15 +48,18 @@ public class Game {
         return this.m_score >= 5;
     }
 
-    public void takeTurn(Interactions m_dialogue) {
+    public void takeTurn(Interactions m_dialogue, User human) {
         boolean turnEnded = false;
         while (!turnEnded) {
-            Actions choice = m_dialogue.askNextAction(); // Dialogue gère le Scanner
-            switch (choice) {
+            Actions choice = m_dialogue.askNextAction(human); // Dialogue gère le Scanner
+            /*switch (choice) {
                 case PLACE -> m_dialogue.handlePlacement();
                 //case SACRIFICE -> handleSacrifice(dialogue);
                 case END -> turnEnded = true;
             }
+
+             */
+
         }
     }
 
@@ -93,10 +97,17 @@ public class Game {
         */
     }
 
-    private void startRound() {
+
+// il faudrait faire un switchCase avec le nbre de Rounds, chaque round est prévu à l'avance
+    private void startRound(int nbRounds) {
         // Affichage des prévisions de l'adversaire sur la ligne du haut.
         // Méthode à implémenter que pour le OPPONENT !!!
-
+        int choice = nbRounds;
+        switch (choice) {
+            case 1 -> this.m_opponent.round1();
+            //case SACRIFICE -> handleSacrifice(dialogue);
+            case 2 -> this.m_opponent.round2();
+        }
 
     }
 

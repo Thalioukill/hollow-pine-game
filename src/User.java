@@ -1,7 +1,7 @@
 import java.util.Optional;
 
 public class User extends Player{
-    private Hand m_hand;
+    Hand m_hand;
 
     public User(Deck deck) {
         super(deck); // Appel au constructeur de la classe mère
@@ -38,26 +38,12 @@ public class User extends Player{
     }
 
 
-    private void handlePlacement(Card card, int position) {
-        // Cette méthode on peut la faire dans Interractions.
-        char letter = dialogue.askCardLetter(this.m_hand.getSize());
-        Optional<Card> optCard = this.m_hand.getCard(letter);
+    public
 
-        if (optCard.isEmpty()) {
-            dialogue.displayMessage("Carte inexistante.");
-            return;
-        }
-        Card card = optCard.get();
 
-        // vérif immédiate des ressources (Bones ou Sang suffisant sur le plateau)
-        if (!canAfford(card, dialogue)) return;
+    private void handlePlacement(Animal card, int position, int bloodAlreadyPaid) {
 
-        // Choix et préparation de l'emplacement (inclut le sacrifice si occupé)
-
-        // On initialise un compteur de sang déjà payé
-        int bloodAlreadyPaid = 0;
-        int pos = dialogue.askPosition();
-        if (!prepareSlot(pos, dialogue, bloodAlreadyPaid)) return;
+        if (!prepareSlot(pos, dialogue, bloodAlreadyPaid)) return false;
 
 
         // paiement du RESTE du coût
@@ -77,6 +63,7 @@ public class User extends Player{
         dialogue.displayMessage(card.getName() + " est prêt au combat !");
     }
 
+    /*
     private boolean canAfford(Card card, Interactions dialogue) {
         if (card.getBoneCost() > 0 && m_bonesToken < card.getBoneCost()) {
             dialogue.displayMessage("Pas assez d'os (" + m_bonesToken + "/" + card.getBoneCost() + ").");
@@ -88,8 +75,9 @@ public class User extends Player{
         }
         return true;
     }
+     */
 
-    private void executeBloodPayment(int remainingBlood, Card card, Interactions dialogue) {
+    private void sacrifice(int remainingBlood, Card card, Interactions dialogue) {
         if (remainingBlood > 0) {
             for (int i = 0; i < remainingBlood; i++) {
                 dialogue.displayMessage("Sacrifice " + (i + 1) + "/" + remainingBlood + " :");
