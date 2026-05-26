@@ -27,15 +27,43 @@ public abstract class Player {
         m_boardLine.removeCardAt(position);
     }
 
-    public boolean getAttacked(int damage, int position)
+    // En gros on regarde si la position est valide, et on regarde si il y a une carte, si il y a une carte, on
+    public boolean takeDamage(int damage, int pos)
     {
-        if (m_boardLine.getCardAt(position).isPresent())
-        {
-            m_boardLine.getCardAt(position).get().takeDamage(damage);
+        Optional<Card> optCard =  this.getCardAt(pos);
+        if(optCard.isPresent()){
+            Card card = optCard.get();
+            Card.takeDamage(damage);
             return true;
         }
         return false;
     }
+
+    public int CombatPhase(Player opponent){
+        int damagePoint = 0;
+        // On peut faire une méthode dans BoardLine
+        for (int i = 0; i < 4; i++) {
+            Optional<Card> optCard = this.getCardAt(i);
+            if(optCard.isPresent()) {
+                Card card = optCard.get();
+                int damage = card.getAttackPoints(); // PENSER A METTRE CA DANS OBSTACLE ET RETURN 0
+                if (!opponent.takeDamage(damage, i)) {
+                    damagePoint += damage;
+                }
+            }
+        }
+        return damagePoint;
+    }
+
+    /*
+     for (int i = 0; i < 4; i++) {
+                int damage = m_currentPlayer.getCardAt(i).get().getAttackPoints(); // PENSER A METTRE CA DANS OBSTACLE ET RETURN 0
+                if (!m_opponent.takeDamage(damage, i)) {
+                    damagePoint += damage;
+                }
+
+            }
+     */
 
     public void placeCardAt(Card card, int position) {
         // proposer un sacrifice si occupé
@@ -48,7 +76,7 @@ public abstract class Player {
         m_boardLine.placeCardAt(card, position);
     }
 
-    public abstract void takeTurn(Interactions dialogue);
+    //public abstract void takeTurn(Interactions dialogue);
 
     @Override
     public String toString() {

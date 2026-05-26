@@ -21,10 +21,10 @@ public abstract class Card {
         return m_healthPoints;
     }
 
-    public int getDamage();
+    public abstract int getAttackPoints();
 
-    public void takeDamage(int damage) {
-        m_healthPoints -= damage;
+    public void takeDamage(int amount) {
+        this.m_healthPoints-= amount;
     }
 
     public boolean isDead() {
@@ -32,6 +32,6 @@ public abstract class Card {
     }
     public abstract boolean isSacrificable();
 
-    // Méthode abstraite pour forcer la copie polymorphique
-    public abstract Card cloneCard();
+    // Pas besoin que cette méthode soit abstract parce que on en a que besoin dans Animal
+    // public abstract Card cloneCard();
 }

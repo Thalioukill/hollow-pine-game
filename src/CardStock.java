@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 public class CardStock {
-    private final ArrayList<Card> m_templates = new ArrayList<>();
+    private final ArrayList<Animal> m_templates = new ArrayList<>();
     // Constantes de noms (comme un genre d'enum...
     public static final String CHAT      = "Chat";
     public static final String GRIZZLY   = "Grizzly";
@@ -43,8 +43,9 @@ public class CardStock {
      Il est crucial de renvoyer une copie pour éviter que les dégâts
      en jeu ne modifient le modèle dans le stock
      */
-    public Optional<Card> getCard(String name) {
-        for (Card template : m_templates) {
+
+    public Optional<Animal> getCard(String name) {
+        for (Animal template : m_templates) {
             if (template.getName().equals(name)) {
                 // Utilisation du constructeur de copie pour la sécurité :on appelle cloneCard() qui renvoie une COPIE PROFNDE du type concret correspondant !!!!!
                 return Optional.of(template.cloneCard());

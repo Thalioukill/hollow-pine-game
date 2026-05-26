@@ -4,7 +4,7 @@ public class Obstacle extends Card{
         super(name, hp);
     }
 
-    // Constructeur de COPIE
+    // Constructeur de COPIE, pour l'instant pas très utile
     public Obstacle(Obstacle other){
         super(other);
     }
@@ -13,8 +13,14 @@ public class Obstacle extends Card{
         return false;
     }
 
+    /*
     public Card cloneCard() {
 
         return new Obstacle(this); // Utilise le constructeur de copie
+    }
+     */
+
+    public int getAttackPoints(){
+        return 0;
     }
 }

@@ -1,3 +1,4 @@
+
 import java.util.Optional;
 
 public class Round {
@@ -30,22 +31,25 @@ public class Round {
         // boucle de Scanner pour lire les commandes : [placer], [fin]
         this.m_currentPlayer.takeTurn(this.m_dialogue);
 
-        }
+    }
 
 
     public void performDraw(User currentPlayer, Deck deck) {
-        m_user.draw(deck, this.m_dialogue); // Pioche obligatoire en début de tour
+        m_user.draw(this.m_dialogue); // Pioche obligatoire en début de tour
 
     }
 
     public int CombatPhase() {
 
+        this.m_currentPlayer.CombatPhase();
+
         // On verifie qui est le joueur qui joue actuellement (Ici m_user ce qui veut dire que la personne qui subit les dégats est le m_opponent)
         int damagePoint = 0;
+        // equals
         if (m_currentPlayer == m_user)
         {
             for (int i = 0; i < 4; i++) {
-                int damage = m_currentPlayer.getCardAt(i).getAttackPoints(); // PENSER A METTRE CA DANS OBSTACLE ET RETURN 0
+                int damage = m_currentPlayer.getCardAt(i).get().getAttackPoints(); // PENSER A METTRE CA DANS OBSTACLE ET RETURN 0
                 if (!m_opponent.takeDamage(damage, i)) {
                     damagePoint += damage;
                 }

@@ -9,13 +9,13 @@ public class User extends Player{
     }
 
     // on pioche 1 carte dans le Deck et on l'ajoute à la main.
-    public void draw(Deck deck, Interactions dialogue) {
+    public void draw(Interactions dialogue) {
         // L'utilisateur a le choix
         boolean wantsToDraw = dialogue.askConfirmation("Voulez-vous piocher une carte pour ce tour ?");
 
         if (wantsToDraw) {
             //pioche si le deck pas vide (gestion via Optional)
-            deck.draw().ifPresent(card -> {
+            this.m_deck.draw().ifPresent(card -> {
                 m_hand.addCard(card);
                 dialogue.displayMessage("Vous avez pioché : " + card.getName());
             });
@@ -38,8 +38,8 @@ public class User extends Player{
     }
 
 
-    private void handlePlacement(Interactions dialogue) {
-        // 1. Identification de la carte (usage de getCardSafe pour l'Optional)
+    private void handlePlacement(Card card, int position) {
+        // Cette méthode on peut la faire dans Interractions.
         char letter = dialogue.askCardLetter(this.m_hand.getSize());
         Optional<Card> optCard = this.m_hand.getCard(letter);
 

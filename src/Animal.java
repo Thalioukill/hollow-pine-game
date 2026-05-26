@@ -41,10 +41,6 @@ public class Animal extends Card {
         return this.m_attackPoints;
     }
 
-    public void takeDamage(int amount) {
-        this.m_healthPoints-= amount;
-    }
-
     public boolean isDead() {
         return this.m_healthPoints <= 0;
     }
@@ -56,6 +52,7 @@ public class Animal extends Card {
         return new Animal(this); // Utilise le constructeur de copie
     }
 
+    /*
     public void attack(int position, Player opponent, Game game) {
         if (m_abilities.isEmpty()) {
             defaultAttack(position, opponent, game);
@@ -65,6 +62,25 @@ public class Animal extends Card {
             }
         }
     }
+    */
+
+
+    public void takeDamage(int amount, Animal attacker, Game game) {
+        int finalDamage = amount;
+
+        // On demande aux pouvoirs s'ils modifient les dégâts (ex: Puant)
+        for (Ability a : m_abilities) {
+            finalDamage = a.modifyIncomingAttack(finalDamage);
+        }
+
+        this.m_healthPoints -= finalDamage;
+
+        // On déclenche les effets de réaction (ex: Piques pointues)
+        for (Ability a : m_abilities) {
+            a.onHit(this, attacker, game);
+        }
+    }
+
 
     private void defaultAttack(int position, Player opponent, Game game) {
         Optional<Card> target = opponent.getCardAt(position);

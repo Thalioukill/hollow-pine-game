@@ -13,23 +13,21 @@ public class Interactions {
     public Actions askNextAction() {
         while (true) {
             System.out.println("\n--- ACTIONS POSSIBLES ---");
-            System.out.println("[P] Poser une carte");
-            //System.out.println("[S] Sacrifier une carte");
+            System.out.println("[placer <numero carte> <position>] Placer une carte sur le plateau\n");
             System.out.println("[F] Finir le tour");
             System.out.print("Votre choix : ");
 
             String input = m_scanner.next().toUpperCase(); // On tolère 'p' ou 'P'
 
             if (input.equals("P")){
-                return Actions.PLACE;
+                System.out.println("\nVeuillez choisir une carte à jouer dans votre Main : ");
+                System.out.println("[P] Poser une carte");
+                System.out.println("[F] Finir le tour");
+                System.out.print("Votre choix : ");
             }
-            /*
-            if (input.equals("S")){
-                return Actions.SACRIFICE;
-            }
-            */
+
             if (input.equals("F")){
-                return Actions.END;
+                return
             }
             // Sinon la saisie est invalide...
             System.out.println("Choix inconnu ! Veuillez saisir P ou F.");
