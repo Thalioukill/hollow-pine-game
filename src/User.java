@@ -1,7 +1,7 @@
 import java.util.Optional;
 
 public class User extends Player{
-    Hand m_hand;
+    private Hand m_hand;
 
     public User(Deck deck) {
         super(deck); // Appel au constructeur de la classe mère
@@ -37,9 +37,39 @@ public class User extends Player{
         }
     }
 
+    public Optional<Animal> getHandCard(int index){
+        return m_hand.getCard(index);
+    }
 
-    public
+    public int getHandSize(){
+        return m_hand.getSize();
+    }
 
+    public Optional<Card> getCardAt(int position){
+        return this.m_boardLine.getCardAt(toIndex(position));
+    }
+
+    public boolean verifBoneCost(Animal test){
+        if (test.getBoneCost() > 0 && this.getBonesToken() < test.getBoneCost()){
+            return true;
+        }
+        return false;
+    }
+
+    public boolean verifBloodCost(Animal test){
+        if(test.getBloodCost() > 0 && this.m_boardLine.getSacrificableCount() < test.getBloodCost()){
+            return true;
+        }
+        return false;
+    }
+
+    public boolean validatePosition(int position) {
+        return this.m_boardLine.validatePosition(toIndex(position));
+    }
+
+    private int toIndex(int position) {
+        return position - 1;
+    }
 
     private void handlePlacement(Animal card, int position, int bloodAlreadyPaid) {
 

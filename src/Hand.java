@@ -18,13 +18,13 @@ public class Hand {
     }
 
      // Convertit lettre (A, B, C...) en index (0, 1, 2...)
-
+/* INUTILE => à faire dans la HAND !!!!
     public int toIndex(char letter) {
         // Character.toUpperCase pour accepter 'a' ou 'A'
         // On utilise l'ASCII pour trouver l'index  'A' = 65
         return Character.toUpperCase(letter) - 'A';
     }
-
+*/
 /* Inutile ? on renvoie 1 Optional Of Card et si il est vide alors l'index n'était pas BON.
     // Validation pour éviter les IndexOutOfBoundsException
     public Optional<Card> validateIndex(int index) {
@@ -37,24 +37,24 @@ public class Hand {
 
      // Permet de regarder une carte sans la retirer.
      // Renvoie un Optional vide si la lettre ne correspond à aucune carte => pour gérer les soucis dans le User...
-    public Optional<Animal> getCard(char letter) {
-        int index = toIndex(letter);
-        // Au lieu de lancer une exception, on renvoie un indicateur de "vide"
-        if (index < 0 || index >= m_cards.size()) {
-            return Optional.empty();
+    public Optional<Animal> getCard(int index) {
+        Optional<Animal> result = Optional.empty();
+        try {
+            result = Optional.of(m_cards.get(index));
+        } catch (IndexOutOfBoundsException e) {
+            return result; // retourne Optional.empty()
         }
-        return Optional.of(m_cards.get(index));
+        return result;
     }
 
 
 
     // retire la carte de la main et retourne l'élément qui était dedans à l'index de la lettre donnée (ici la Card), on l'utilise uniquement quand yune carte est
     // jouée et donc placée autre part, donc si l'index est mauvais c'est une erreur du code...
-    public Animal removeCard(char letter) {
-        int index = toIndex(letter);
+    public Animal removeCard(int index) {
         if (index < 0 || index >= m_cards.size()) {
             // Exception non-contrôlée pour signaler un bug interne [4]
-            throw new IndexOutOfBoundsException("Bug interne : retrait d'une lettre invalide '" + letter + "'");
+            throw new IndexOutOfBoundsException("Bug interne : retrait d'une lettre invalide '" + (char)index + "'");
         }
         return m_cards.remove(index);
     }

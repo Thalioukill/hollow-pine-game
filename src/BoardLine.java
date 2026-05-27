@@ -11,21 +11,14 @@ public class BoardLine {
         }
     }
 
-    private int toIndex(int position) {
-        return position - 1;
-    }
 
-     // Vérif inter pas besoin de l'utiliser autre part qu'ici
-    private boolean validatePosition(int position) {
+    public boolean validatePosition(int position) {
         return position >= 1 && position <= 4;
     }
 
     // renvoie un Optional vide si l'index est mauvais => géré dans le User avec une Interactions : froce à vérifier que tout va bien.
     public Optional<Card> getCardAt(int position) {
-        if (!validatePosition(position)) {
-            return Optional.empty();
-        }
-        return m_slots.get(toIndex(position));
+        return m_slots.get(position);
     }
 
      // lance une exception car si le code tente de poser une carte hors-limite après les vérifications du User, c'est un bug...
@@ -33,12 +26,12 @@ public class BoardLine {
         if (!validatePosition(position)) {
             throw new IndexOutOfBoundsException("Bug interne : placement hors limites");
         }
-        m_slots.set(toIndex(position), Optional.of(card));
+        m_slots.set(position, Optional.of(card));
     }
 
     public boolean isOccupied(int position) {
         // Une position invalide n'est, par définition, pas occupée.
-        return validatePosition(position) && m_slots.get(toIndex(position)).isPresent();
+        return validatePosition(position) && m_slots.get(position).isPresent();
     }
 
     public int getSacrificableCount() {

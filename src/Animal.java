@@ -100,6 +100,11 @@ public class Animal extends Card {
         }
     }
 
+
+    public boolean isSquirrel(){
+        return (this.getBloodCost() == 0 && this.getBoneCost() == 0);
+    }
+
     public int getBloodCost() {
         return this.m_bloodCost;
     }

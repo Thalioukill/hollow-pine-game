@@ -23,6 +23,10 @@ public abstract class Player {
         return m_boardLine.getCardAt(position);
     }
 
+    public int getBonesToken(){
+        return this.m_bonesToken;
+    }
+
     public void removeCardAt(int position) {
         m_boardLine.removeCardAt(position);
     }

@@ -21,27 +21,19 @@ public class Interactions {
 
             String input = m_scanner.next().toUpperCase(); // On tolère 'p' ou 'P
             if (input.equals("P")){
-                char letter = this.askCardLetter(human.m_hand.getSize());
-                Optional<Animal> optAnimal = human.m_hand.getCard(letter);
+                Animal handAnimal = this.askCardLetter(human.getHandSize(), human);
 
-                if (optAnimal.isEmpty()) {
-                    this.displayMessage("Carte inexistante.");
-                    return;
-                }
-
-                Animal a = optAnimal.get();
-
-                int remainingBlood = a.getBloodCost();
+                int remainingBlood = handAnimal.getBloodCost();
                 // si l'animal est un écureuil => on a pas besoin de sacrifier quoi que ce soit pour le poser.
-                if(!(remainingBlood == 0 && a.getBoneCost() == 0)){
-                    if(canAfford(a, human)){
+                if(!handAnimal.isSquirrel()){
+                    if(canAfford(handAnimal, human)){
                         // faire les sacrifices, puis ensuite demander la position à l'utiliateur.
                         if (remainingBlood > 0) {
                             for (int i = 0; i < remainingBlood; i++) {
                                 this.displayMessage("Sacrifice " + (i + 1) + "/" + remainingBlood + " :");
-                                int sacrificePos = this.askPositionSacrifice();
+                                int sacrificePos = this.askPositionSacrifice(human);
 
-                                Optional<Card> optTarget = m_boardLine.getCardAt(sacrificePos);
+                                //Optional<Card> optTarget = m_boardLine.getCardAt(sacrificePos);
 
                                 // On vérifie si l'emplacement contient bien une carte
                                 if (optTarget.isPresent()) {
@@ -66,6 +58,7 @@ public class Interactions {
                     }
 
                 }
+                // On demande la position de la carte...
                 return;
             }
 
@@ -137,6 +130,7 @@ public class Interactions {
 
 
         // Demande une position sur le plateau (chifres 1 à 4).
+
         public int askPosition() {
             while (true) {
                 System.out.print("Entrez le numéro de l'emplacement où vous souhaitez poser la carte (1, 2, 3 ou 4) : ");
@@ -153,14 +147,25 @@ public class Interactions {
             }
         }
 
-        public int askPositionSacrifice() {
+        public boolean askPositionSacrifice(User human) {
             while (true) {
                 System.out.print("Entrez le numéro de l'emplacement de la carte que vous souhaitez sacrifier (1, 2, 3 ou 4) : ");
                 if (m_scanner.hasNextInt()) {
                     int pos = m_scanner.nextInt();
-                    if (pos >= 1 && pos <= 4) {
-                        return pos;
+                    Optional<Card> result = Optional.empty();
+                    try{
+                        result = human.getCardAt(pos);
                     }
+                    catch(IndexOutOfBoundsException e){
+                        System.out.println("Saisie invalide ! Vous devez entrer un chiffre entier entre 1 et 4.");
+                    }
+                    if(result.isPresent()){
+                        System.out.println("Emplacement déjà occupé, veuillez choisir un autre emplacement");
+                    }
+                    else{
+                        return true;
+                    }
+
                 } else {
                     m_scanner.next(); // Lit le prochain mot
                 }
@@ -170,30 +175,42 @@ public class Interactions {
         }
 
 
+    // Demande la lettre d'une carte en main (lettres A, B, C...) + handSize taille actuelle de la main pour limiter le chiox
+    public Animal askCardLetter(int handSize, User human) {
+        char maxLetter = (char) ('A' + handSize - 1);
 
-        // Demande la lettre d'une carte en main (lettres A, B, C...) + handSize taille actuelle de la main pour limiter le chiox
-        public char askCardLetter(int handSize) {
-            char maxLetter = (char) ('A' + handSize - 1);
-            while (true) {
-                System.out.print("Choisissez une carte dans votre main (lettre entre A et " + maxLetter + ") : ");
-                String input = m_scanner.next().toUpperCase();
+        while (true) {
+            System.out.print("Choisissez une carte dans votre main (lettre entre A et " + maxLetter + ") : ");
+            String input = m_scanner.next().toUpperCase();
 
-                if (input.length() == 1) {
-                    char letter = input.charAt(0);
-                    if (letter >= 'A' && letter <= maxLetter) {
-                        return letter;
-                    }
+            if (input.length() == 1) {
+                char letter = input.charAt(0);
+                int cardIndex = toIndex(letter);
+                Optional<Animal> optAnimal = human.getHandCard(cardIndex);
+
+                if (optAnimal.isPresent()) {
+                    // ✅ Saisie valide, on sort
+                    return optAnimal.get();
                 }
-                System.out.println("Lettre incorrecte ! Votre main va de A à " + maxLetter + ".");
             }
+            // ❌ Saisie invalide → on reboucle et on redemande
+            System.out.println("Lettre incorrecte ! Votre main va de A à " + maxLetter + ".");
+        }
+    }
+
+        public int toIndex(char letter) {
+            // Character.toUpperCase pour accepter 'a' ou 'A'
+            // On utilise l'ASCII pour trouver l'index  'A' = 65
+            return Character.toUpperCase(letter) - 'A';
         }
 
+
         private boolean canAfford(Animal card, User human) {
-            if (card.getBoneCost() > 0 && human.m_bonesToken < card.getBoneCost()) {
+            if (!human.verifBoneCost(card)) {
                 this.displayMessage("Pas assez d'os (" + human.m_bonesToken + "/" + card.getBoneCost() + ").");
                 return false;
             }
-            if (card.getBloodCost() > 0 && human.m_boardLine.getSacrificableCount() < card.getBloodCost()) {
+            if(!human.verifBloodCost(card)){
                 this.displayMessage("Pas assez de créatures à sacrifier pour poser cette carte, veuillez en choisir une autre coutant moins de "+ human.m_boardLine.getSacrificableCount());
                 return false;
             }
