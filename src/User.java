@@ -1,7 +1,7 @@
 import java.util.Optional;
 
 public class User extends Player{
-    private Hand m_hand;
+    private final Hand m_hand;
 
     public User(Deck deck) {
         super(deck); // Appel au constructeur de la classe mère
@@ -24,7 +24,7 @@ public class User extends Player{
         }
     }
 
-
+/*
     public void takeTurn(Interactions dialogue) {
         boolean turnEnded = false;
         while (!turnEnded) {
@@ -36,7 +36,7 @@ public class User extends Player{
             }
         }
     }
-
+*/
     public Optional<Animal> getHandCard(int index){
         return m_hand.getCard(index);
     }
@@ -71,6 +71,12 @@ public class User extends Player{
         return position - 1;
     }
 
+    public void sacrifice(int position){
+        this.m_boardLine.removeCardAt(position);
+        //m_bonesToken++; // Règle : +1 os par sacrifice
+        this.m_bonesToken++;
+    }
+/*
     private void handlePlacement(Animal card, int position, int bloodAlreadyPaid) {
 
         if (!prepareSlot(pos, dialogue, bloodAlreadyPaid)) return false;
@@ -92,7 +98,7 @@ public class User extends Player{
         this.playCardToBoard(letter, pos);
         dialogue.displayMessage(card.getName() + " est prêt au combat !");
     }
-
+*/
     /*
     private boolean canAfford(Card card, Interactions dialogue) {
         if (card.getBoneCost() > 0 && m_bonesToken < card.getBoneCost()) {
@@ -106,7 +112,7 @@ public class User extends Player{
         return true;
     }
      */
-
+/*
     private void sacrifice(int remainingBlood, Card card, Interactions dialogue) {
         if (remainingBlood > 0) {
             for (int i = 0; i < remainingBlood; i++) {
@@ -136,7 +142,7 @@ public class User extends Player{
             }
         }
     }
-
+*/
 /*
     private boolean prepareSlot(int pos, Interactions dialogue) {
         if (m_boardLine.isOccupied(pos)) {
@@ -146,7 +152,7 @@ public class User extends Player{
         return true;
     }
 */
-
+/*
     private boolean prepareSlot(int pos, Interactions dialogue, int bloodAlreadyPaid) {
         Optional<Card> optTarget = m_boardLine.getCardAt(pos);
 
@@ -178,15 +184,14 @@ public class User extends Player{
         return false; // L'utilisateur a annulé, on ne peut pas poser
     }
 
-
+*/
     // Transfert définitif d'une carte de la main vers le plateau.
-    public void playCardToBoard(char handLetter, int boardPosition) {
-        Card cardToPlay = m_hand.removeCard(handLetter);
+    public void playCardToBoard(int handIndex, int boardPosition) {
+        Card cardToPlay = this.m_hand.removeCard(toIndex(handIndex));
 
         // On appelle placeCardAt pour la déposer sur la BoardLine
         this.placeCardAt(cardToPlay, boardPosition);
     }
-
 
     @Override
     public String toString() {

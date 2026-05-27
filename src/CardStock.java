@@ -27,7 +27,7 @@ public class CardStock {
         m_templates.add(new Animal(LOUVETEAU, 1, 1, 1, 0));
         m_templates.add(new Animal(LOUP,      3, 2, 2, 0));
         m_templates.add(new Animal(PUNAISE,   1, 2, 0, 2));
-
+/*
         // Animaux volants (Animals avec une FlyingAbility)
         Animal moineau = new Animal(MOINEAU, 1, 2, 1, 0);
         moineau.addAbility(new FlyingAbility());
@@ -36,6 +36,7 @@ public class CardStock {
         Animal corbeau = new Animal(CORBEAU, 2, 3, 2, 0);
         corbeau.addAbility(new FlyingAbility());
         m_templates.add(corbeau);
+ */
     }
 
     /*

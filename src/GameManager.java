@@ -2,13 +2,35 @@ import java.util.Scanner;
 
 public class GameManager {
     // Attributs privés (Encapsulation forte)
+    private final Interactions m_dialogue;
     private User m_player;
     private int m_gamesCount;
     private final int MAX_GAMES = 3;
 
-    public GameManager() {
+    public GameManager(Interactions dialogue) {
+        this.m_dialogue = dialogue;
         // Initialisation à l'extérieur des objets Game pour la persistance
+        CardStock stock = new CardStock();
+
+        // Création du deck avec les 15 cartes de départ (majorité d'écureuils)
         Deck playerDeck = new Deck();
+        playerDeck.addCard(stock.getCard(CardStock.ECUREUIL).get());
+        playerDeck.addCard(stock.getCard(CardStock.ECUREUIL).get());
+        playerDeck.addCard(stock.getCard(CardStock.ECUREUIL).get());
+        playerDeck.addCard(stock.getCard(CardStock.ECUREUIL).get());
+        playerDeck.addCard(stock.getCard(CardStock.ECUREUIL).get());
+        playerDeck.addCard(stock.getCard(CardStock.ECUREUIL).get());
+        playerDeck.addCard(stock.getCard(CardStock.ECUREUIL).get());
+        playerDeck.addCard(stock.getCard(CardStock.HERMINE).get());
+        playerDeck.addCard(stock.getCard(CardStock.HERMINE).get());
+        playerDeck.addCard(stock.getCard(CardStock.LOUVETEAU).get());
+        playerDeck.addCard(stock.getCard(CardStock.LOUVETEAU).get());
+        playerDeck.addCard(stock.getCard(CardStock.LOUP).get());
+        playerDeck.addCard(stock.getCard(CardStock.LOUP).get());
+        playerDeck.addCard(stock.getCard(CardStock.CHAT).get());
+        playerDeck.addCard(stock.getCard(CardStock.CHAT).get());
+        playerDeck.shuffle();
+
         this.m_player = new User(playerDeck);
         this.m_gamesCount = 1;
     }
@@ -38,8 +60,7 @@ public class GameManager {
         Opponent opponent = new Opponent(new Deck());
 
         // Injection de dépendances : on donne les joueurs et le plateau à la Game
-        Game currentGame = new Game(board, m_player, opponent);
-
+        Game currentGame = new Game(board, this.m_player, opponent, this.m_dialogue);
         // Appel de la logique du match (boucle de rounds)
         return currentGame.runGame();
     }
@@ -50,11 +71,7 @@ public class GameManager {
     }
 
     private void displayFinalResult(boolean victory) {
-        if (victory) {
-            System.out.println("Félicitations ! Vous avez survécu à la forêt.");
-        } else {
-            System.out.println("L'obscurité vous a englouti... Partie terminée.");
-        }
+        this.m_dialogue.displayFinalResult(victory);
     }
 
 

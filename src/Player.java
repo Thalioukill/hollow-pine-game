@@ -32,15 +32,17 @@ public abstract class Player {
     }
 
     // En gros on regarde si la position est valide, et on regarde si il y a une carte, si il y a une carte, on
-    public boolean takeDamage(int damage, int pos)
-    {
-        Optional<Card> optCard =  this.getCardAt(pos);
-        if(optCard.isPresent()){
-            Card card = optCard.get();
-            Card.takeDamage(damage);
-            return true;
+    public boolean takeDamage(int damage, int position) {
+        Optional<Card> optCard = this.getCardAt(position);
+        if (optCard.isPresent()) {
+            optCard.get().takeDamage(damage);
+            if (optCard.get().isDead()) {
+                this.removeCardAt(position);
+                // +1 os pour l'adversaire — à gérer dans Game
+            }
+            return true; // une carte a encaissé les dégâts
         }
-        return false;
+        return false; // emplacement vide → dégâts directs au score
     }
 
     public int CombatPhase(Player opponent){
@@ -70,14 +72,7 @@ public abstract class Player {
      */
 
     public void placeCardAt(Card card, int position) {
-        // proposer un sacrifice si occupé
-        if (m_boardLine.isOccupied(position)) {
-            // future méthode sacrifice(position)
-            // Pour l'instant, on se contente de remplacer ou bloquer
-            System.out.println("L'emplacement " + position + " est déjà pris !");
-        }
-
-        m_boardLine.placeCardAt(card, position);
+        this.m_boardLine.placeCardAt(card, position);
     }
 
     //public abstract void takeTurn(Interactions dialogue);

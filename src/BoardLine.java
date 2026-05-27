@@ -50,12 +50,25 @@ public class BoardLine {
         if (!validatePosition(position)) {
             throw new IndexOutOfBoundsException("Bug interne : retrait à une position hors limites (" + position + ")");
         }
-        // on libère l'meplacement = Optional vide
-        m_slots.set(toIndex(position), Optional.empty());
+        m_slots.set(position, Optional.empty());
     }
 
     @Override
     public String toString() {
         return m_slots.toString();
     }
+
+/*
+    public int attack(BoardLine opponentLine, Game game) {
+        for (int i = 0; i < 4; i++) {
+            Optional<Card> optCard = m_slots.get(i);
+            if (optCard.isPresent()) {
+                Card card = optCard.get();
+                if (card.getAttackPoints() > 0) {
+                    card.attack(i, opponentLine, game);
+                }
+            }
+        }
+    }
+ */
 }

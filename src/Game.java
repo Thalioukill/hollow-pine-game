@@ -9,12 +9,13 @@ public class Game {
     private User m_user;
     private Opponent m_opponent;
     private Player m_currentPlayer; // Joueur qui joue actuellement
-    private final Interactions m_dialogue;
+    private Interactions m_dialogue;
 
-    public Game(GameBoard board, User player, Opponent opponent) {
+    public Game(GameBoard board, User player, Opponent opponent, Interactions dialogue) {
         this.m_gameboard = board;
         this.m_user = player;
         this.m_opponent = opponent;
+        this.m_dialogue = dialogue;
         this.m_score = 0; // La balance commence à l'équilibre
     }
 
@@ -23,8 +24,9 @@ public class Game {
         // La partie s'arrête si l'écart atteint 5 points
         int nbRounds = 0;
         do {
+            // appeler la méthode de GameBoard qui affiche qq chose
             nbRounds ++;
-            startRound(); // carte que le Opponent jouera après le User (prévisions)
+            startRound(nbRounds); // carte que le Opponent jouera après le User (prévisions)
 
             // On met le USER comme premier joueur du round
             this.m_currentPlayer = this.m_user;
@@ -37,12 +39,12 @@ public class Game {
 
 
             // appelle la méthode de combat : User attaque l'Opponent
-            m_score += combatPhase(this.m_opponent);
+            m_score += combatPhase(this.m_user, this.m_opponent);
 
             this.m_opponent.placeCards(this.m_dialogue); // L'Opponent place ses cartes sur sa ligne de jeu.
 
             // appelle la méthode de combat : Opponent attaque le User
-            m_score -= combatPhase(this.m_user); // Attaque des cartes + mise à jour du score
+            m_score -= combatPhase(this.m_opponent, this.m_user); // Attaque des cartes + mise à jour du score
 
         } while (Math.abs(this.m_score) < 5);
         return this.m_score >= 5;
@@ -51,15 +53,10 @@ public class Game {
     public void takeTurn(Interactions m_dialogue, User human) {
         boolean turnEnded = false;
         while (!turnEnded) {
-            Actions choice = m_dialogue.askNextAction(human); // Dialogue gère le Scanner
-            /*switch (choice) {
-                case PLACE -> m_dialogue.handlePlacement();
-                //case SACRIFICE -> handleSacrifice(dialogue);
-                case END -> turnEnded = true;
+            boolean wantsToPlay = m_dialogue.askNextAction(human);
+            if (!wantsToPlay) {
+                turnEnded = true;
             }
-
-             */
-
         }
     }
 
@@ -67,7 +64,7 @@ public class Game {
 
     public int combatPhase(Player p) {
 
-        this.m_currentPlayer.CombatPhase(p);
+        return this.m_currentPlayer.CombatPhase(p);
         /*
         // On verifie qui est le joueur qui joue actuellement (Ici m_user ce qui veut dire que la personne qui subit les dégats est le m_opponent)
         int damagePoint = 0;

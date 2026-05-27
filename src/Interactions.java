@@ -10,8 +10,13 @@ public class Interactions {
         this.m_scanner = new Scanner(System.in);
     }
 
+    // Constructeur de test
+    public Interactions(Scanner scanner) {
+        this.m_scanner = scanner;
+    }
+
     // Demande à l'utilisateur de choisir sa prochaine action via un menu et retourne membre de l'énumération Actions validé.
-    public void askNextAction(User human) {
+    public boolean askNextAction(User human) {
         boolean test = true;
         while (test) {
             System.out.println("\n--- ACTIONS POSSIBLES ---");
@@ -20,38 +25,27 @@ public class Interactions {
             System.out.print("Votre choix : ");
 
             String input = m_scanner.next().toUpperCase(); // On tolère 'p' ou 'P
-            if (input.equals("P")){
-                Animal handAnimal = this.askCardLetter(human.getHandSize(), human);
-
+            if (input.equals("P")) {
+                AnimalSelection positionAnimal = this.askCardLetter(human.getHandSize(), human);
+                Animal handAnimal = positionAnimal.getAnimal();
                 int remainingBlood = handAnimal.getBloodCost();
                 // si l'animal est un écureuil => on a pas besoin de sacrifier quoi que ce soit pour le poser.
-                if(!handAnimal.isSquirrel()){
-                    if(canAfford(handAnimal, human)){
+                if (!handAnimal.isSquirrel()) {
+                    if (canAfford(handAnimal, human)) {
                         // faire les sacrifices, puis ensuite demander la position à l'utiliateur.
                         if (remainingBlood > 0) {
                             for (int i = 0; i < remainingBlood; i++) {
                                 this.displayMessage("Sacrifice " + (i + 1) + "/" + remainingBlood + " :");
-                                int sacrificePos = this.askPositionSacrifice(human);
-
-                                //Optional<Card> optTarget = m_boardLine.getCardAt(sacrificePos);
-
-                                // On vérifie si l'emplacement contient bien une carte
-                                if (optTarget.isPresent()) {
-                                    Card target = optTarget.get();
-
-                                    // On vérifie si elle est sacrifiable (Obstacle ou pas ?)
-                                    if (target.isSacrificable()) {
-                                        m_boardLine.removeCardAt(sacrificePos);
-                                        m_bonesToken++; // Règle : +1 os par sacrifice
-                                        this.displayMessage("Emplacement libéré. +1 os. +1 goutte de sang.");
-                                    } else {
-                                        this.displayMessage("Impossible : un obstacle ne peut pas être sacrifié !");
-                                        i--; // On redemande cette goutte de sang
-                                    }
+                                SlotSelection sacrificePos = this.askPositionSacrifice(human);
+                                Card target = sacrificePos.getCard();
+                                int targetPosition = sacrificePos.getPosition();
+                                // On vérifie si elle est sacrifiable (Obstacle ou pas ?)
+                                if (target.isSacrificable()) {
+                                    human.sacrifice(targetPosition);
+                                    this.displayMessage("Emplacement libéré. +1 os. +1 goutte de sang.");
                                 } else {
-                                    // CAS MANQUANT : L'emplacement est vide
-                                    this.displayMessage("Erreur : Il n'y a aucune carte en position " + sacrificePos + ".");
-                                    i--; // IMPORTANT: On décrémente pour forcer l'utilisateur à refaire ce sacrifice
+                                    this.displayMessage("Impossible : un obstacle ne peut pas être sacrifié !");
+                                    i--; // On redemande cette goutte de sang
                                 }
                             }
                         }
@@ -59,31 +53,19 @@ public class Interactions {
 
                 }
                 // On demande la position de la carte...
-                return;
+                int position = this.askPosition(human);
+                human.playCardToBoard(positionAnimal.getIndex(), position);
+                return true;
             }
-
-            if(canAfford(a, human)){
-                   /*
-                    int position = this.askPosition();
-                    int bloodAlreadyPaid = 0;
-                    if (!prepareSlot(position, bloodAlreadyPaid, human)){
-                        return;
-                    }
-                    */
+            if (input.equals("F")) {
+                return false;
             }
-            return;
-
-
+            // Sinon la saisie est invalide...
+            System.out.println("Choix inconnu ! Veuillez saisir P ou F.");
         }
-
-        if (input.equals("F")){
-            return ;
-        }
-        // Sinon la saisie est invalide...
-        System.out.println("Choix inconnu ! Veuillez saisir P ou F.");
     }
 
-        private boolean prepareSlot(int pos, int bloodAlreadyPaid, User human) {
+        public boolean prepareSlot(int pos, int bloodAlreadyPaid, User human) {
             Optional<Card> optTarget = human.m_boardLine.getCardAt(pos);
 
             // Si l'emplacement est vide, rien à faire = on peut poser la carte !
@@ -114,7 +96,7 @@ public class Interactions {
             return false; // L'utilisateur a annulé, on ne peut pas poser
         }
 
-        private boolean askConfirmation(String s) {
+        public boolean askConfirmation(String s) {
             while (true) {
                 System.out.print(s);
                 String input = m_scanner.next().toUpperCase();
@@ -131,25 +113,9 @@ public class Interactions {
 
         // Demande une position sur le plateau (chifres 1 à 4).
 
-        public int askPosition() {
+        public int askPosition(User human) {
             while (true) {
                 System.out.print("Entrez le numéro de l'emplacement où vous souhaitez poser la carte (1, 2, 3 ou 4) : ");
-                if (m_scanner.hasNextInt()) {
-                    int pos = m_scanner.nextInt();
-                    if (pos >= 1 && pos <= 4) {
-                        return pos;
-                    }
-                } else {
-                    m_scanner.next(); // Lit le prochain mot
-                }
-                // ERREURRRR
-                System.out.println("Saisie invalide ! Vous devez entrer un chiffre entier entre 1 et 4.");
-            }
-        }
-
-        public boolean askPositionSacrifice(User human) {
-            while (true) {
-                System.out.print("Entrez le numéro de l'emplacement de la carte que vous souhaitez sacrifier (1, 2, 3 ou 4) : ");
                 if (m_scanner.hasNextInt()) {
                     int pos = m_scanner.nextInt();
                     Optional<Card> result = Optional.empty();
@@ -163,9 +129,8 @@ public class Interactions {
                         System.out.println("Emplacement déjà occupé, veuillez choisir un autre emplacement");
                     }
                     else{
-                        return true;
+                        return pos;
                     }
-
                 } else {
                     m_scanner.next(); // Lit le prochain mot
                 }
@@ -174,9 +139,31 @@ public class Interactions {
             }
         }
 
+        public SlotSelection askPositionSacrifice(User human) {
+            while (true) {
+                System.out.print("Entrez le numéro de l'emplacement de la carte que vous souhaitez sacrifier (1, 2, 3 ou 4) : ");
+                if (m_scanner.hasNextInt()) {
+                    int pos = m_scanner.nextInt();
+                    try {
+                        Optional<Card> result = human.getCardAt(pos);
+                        if (result.isPresent()) {
+                            return new SlotSelection(pos, result.get()); // on retourne juste l'int
+                        }
+                        System.out.println("Aucune carte n'est présente sur cet emplacement, veuillez en choisir un autre.");
+                    }
+                    catch(IndexOutOfBoundsException e){
+                        System.out.println("Saisie invalide ! Vous devez entrer un chiffre entier entre 1 et 4.");
+                    }
+                } else {
+                    m_scanner.next(); // Lit le prochain mot
+                    // ERREURRRR
+                    System.out.println("Saisie invalide ! Vous devez entrer un chiffre entier entre 1 et 4.");
+                }
+            }
+        }
 
     // Demande la lettre d'une carte en main (lettres A, B, C...) + handSize taille actuelle de la main pour limiter le chiox
-    public Animal askCardLetter(int handSize, User human) {
+    public AnimalSelection askCardLetter(int handSize, User human) {
         char maxLetter = (char) ('A' + handSize - 1);
 
         while (true) {
@@ -190,7 +177,7 @@ public class Interactions {
 
                 if (optAnimal.isPresent()) {
                     // ✅ Saisie valide, on sort
-                    return optAnimal.get();
+                    return new AnimalSelection(cardIndex, optAnimal.get());
                 }
             }
             // ❌ Saisie invalide → on reboucle et on redemande
@@ -198,7 +185,7 @@ public class Interactions {
         }
     }
 
-        public int toIndex(char letter) {
+        private int toIndex(char letter) {
             // Character.toUpperCase pour accepter 'a' ou 'A'
             // On utilise l'ASCII pour trouver l'index  'A' = 65
             return Character.toUpperCase(letter) - 'A';
@@ -222,4 +209,13 @@ public class Interactions {
         public void displayMessage(String message) {
             System.out.println(message);
         }
+
+        public void displayFinalResult(boolean victory){
+            if (victory) {
+                System.out.println("Félicitations ! Vous avez survécu à la forêt.");
+            } else {
+                System.out.println("L'obscurité vous a englouti... Partie terminée.");
+            }
+        }
+
 }
