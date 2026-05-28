@@ -21,17 +21,18 @@ public abstract class Card {
         return m_healthPoints;
     }
 
+    // Attaque la carte en face
+    public abstract void attack(Card target);
+    // Reçoit une attaque
+    public abstract void isAttacked(int amount);
+
+
     public abstract int getAttackPoints();
 
-    public void takeDamage(int amount) {
-        this.m_healthPoints-= amount;
-    }
 
     public boolean isDead() {
-        return m_healthPoints <= 0;
+        return this.m_healthPoints <= 0;
     }
-    public abstract boolean isSacrificable();
 
-    // Pas besoin que cette méthode soit abstract parce que on en a que besoin dans Animal
-    // public abstract Card cloneCard();
+    public abstract boolean isSacrificable();
 }

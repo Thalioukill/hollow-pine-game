@@ -13,14 +13,24 @@ public class Obstacle extends Card{
         return false;
     }
 
-    /*
+    @Override
+    public void attack(Card target) {
+        // Un obstacle n'attaque pas...
+    }
+
+    public int getAttackPoints(){
+        return 0;
+    }
+
+    @Override
+    public void isAttacked(int amount){
+        this.m_healthPoints-= amount;
+    }
+
+        /*
     public Card cloneCard() {
 
         return new Obstacle(this); // Utilise le constructeur de copie
     }
      */
-
-    public int getAttackPoints(){
-        return 0;
-    }
 }

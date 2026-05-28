@@ -2,41 +2,14 @@ import java.util.Optional;
 
 public class User extends Player{
     private final Hand m_hand;
+    private int m_bonesToken;
 
     public User(Deck deck) {
         super(deck); // Appel au constructeur de la classe mère
         this.m_hand = new Hand();
+        this.m_bonesToken = 0;
     }
 
-    // on pioche 1 carte dans le Deck et on l'ajoute à la main.
-    public void draw(Interactions dialogue) {
-        // L'utilisateur a le choix
-        boolean wantsToDraw = dialogue.askConfirmation("Voulez-vous piocher une carte pour ce tour ?");
-
-        if (wantsToDraw) {
-            //pioche si le deck pas vide (gestion via Optional)
-            this.m_deck.draw().ifPresent(card -> {
-                m_hand.addCard(card);
-                dialogue.displayMessage("Vous avez pioché : " + card.getName());
-            });
-        } else {
-            dialogue.displayMessage("Vous avez décidé de ne pas piocher.");
-        }
-    }
-
-/*
-    public void takeTurn(Interactions dialogue) {
-        boolean turnEnded = false;
-        while (!turnEnded) {
-            Actions choice = dialogue.askNextAction(); // Dialogue gère le Scanner
-            switch (choice) {
-                case PLACE -> handlePlacement(dialogue);
-                //case SACRIFICE -> handleSacrifice(dialogue);
-                case END -> turnEnded = true;
-            }
-        }
-    }
-*/
     public Optional<Animal> getHandCard(int index){
         return m_hand.getCard(index);
     }
@@ -45,22 +18,40 @@ public class User extends Player{
         return m_hand.getSize();
     }
 
+    public int getBonesToken(){
+        return this.m_bonesToken;
+    }
+
+    public void addBonesToken(){
+        this.m_bonesToken++;
+    }
+
+
     public Optional<Card> getCardAt(int position){
         return this.m_boardLine.getCardAt(toIndex(position));
     }
 
-    public boolean verifBoneCost(Animal test){
-        if (test.getBoneCost() > 0 && this.getBonesToken() < test.getBoneCost()){
-            return true;
-        }
-        return false;
+    public void addCard(Animal cardToAdd){
+        this.m_hand.addCard(cardToAdd);
     }
 
-    public boolean verifBloodCost(Animal test){
-        if(test.getBloodCost() > 0 && this.m_boardLine.getSacrificableCount() < test.getBloodCost()){
-            return true;
+
+    public Animal draw(){
+        return this.m_deck.draw();
+    }
+
+    public boolean hasEnoughBones(Animal test){
+        if (test.getBoneCost() > 0 && this.getBonesToken() < test.getBoneCost()){
+            return false;
         }
-        return false;
+        return true;
+    }
+
+    public boolean hasEnoughBlood(Animal test){
+        if(test.getBloodCost() > 0 && this.m_boardLine.getSacrificableCount() < test.getBloodCost()){
+            return false;
+        }
+        return true;
     }
 
     public boolean validatePosition(int position) {
@@ -72,10 +63,26 @@ public class User extends Player{
     }
 
     public void sacrifice(int position){
-        this.m_boardLine.removeCardAt(position);
+        this.m_boardLine.removeCardAt(toIndex(position));
         //m_bonesToken++; // Règle : +1 os par sacrifice
         this.m_bonesToken++;
     }
+
+    // Transfert définitif d'une carte de la main vers le plateau.
+    public void playCardToBoard(int handIndex, int boardPosition) {
+        Card cardToPlay = this.m_hand.removeCard(toIndex(handIndex));
+
+        // On appelle placeCardAt pour la déposer sur la BoardLine
+        this.placeCardAt(cardToPlay, boardPosition);
+    }
+
+    @Override
+    public String toString() {
+        // Utilisation de super.toString() pour la cohésion
+        return "User[" + super.toString() + ", main=" + m_hand + "]";
+    }
+
+
 /*
     private void handlePlacement(Animal card, int position, int bloodAlreadyPaid) {
 
@@ -185,19 +192,38 @@ public class User extends Player{
     }
 
 */
-    // Transfert définitif d'une carte de la main vers le plateau.
-    public void playCardToBoard(int handIndex, int boardPosition) {
-        Card cardToPlay = this.m_hand.removeCard(toIndex(handIndex));
 
-        // On appelle placeCardAt pour la déposer sur la BoardLine
-        this.placeCardAt(cardToPlay, boardPosition);
-    }
+    /*
+    // on pioche 1 carte dans le Deck et on l'ajoute à la main.
+    public void draw(Interactions dialogue) {
+        // L'utilisateur a le choix
+        boolean wantsToDraw = dialogue.askConfirmation("Voulez-vous piocher une carte pour ce tour ?");
 
-    @Override
-    public String toString() {
-        // Utilisation de super.toString() pour la cohésion
-        return "User[" + super.toString() + ", main=" + m_hand + "]";
+        if (wantsToDraw) {
+            //pioche si le deck pas vide (gestion via Optional)
+            this.m_deck.draw().ifPresent(card -> {
+                m_hand.addCard(card);
+                dialogue.displayMessage("Vous avez pioché : " + card.getName());
+            });
+        } else {
+            dialogue.displayMessage("Vous avez décidé de ne pas piocher.");
+        }
     }
+ */
+
+/*
+    public void takeTurn(Interactions dialogue) {
+        boolean turnEnded = false;
+        while (!turnEnded) {
+            Actions choice = dialogue.askNextAction(); // Dialogue gère le Scanner
+            switch (choice) {
+                case PLACE -> handlePlacement(dialogue);
+                //case SACRIFICE -> handleSacrifice(dialogue);
+                case END -> turnEnded = true;
+            }
+        }
+    }
+*/
 }
 
 

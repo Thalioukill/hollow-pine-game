@@ -1,3 +1,4 @@
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -63,10 +64,11 @@ public class Interactions {
             // Sinon la saisie est invalide...
             System.out.println("Choix inconnu ! Veuillez saisir P ou F.");
         }
+        return false;
     }
-
+        /*
         public boolean prepareSlot(int pos, int bloodAlreadyPaid, User human) {
-            Optional<Card> optTarget = human.m_boardLine.getCardAt(pos);
+            Optional<Card> optTarget = human.getCardAt(pos);
 
             // Si l'emplacement est vide, rien à faire = on peut poser la carte !
             if (optTarget.isEmpty()) {
@@ -85,9 +87,9 @@ public class Interactions {
             boolean confirm = this.askConfirmation("L'emplacement est occupé par " + target.getName() + ". Le sacrifier pour libérer la place ?");
 
             if (confirm) {
-                human.m_boardLine.removeCardAt(pos);
+                human.removeCardAt(pos);
                 bloodAlreadyPaid = 1;
-                human.m_bonesToken++; // Règle : tout sacrifice donne +1 os
+                human.addBonesToken(); // Règle : tout sacrifice donne +1 os
                 this.displayMessage("Sacrifice de " + target.getName() + " pour libérer la place (+1 sang).");
                 this.displayMessage("Emplacement libéré. +1 os.");
                 return true; // L'emplacement est maintenant libre, on renvoie true !
@@ -95,6 +97,7 @@ public class Interactions {
 
             return false; // L'utilisateur a annulé, on ne peut pas poser
         }
+         */
 
         public boolean askConfirmation(String s) {
             while (true) {
@@ -102,8 +105,8 @@ public class Interactions {
                 String input = m_scanner.next().toUpperCase();
                 if (input.equals("OUI")){
                     return true;
-                } else {
-                    m_scanner.next(); // Lit le prochain mot
+                } else if (input.equals("NON")){
+                    return false;
                 }
                 // ERREURRRR
                 System.out.println("Veuillez saisir OUI ou NON");
@@ -133,9 +136,10 @@ public class Interactions {
                     }
                 } else {
                     m_scanner.next(); // Lit le prochain mot
+                    // ERREURRRR
+                    System.out.println("Saisie invalide ! Vous devez entrer un chiffre entier entre 1 et 4.");
+                    continue;
                 }
-                // ERREURRRR
-                System.out.println("Saisie invalide ! Vous devez entrer un chiffre entier entre 1 et 4.");
             }
         }
 
@@ -193,16 +197,37 @@ public class Interactions {
 
 
         private boolean canAfford(Animal card, User human) {
-            if (!human.verifBoneCost(card)) {
-                this.displayMessage("Pas assez d'os (" + human.m_bonesToken + "/" + card.getBoneCost() + ").");
+            if (!human.hasEnoughBones(card)) {
+                this.displayMessage("Pas assez d'os (" + human.getBonesToken() + "/" + card.getBoneCost() + ").");
                 return false;
             }
-            if(!human.verifBloodCost(card)){
-                this.displayMessage("Pas assez de créatures à sacrifier pour poser cette carte, veuillez en choisir une autre coutant moins de "+ human.m_boardLine.getSacrificableCount());
+            if(!human.hasEnoughBlood(card)){
+                this.displayMessage("Pas assez de créatures à sacrifier pour poser cette carte, veuillez en choisir une autre coutant moins de "+ human.getSacrificableCount());
                 return false;
             }
             return true;
         }
+
+        // on pioche 1 carte dans le Deck et on l'ajoute à la main.
+        public void draw(User joueur) {
+            // L'utilisateur a le choix
+            boolean wantsToDraw = this.askConfirmation("Voulez-vous piocher une carte pour ce tour ?");
+
+            if (wantsToDraw) {
+                //pioche si le deck pas vide (gestion via Optional)
+                try{
+                    Animal drawnAnimalCard = joueur.draw();
+                    joueur.addCard(drawnAnimalCard);
+                    this.displayMessage("Vous avez pioché : " + drawnAnimalCard.getName());
+                }
+                catch (NoSuchElementException n){
+                    displayMessage("Oups il n'y a plus de cartes dans la pioche...");
+                }
+            } else {
+                this.displayMessage("Vous avez décidé de ne pas piocher... Etais-ce un bon choix...");
+            }
+        }
+
 
 
         // Affiche un message simple (dégâts, pioche,etc)

@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 public class Deck {
@@ -22,12 +23,14 @@ public class Deck {
     }
 
     //Optional contenant la carte, ou Optional.empty() si vide
-    public Optional<Animal> draw() {
-        if (m_cards.isEmpty()) {
-            return Optional.empty();
-        }
+    public Animal draw() {
         // retire et renvoie la première carte de la liste
-        return Optional.of(m_cards.removeFirst());
+        if (m_cards.isEmpty()) {
+            throw new NoSuchElementException("La pioche est vide !");
+        }
+        return m_cards.removeFirst();
+
+
     }
 
     public int getSize() {

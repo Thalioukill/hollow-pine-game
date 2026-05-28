@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 public class Opponent extends Player{
@@ -11,15 +12,13 @@ public class Opponent extends Player{
     }
 
     public void placePrevisionCard(int position){
-        if(!m_previsionLine.isOccupied(position)){
-            Optional<Animal> animal = this.m_deck.draw();
-            // si dans le deck on a bien donnée une carte alors on la pose
-            animal.ifPresent(value -> m_previsionLine.placeCardAt(value, position));
-            // on ne place pas la carte si
+        if (!m_previsionLine.isOccupied(position)) {
+            Animal animal = this.m_deck.draw(); // lance NoSuchElementException si vide = bug
+            m_previsionLine.placeCardAt(animal, position);
         }
     }
 
-    public void placeCards(Interactions dialogue) {
+    public void placeCards() {
         // Déplacer les cartes de la ligne de prévision vers la boardLine
         // Remplir la ligne de prévision pour le tour suivant
 
@@ -29,9 +28,6 @@ public class Opponent extends Player{
         placePrevisionCard(1);
         placePrevisionCard(3);
     }
-
-
-
 
     @Override
     public String toString() {

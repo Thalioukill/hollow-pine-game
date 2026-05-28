@@ -25,17 +25,11 @@ public class InteractionsTest {
         human.placeCardAt(squirrel, position);
         return human;
     }
-
     private User buildUserWithCardsInHand(int count) {
         Deck deck = new Deck();
-        for (int i = 0; i < count; i++) {
-            deck.addCard((Animal) stock.getCard(CardStock.ECUREUIL).get());
-        }
         User human = new User(deck);
-        // Simule une Interactions muette pour piocher sans affichage
-        Interactions silent = new Interactions(new Scanner("OUI\nOUI\nOUI\nOUI\nOUI\n"));
         for (int i = 0; i < count; i++) {
-            human.draw(silent);
+            human.addCard((Animal) stock.getCard(CardStock.ECUREUIL).get());
         }
         return human;
     }

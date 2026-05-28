@@ -51,9 +51,26 @@ public class Animal extends Card {
 
     public boolean isSacrificable() { return true; }
 
-    public Card cloneCard() {
+    public Animal cloneAnimal() {
 
         return new Animal(this); // Utilise le constructeur de copie
+    }
+
+    public void attack(Card target) {
+        target.isAttacked(this.m_attackPoints);
+    }
+
+    public boolean isSquirrel(){
+        return (this.getBloodCost() == 0 && this.getBoneCost() == 0);
+    }
+
+    public int getBloodCost() {
+        return this.m_bloodCost;
+    }
+
+    @Override
+    public void isAttacked(int amount){
+        this.m_healthPoints-= amount;
     }
 
     /*
@@ -67,8 +84,8 @@ public class Animal extends Card {
         }
     }
     */
-
-
+// Anciennes méthodes d'attaque....
+/*
     public void takeDamage(int amount, Animal attacker, Game game) {
         int finalDamage = amount;
 
@@ -99,13 +116,5 @@ public class Animal extends Card {
             game.updateScore(m_attackPoints);
         }
     }
-
-
-    public boolean isSquirrel(){
-        return (this.getBloodCost() == 0 && this.getBoneCost() == 0);
-    }
-
-    public int getBloodCost() {
-        return this.m_bloodCost;
-    }
+ */
 }

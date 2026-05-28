@@ -40,7 +40,7 @@ public class GameManager {
 
         while (m_gamesCount <= MAX_GAMES && campaignWon) {
             // Orchestration : on crée les nouveaux objets nécessaires à chaque match
-            campaignWon = playNewGame();
+            campaignWon = playNewGame(m_gamesCount);
 
             if (campaignWon) {
                 // Gestion de la progression entre les matchs
@@ -54,13 +54,14 @@ public class GameManager {
         this.displayFinalResult(campaignWon);
     }
 
-    private boolean playNewGame() {
+    private boolean playNewGame(int gamesCount) {
         // Création des objets spécifiques au match (Composition)
         GameBoard board = new GameBoard();
-        Opponent opponent = new Opponent(new Deck());
+
+        GameStrategy opponent = new FirstGame();
 
         // Injection de dépendances : on donne les joueurs et le plateau à la Game
-        Game currentGame = new Game(board, this.m_player, opponent, this.m_dialogue);
+        Game currentGame = new Game(board, this.m_player,this.m_dialogue, opponent);
         // Appel de la logique du match (boucle de rounds)
         return currentGame.runGame();
     }

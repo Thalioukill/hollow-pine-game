@@ -7,16 +7,19 @@ public class Game {
     private int m_score; // La balance : >0 pour l'Ami, <0 pour l'Adversaire
     private GameBoard m_gameboard;
     private User m_user;
-    private Opponent m_opponent;
     private Player m_currentPlayer; // Joueur qui joue actuellement
     private Interactions m_dialogue;
+    private GameStrategy m_strategy;
+    private Opponent m_opponent;
 
-    public Game(GameBoard board, User player, Opponent opponent, Interactions dialogue) {
+    public Game(GameBoard board, User player, Interactions dialogue, GameStrategy strat) {
         this.m_gameboard = board;
         this.m_user = player;
-        this.m_opponent = opponent;
         this.m_dialogue = dialogue;
         this.m_score = 0; // La balance commence à l'équilibre
+        this.m_strategy = strat;
+        this.m_opponent = this.m_strategy.initOpponent();
+
     }
 
     // va appeler
@@ -32,19 +35,21 @@ public class Game {
             this.m_currentPlayer = this.m_user;
 
             // Le joueur pioche au départ du tour...
-            this.m_user.draw(this.m_dialogue);
+            m_dialogue.draw(this.m_user);
 
             // propose à l'utilisateur ce qu'il veut faire => placer une acrte ou finir son tour...
             takeTurn(m_dialogue, this.m_user);
 
 
             // appelle la méthode de combat : User attaque l'Opponent
-            m_score += combatPhase(this.m_user, this.m_opponent);
+            m_score += combatPhase(this.m_opponent); // Attaque des cartes + mise à jour du score
 
-            this.m_opponent.placeCards(this.m_dialogue); // L'Opponent place ses cartes sur sa ligne de jeu.
+            this.m_currentPlayer = this.m_opponent;
+
+            this.m_opponent.opponentAction(); // L'Opponent place ses cartes sur sa ligne de jeu.
 
             // appelle la méthode de combat : Opponent attaque le User
-            m_score -= combatPhase(this.m_opponent, this.m_user); // Attaque des cartes + mise à jour du score
+            m_score -= combatPhase(this.m_user); // Attaque des cartes + mise à jour du score
 
         } while (Math.abs(this.m_score) < 5);
         return this.m_score >= 5;
@@ -60,11 +65,9 @@ public class Game {
         }
     }
 
+    public int combatPhase(Player attackedPlayer) {
 
-
-    public int combatPhase(Player p) {
-
-        return this.m_currentPlayer.CombatPhase(p);
+        return this.m_currentPlayer.CombatPhase(attackedPlayer);
         /*
         // On verifie qui est le joueur qui joue actuellement (Ici m_user ce qui veut dire que la personne qui subit les dégats est le m_opponent)
         int damagePoint = 0;
@@ -99,12 +102,6 @@ public class Game {
     private void startRound(int nbRounds) {
         // Affichage des prévisions de l'adversaire sur la ligne du haut.
         // Méthode à implémenter que pour le OPPONENT !!!
-        int choice = nbRounds;
-        switch (choice) {
-            case 1 -> this.m_opponent.round1();
-            //case SACRIFICE -> handleSacrifice(dialogue);
-            case 2 -> this.m_opponent.round2();
-        }
 
     }
 
