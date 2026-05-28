@@ -5,11 +5,11 @@ public abstract class Player {
     protected Deck m_deck;
     protected BoardLine m_boardLine;
 
-    public Player(Deck d) {
+    public Player(Deck d, BoardLine bord) {
         this.m_deck = d;
 
         // Initialisation de la ligne de plateau (4 emplacements vides)
-        this.m_boardLine = new BoardLine();
+        this.m_boardLine = bord;
     }
 
     public Optional<Card> getCardAt(int position) {

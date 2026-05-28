@@ -31,7 +31,8 @@ public class GameManager {
         playerDeck.addCard(stock.getCard(CardStock.CHAT).get());
         playerDeck.shuffle();
 
-        this.m_player = new User(playerDeck);
+
+        this.m_player = new User(playerDeck, bord);
         this.m_gamesCount = 1;
     }
 

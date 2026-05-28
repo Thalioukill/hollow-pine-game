@@ -5,10 +5,10 @@ import java.util.Optional;
 public class Opponent extends Player{
     private BoardLine m_previsionLine;
 
-    public Opponent(Deck deck) {
-        super(deck);
+    public Opponent(Deck deck, BoardLine bord, BoardLine previsionBoard) {
+        super(deck, bord);
         // Initialisation de la ligne de plateau (4 emplacements vides)
-        this.m_previsionLine = new BoardLine();
+        this.m_previsionLine = previsionBoard;
     }
 
     public void placePrevisionCard(int position){
@@ -24,10 +24,12 @@ public class Opponent extends Player{
 
     }
 
+    /*
     public void round1(){
         placePrevisionCard(1);
         placePrevisionCard(3);
     }
+     */
 
     @Override
     public String toString() {

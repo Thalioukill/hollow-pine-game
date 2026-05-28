@@ -4,8 +4,8 @@ public class User extends Player{
     private final Hand m_hand;
     private int m_bonesToken;
 
-    public User(Deck deck) {
-        super(deck); // Appel au constructeur de la classe mère
+    public User(Deck deck, BoardLine bord) {
+        super(deck, bord); // Appel au constructeur de la classe mère
         this.m_hand = new Hand();
         this.m_bonesToken = 0;
     }

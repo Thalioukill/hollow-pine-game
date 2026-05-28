@@ -53,7 +53,9 @@ public class BoardLine {
         m_slots.set(position, Optional.empty());
     }
 
-    public
+    public void set(int index, Optional<Card> card){
+        this.m_slots.set(index, card);
+    }
 
     @Override
     public String toString() {
