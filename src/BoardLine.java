@@ -11,9 +11,8 @@ public class BoardLine {
         }
     }
 
-
-    public boolean validatePosition(int position) {
-        return position >= 1 && position <= 4;
+    public boolean validateIndex(int position) {
+        return position >= 0 && position < 4;
     }
 
     // renvoie un Optional vide si l'index est mauvais => géré dans le User avec une Interactions : froce à vérifier que tout va bien.
@@ -23,7 +22,7 @@ public class BoardLine {
 
      // lance une exception car si le code tente de poser une carte hors-limite après les vérifications du User, c'est un bug...
     public void placeCardAt(Card card, int position) {
-        if (!validatePosition(position)) {
+        if (!validateIndex(position)) {
             throw new IndexOutOfBoundsException("Bug interne : placement hors limites");
         }
         m_slots.set(position, Optional.of(card));
@@ -31,7 +30,7 @@ public class BoardLine {
 
     public boolean isOccupied(int position) {
         // Une position invalide n'est, par définition, pas occupée.
-        return validatePosition(position) && m_slots.get(position).isPresent();
+        return validateIndex(position) && m_slots.get(position).isPresent();
     }
 
     public int getSacrificableCount() {
@@ -47,7 +46,7 @@ public class BoardLine {
 
      // Retire la carte de l'emplacement et libère la place et lance une exception si la position est invalidee
     public void removeCardAt(int position) {
-        if (!validatePosition(position)) {
+        if (!validateIndex(position)) {
             throw new IndexOutOfBoundsException("Bug interne : retrait à une position hors limites (" + position + ")");
         }
         m_slots.set(position, Optional.empty());

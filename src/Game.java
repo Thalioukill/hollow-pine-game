@@ -29,8 +29,7 @@ public class Game {
         do {
             // appeler la méthode de GameBoard qui affiche qq chose
             nbRounds ++;
-            startRound(nbRounds); // carte que le Opponent jouera après le User (prévisions)
-
+            //startRound(nbRounds); // carte que le Opponent jouera après le User (prévisions)
             // On met le USER comme premier joueur du round
             this.m_currentPlayer = this.m_user;
 
@@ -97,14 +96,14 @@ public class Game {
         */
     }
 
-
+/*
 // il faudrait faire un switchCase avec le nbre de Rounds, chaque round est prévu à l'avance
     private void startRound(int nbRounds) {
         // Affichage des prévisions de l'adversaire sur la ligne du haut.
         // Méthode à implémenter que pour le OPPONENT !!!
 
     }
-
+*/
 
     @Override
     public String toString() {

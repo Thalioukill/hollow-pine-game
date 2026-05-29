@@ -5,7 +5,7 @@ import java.util.Optional;
 public class Opponent extends Player{
     private BoardLine m_previsionLine;
 
-    public Opponent(Deck deck, BoardLine bord, BoardLine previsionBoard) {
+    public Opponent(ArrayList<Animal> deck, BoardLine bord, BoardLine previsionBoard) {
         super(deck, bord);
         // Initialisation de la ligne de plateau (4 emplacements vides)
         this.m_previsionLine = previsionBoard;
@@ -13,7 +13,7 @@ public class Opponent extends Player{
 
     public void placePrevisionCard(int position){
         if (!m_previsionLine.isOccupied(position)) {
-            Animal animal = this.m_deck.draw(); // lance NoSuchElementException si vide = bug
+            Animal animal = this.m_deck.removeFirst(); // lance NoSuchElementException si vide = bug
             m_previsionLine.placeCardAt(animal, position);
         }
     }

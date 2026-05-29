@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class GameManager {
@@ -13,26 +15,27 @@ public class GameManager {
         CardStock stock = new CardStock();
 
         // Création du deck avec les 15 cartes de départ (majorité d'écureuils)
-        Deck playerDeck = new Deck();
-        playerDeck.addCard(stock.getCard(CardStock.ECUREUIL).get());
-        playerDeck.addCard(stock.getCard(CardStock.ECUREUIL).get());
-        playerDeck.addCard(stock.getCard(CardStock.ECUREUIL).get());
-        playerDeck.addCard(stock.getCard(CardStock.ECUREUIL).get());
-        playerDeck.addCard(stock.getCard(CardStock.ECUREUIL).get());
-        playerDeck.addCard(stock.getCard(CardStock.ECUREUIL).get());
-        playerDeck.addCard(stock.getCard(CardStock.ECUREUIL).get());
-        playerDeck.addCard(stock.getCard(CardStock.HERMINE).get());
-        playerDeck.addCard(stock.getCard(CardStock.HERMINE).get());
-        playerDeck.addCard(stock.getCard(CardStock.LOUVETEAU).get());
-        playerDeck.addCard(stock.getCard(CardStock.LOUVETEAU).get());
-        playerDeck.addCard(stock.getCard(CardStock.LOUP).get());
-        playerDeck.addCard(stock.getCard(CardStock.LOUP).get());
-        playerDeck.addCard(stock.getCard(CardStock.CHAT).get());
-        playerDeck.addCard(stock.getCard(CardStock.CHAT).get());
-        playerDeck.shuffle();
+        ArrayList<Animal> playerDeck = new ArrayList<Animal>();
+        playerDeck.add(stock.getCard(CardStock.ECUREUIL).get());
+        playerDeck.add(stock.getCard(CardStock.ECUREUIL).get());
+        playerDeck.add(stock.getCard(CardStock.ECUREUIL).get());
+        playerDeck.add(stock.getCard(CardStock.ECUREUIL).get());
+        playerDeck.add(stock.getCard(CardStock.ECUREUIL).get());
+        playerDeck.add(stock.getCard(CardStock.ECUREUIL).get());
+        playerDeck.add(stock.getCard(CardStock.ECUREUIL).get());
+        playerDeck.add(stock.getCard(CardStock.HERMINE).get());
+        playerDeck.add(stock.getCard(CardStock.HERMINE).get());
+        playerDeck.add(stock.getCard(CardStock.LOUVETEAU).get());
+        playerDeck.add(stock.getCard(CardStock.LOUVETEAU).get());
+        playerDeck.add(stock.getCard(CardStock.LOUP).get());
+        playerDeck.add(stock.getCard(CardStock.LOUP).get());
+        playerDeck.add(stock.getCard(CardStock.CHAT).get());
+        playerDeck.add(stock.getCard(CardStock.CHAT).get());
 
+        BoardLine playerBord= new BoardLine();
 
-        this.m_player = new User(playerDeck, bord);
+        this.m_player = new User(playerDeck, playerBord);
+        this.m_player.shuffle();
         this.m_gamesCount = 1;
     }
 
@@ -51,7 +54,6 @@ public class GameManager {
                 m_gamesCount++;
             }
         }
-
         this.displayFinalResult(campaignWon);
     }
 

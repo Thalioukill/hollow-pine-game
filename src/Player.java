@@ -1,31 +1,53 @@
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 public abstract class Player {
-    protected Deck m_deck;
     protected BoardLine m_boardLine;
+    protected ArrayList<Animal> m_deck;
 
-    public Player(Deck d, BoardLine bord) {
-        this.m_deck = d;
+    public Player(ArrayList<Animal> deck, BoardLine bord) {
+        this.m_deck = deck;
 
         // Initialisation de la ligne de plateau (4 emplacements vides)
         this.m_boardLine = bord;
     }
 
+    //-------- code pour le Deck -----
+    //Ajoute une carte au deck : utilisé pour l'initialisation et les récompenses
+    public void addCard(Animal card) {
+        m_deck.add(card);
+    }
+
+    //Optional contenant la carte, ou Optional.empty() si vide
+    public Animal draw() {
+        // retire et renvoie la première carte de la liste
+        if (m_deck.isEmpty()) {
+            throw new NoSuchElementException("La pioche est vide !");
+        }
+        return m_deck.removeFirst();
+    }
+
+    public int getSize() {
+        return m_deck.size();
+    }
+
+    public boolean isEmpty() {
+        return m_deck.isEmpty();
+    }
+
+    // ---------
+
+    //------- code pour la BoardLine ------
+
     // il ne faut pas gérer la position ici ?
-    public Optional<Card> getCardAt(int position) {
+    public Optional<Card> getBoardLineCardAt(int position) {
         return m_boardLine.getCardAt(toIndex(position));
     }
 
     private int toIndex(int position) {
         return position - 1;
     }
-
-    /*
-    public void removeCardAt(int position) {
-        m_boardLine.removeCardAt(position);
-    }
-     */
 
     public int CombatPhase(Player opponent){
         return this.m_boardLine.attack(opponent.m_boardLine);
@@ -39,7 +61,8 @@ public abstract class Player {
     public int getSacrificableCount(){
         return this.m_boardLine.getSacrificableCount();
     }
-    //public abstract void takeTurn(Interactions dialogue);
+
+    // ------
 
     @Override
     public String toString() {
@@ -47,6 +70,12 @@ public abstract class Player {
         return this.getClass().getSimpleName() +
                 " Plateau=" + m_boardLine + "]";
     }
+
+        /*
+    public void removeCardAt(int position) {
+        m_boardLine.removeCardAt(position);
+    }
+     */
 
         /*
     // En gros on regarde si la position est valide, et on regarde si il y a une carte, si il y a une carte, on

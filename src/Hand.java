@@ -54,7 +54,7 @@ public class Hand {
     public Animal removeCard(int index) {
         if (index < 0 || index >= m_cards.size()) {
             // Exception non-contrôlée pour signaler un bug interne [4]
-            throw new IndexOutOfBoundsException("Bug interne : retrait d'une lettre invalide '" + (char)index + "'");
+            throw new IndexOutOfBoundsException("Bug interne : retrait d'une lettre invalide '" + (char)('A' + index) + "'");
         }
         return m_cards.remove(index);
     }

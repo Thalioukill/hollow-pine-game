@@ -27,8 +27,8 @@ public class Interactions {
 
             String input = m_scanner.next().toUpperCase(); // On tolère 'p' ou 'P
             if (input.equals("P")) {
-                AnimalSelection positionAnimal = this.askCardLetter(human.getHandSize(), human);
-                Animal handAnimal = positionAnimal.getAnimal();
+                int handPosition = this.askCardLetter(human.getHandSize(), human);
+                Animal handAnimal = human.getHandCard(handPosition);
                 int remainingBlood = handAnimal.getBloodCost();
                 // si l'animal est un écureuil => on a pas besoin de sacrifier quoi que ce soit pour le poser.
                 if (!handAnimal.isSquirrel()) {
@@ -37,12 +37,11 @@ public class Interactions {
                         if (remainingBlood > 0) {
                             for (int i = 0; i < remainingBlood; i++) {
                                 this.displayMessage("Sacrifice " + (i + 1) + "/" + remainingBlood + " :");
-                                SlotSelection sacrificePos = this.askPositionSacrifice(human);
-                                Card target = sacrificePos.getCard();
-                                int targetPosition = sacrificePos.getPosition();
+                                int sacrificePos = this.askPositionSacrifice(human);
+                                Card target = human.getBoardLineCardAt(sacrificePos).get();
                                 // On vérifie si elle est sacrifiable (Obstacle ou pas ?)
                                 if (target.isSacrificable()) {
-                                    human.sacrifice(targetPosition);
+                                    human.sacrifice(sacrificePos);
                                     this.displayMessage("Emplacement libéré. +1 os. +1 goutte de sang.");
                                 } else {
                                     this.displayMessage("Impossible : un obstacle ne peut pas être sacrifié !");
@@ -55,7 +54,7 @@ public class Interactions {
                 }
                 // On demande la position de la carte...
                 int position = this.askPosition(human);
-                human.playCardToBoard(positionAnimal.getIndex(), position);
+                human.playCardToBoard(handPosition, position);
                 return true;
             }
             if (input.equals("F")) {
@@ -66,7 +65,159 @@ public class Interactions {
         }
         return false;
     }
-        /*
+
+        public boolean askConfirmation(String s) {
+            while (true) {
+                System.out.print(s);
+                String input = m_scanner.next().toUpperCase();
+                if (input.equals("OUI")){
+                    return true;
+                } else if (input.equals("NON")){
+                    return false;
+                }
+                // ERREURRRR
+                System.out.println("Veuillez saisir OUI ou NON");
+            }
+        }
+
+
+        // Demande une position sur le plateau (chifres 1 à 4).
+
+        public int askPosition(User human) {
+            while (true) {
+                System.out.print("Entrez le numéro de l'emplacement où vous souhaitez poser la carte (1, 2, 3 ou 4) : ");
+                if (m_scanner.hasNextInt()) {
+                    int pos = m_scanner.nextInt();
+                    int index = toIndex(pos);
+                    Optional<Card> result = Optional.empty();
+                    if (pos > 0 && pos <= human.getHandSize()){
+                        result = human.getBoardLineCardAt(index);
+                    }
+                    if(result.isPresent()){
+                        System.out.println("Emplacement déjà occupé, veuillez choisir un autre emplacement");
+                        continue;
+                    }
+                    else{
+                        return index;
+                    }
+                } else {
+                    m_scanner.next(); // Lit le prochain mot
+                    // ERREURRRR
+                    System.out.println("Saisie invalide ! Vous devez entrer un chiffre entier entre 1 et 4.");
+                }
+            }
+        }
+
+        public int askPositionSacrifice(User human) {
+            while (true) {
+                System.out.print("Entrez le numéro de l'emplacement de la carte que vous souhaitez sacrifier (1, 2, 3 ou 4) : ");
+                if (m_scanner.hasNextInt()) {
+                    int pos = m_scanner.nextInt();
+                    if(pos > 0 && pos <= 4){
+                        int index = toIndex(pos);
+                        Optional<Card> result = human.getCardAt(index);
+                        if (result.isPresent()) {
+                            if(result.get().isSacrificable()){
+                                return index; // on retourne juste l'int
+                            }
+                        }
+                    }
+                    else{
+                        System.out.println("Veuillez choisir un chiffre entre 1 et 4...");
+                    }
+                } else {
+                    m_scanner.next(); // Lit le prochain mot
+                    // ERREURRRR
+                    System.out.println("Saisie invalide ! Vous devez entrer un chiffre entier entre 1 et 4.");
+                }
+            }
+        }
+
+    // Demande la lettre d'une carte en main (lettres A, B, C...) + handSize taille actuelle de la main pour limiter le chiox
+    public int askCardLetter(int handSize, User human) {
+        char maxLetter = (char) ('A' + handSize - 1);
+        while (true) {
+            System.out.print("Choisissez une carte dans votre main (lettre entre A et " + maxLetter + ") : ");
+            String input = m_scanner.next().toUpperCase();
+
+            if (input.length() == 1) {
+                char letter = input.charAt(0);
+                int cardIndex = letterToIndex(letter);
+
+                Animal optAnimal = human.getHandCard(cardIndex);
+
+                /*
+                if (optAnimal.isPresent()) {
+                    // ✅ Saisie valide, on sort
+                    return new AnimalSelection(cardIndex, optAnimal.get());
+                }
+                 */
+            }
+            // ❌ Saisie invalide → on reboucle et on redemande
+            System.out.println("Lettre incorrecte ! Votre main va de A à " + maxLetter + ".");
+        }
+    }
+
+    private int letterToIndex(char letter) {
+        // Character.toUpperCase pour accepter 'a' ou 'A'
+        // On utilise l'ASCII pour trouver l'index  'A' = 65
+        return 1+(Character.toUpperCase(letter) - 'A');
+    }
+
+
+    private int toIndex(int position) {
+        return position - 1;
+    }
+
+
+    private boolean canAfford(Animal card, User human) {
+        if (!human.hasEnoughBones(card)) {
+            this.displayMessage("Pas assez d'os (" + human.getBonesToken() + "/" + card.getBoneCost() + ").");
+            return false;
+        }
+        if(!human.hasEnoughBlood(card)){
+            this.displayMessage("Pas assez de créatures à sacrifier pour poser cette carte, veuillez en choisir une autre coutant moins de "+ human.getSacrificableCount());
+            return false;
+        }
+        return true;
+    }
+
+    // on pioche 1 carte dans le Deck et on l'ajoute à la main.
+    public void draw(User joueur) {
+        // L'utilisateur a le choix
+        boolean wantsToDraw = this.askConfirmation("Voulez-vous piocher une carte pour ce tour ?");
+
+        if (wantsToDraw) {
+            //pioche si le deck pas vide (gestion via Optional)
+            try{
+                Animal drawnAnimalCard = joueur.draw();
+                joueur.addCard(drawnAnimalCard);
+                this.displayMessage("Vous avez pioché : " + drawnAnimalCard.getName());
+            }
+            catch (NoSuchElementException n){
+                displayMessage("Oups il n'y a plus de cartes dans la pioche...");
+            }
+        } else {
+            this.displayMessage("Vous avez décidé de ne pas piocher... Etais-ce un bon choix...");
+        }
+    }
+
+
+
+    // Affiche un message simple (dégâts, pioche,etc)
+    public void displayMessage(String message) {
+        System.out.println(message);
+    }
+
+    public void displayFinalResult(boolean victory){
+        if (victory) {
+            System.out.println("Félicitations ! Vous avez survécu à la forêt.");
+        } else {
+            System.out.println("L'obscurité vous a englouti... Partie terminée.");
+        }
+    }
+
+           /*
         public boolean prepareSlot(int pos, int bloodAlreadyPaid, User human) {
             Optional<Card> optTarget = human.getCardAt(pos);
 
@@ -99,148 +250,5 @@ public class Interactions {
         }
          */
 
-        public boolean askConfirmation(String s) {
-            while (true) {
-                System.out.print(s);
-                String input = m_scanner.next().toUpperCase();
-                if (input.equals("OUI")){
-                    return true;
-                } else if (input.equals("NON")){
-                    return false;
-                }
-                // ERREURRRR
-                System.out.println("Veuillez saisir OUI ou NON");
-            }
-        }
-
-
-        // Demande une position sur le plateau (chifres 1 à 4).
-
-        public int askPosition(User human) {
-            while (true) {
-                System.out.print("Entrez le numéro de l'emplacement où vous souhaitez poser la carte (1, 2, 3 ou 4) : ");
-                if (m_scanner.hasNextInt()) {
-                    int pos = m_scanner.nextInt();
-                    Optional<Card> result = Optional.empty();
-                    try{
-                        result = human.getCardAt(pos);
-                    }
-                    catch(IndexOutOfBoundsException e){
-                        System.out.println("Saisie invalide ! Vous devez entrer un chiffre entier entre 1 et 4.");
-                    }
-                    if(result.isPresent()){
-                        System.out.println("Emplacement déjà occupé, veuillez choisir un autre emplacement");
-                    }
-                    else{
-                        return pos;
-                    }
-                } else {
-                    m_scanner.next(); // Lit le prochain mot
-                    // ERREURRRR
-                    System.out.println("Saisie invalide ! Vous devez entrer un chiffre entier entre 1 et 4.");
-                    continue;
-                }
-            }
-        }
-
-        public SlotSelection askPositionSacrifice(User human) {
-            while (true) {
-                System.out.print("Entrez le numéro de l'emplacement de la carte que vous souhaitez sacrifier (1, 2, 3 ou 4) : ");
-                if (m_scanner.hasNextInt()) {
-                    int pos = m_scanner.nextInt();
-                    try {
-                        Optional<Card> result = human.getCardAt(pos);
-                        if (result.isPresent()) {
-                            return new SlotSelection(pos, result.get()); // on retourne juste l'int
-                        }
-                        System.out.println("Aucune carte n'est présente sur cet emplacement, veuillez en choisir un autre.");
-                    }
-                    catch(IndexOutOfBoundsException e){
-                        System.out.println("Saisie invalide ! Vous devez entrer un chiffre entier entre 1 et 4.");
-                    }
-                } else {
-                    m_scanner.next(); // Lit le prochain mot
-                    // ERREURRRR
-                    System.out.println("Saisie invalide ! Vous devez entrer un chiffre entier entre 1 et 4.");
-                }
-            }
-        }
-
-    // Demande la lettre d'une carte en main (lettres A, B, C...) + handSize taille actuelle de la main pour limiter le chiox
-    public AnimalSelection askCardLetter(int handSize, User human) {
-        char maxLetter = (char) ('A' + handSize - 1);
-
-        while (true) {
-            System.out.print("Choisissez une carte dans votre main (lettre entre A et " + maxLetter + ") : ");
-            String input = m_scanner.next().toUpperCase();
-
-            if (input.length() == 1) {
-                char letter = input.charAt(0);
-                int cardIndex = toIndex(letter);
-                Optional<Animal> optAnimal = human.getHandCard(cardIndex);
-
-                if (optAnimal.isPresent()) {
-                    // ✅ Saisie valide, on sort
-                    return new AnimalSelection(cardIndex, optAnimal.get());
-                }
-            }
-            // ❌ Saisie invalide → on reboucle et on redemande
-            System.out.println("Lettre incorrecte ! Votre main va de A à " + maxLetter + ".");
-        }
-    }
-
-        private int toIndex(char letter) {
-            // Character.toUpperCase pour accepter 'a' ou 'A'
-            // On utilise l'ASCII pour trouver l'index  'A' = 65
-            return Character.toUpperCase(letter) - 'A';
-        }
-
-
-        private boolean canAfford(Animal card, User human) {
-            if (!human.hasEnoughBones(card)) {
-                this.displayMessage("Pas assez d'os (" + human.getBonesToken() + "/" + card.getBoneCost() + ").");
-                return false;
-            }
-            if(!human.hasEnoughBlood(card)){
-                this.displayMessage("Pas assez de créatures à sacrifier pour poser cette carte, veuillez en choisir une autre coutant moins de "+ human.getSacrificableCount());
-                return false;
-            }
-            return true;
-        }
-
-        // on pioche 1 carte dans le Deck et on l'ajoute à la main.
-        public void draw(User joueur) {
-            // L'utilisateur a le choix
-            boolean wantsToDraw = this.askConfirmation("Voulez-vous piocher une carte pour ce tour ?");
-
-            if (wantsToDraw) {
-                //pioche si le deck pas vide (gestion via Optional)
-                try{
-                    Animal drawnAnimalCard = joueur.draw();
-                    joueur.addCard(drawnAnimalCard);
-                    this.displayMessage("Vous avez pioché : " + drawnAnimalCard.getName());
-                }
-                catch (NoSuchElementException n){
-                    displayMessage("Oups il n'y a plus de cartes dans la pioche...");
-                }
-            } else {
-                this.displayMessage("Vous avez décidé de ne pas piocher... Etais-ce un bon choix...");
-            }
-        }
-
-
-
-        // Affiche un message simple (dégâts, pioche,etc)
-        public void displayMessage(String message) {
-            System.out.println(message);
-        }
-
-        public void displayFinalResult(boolean victory){
-            if (victory) {
-                System.out.println("Félicitations ! Vous avez survécu à la forêt.");
-            } else {
-                System.out.println("L'obscurité vous a englouti... Partie terminée.");
-            }
-        }
 
 }

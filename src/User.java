@@ -1,22 +1,51 @@
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 public class User extends Player{
-    private final Hand m_hand;
+    private final ArrayList<Animal> m_hand;
     private int m_bonesToken;
 
-    public User(Deck deck, BoardLine bord) {
+    public User(ArrayList<Animal> deck, BoardLine bord) {
         super(deck, bord); // Appel au constructeur de la classe mère
-        this.m_hand = new Hand();
+        this.m_hand = new ArrayList<Animal>();
         this.m_bonesToken = 0;
     }
 
-    public Optional<Animal> getHandCard(int index){
-        return m_hand.getCard(index);
+    // ----- code pour le DECK ------
+
+    // melange les cartes du deck.
+    public void shuffle() {
+        Collections.shuffle(this.m_deck);
     }
 
-    public int getHandSize(){
-        return m_hand.getSize();
+    //------ Code pour la MAIN ------
+    public void addCard(Animal card) {
+        // Une main peut techniquement grandir, contrairement au plateau
+        m_hand.add(card);
     }
+
+    public int getHandSize() {
+        return m_hand.size();
+    }
+
+    // Permet de regarder une carte sans la retirer.
+    public Animal getHandCard(int index){
+        return m_hand.get(index);
+    }
+
+    // retire la carte de la main et retourne l'élément qui était dedans à l'index de la lettre donnée (ici la Card), on l'utilise uniquement quand yune carte est
+    // jouée et donc placée autre part, donc si l'index est mauvais c'est une erreur du code...
+    public Animal removeCard(int index) {
+        if (index < 0 || index >= m_hand.size()) {
+            // Exception non-contrôlée pour signaler un bug interne
+            throw new IndexOutOfBoundsException("Bug interne : retrait d'une lettre invalide '" + (char)('A' + index) + "'");
+        }
+        return m_hand.remove(index);
+    }
+
+    // ---------
 
     public int getBonesToken(){
         return this.m_bonesToken;
@@ -26,19 +55,11 @@ public class User extends Player{
         this.m_bonesToken++;
     }
 
-
+    // ----- code pour la BoardLine -----
     public Optional<Card> getCardAt(int position){
-        return this.m_boardLine.getCardAt(toIndex(position));
+        return this.m_boardLine.getCardAt(position);
     }
 
-    public void addCard(Animal cardToAdd){
-        this.m_hand.addCard(cardToAdd);
-    }
-
-
-    public Animal draw(){
-        return this.m_deck.draw();
-    }
 
     public boolean hasEnoughBones(Animal test){
         if (test.getBoneCost() > 0 && this.getBonesToken() < test.getBoneCost()){
@@ -55,25 +76,26 @@ public class User extends Player{
     }
 
     public boolean validatePosition(int position) {
-        return this.m_boardLine.validatePosition(toIndex(position));
+        return this.m_boardLine.validateIndex(position);
     }
-
+    /*
     private int toIndex(int position) {
         return position - 1;
     }
+    */
 
     public void sacrifice(int position){
-        this.m_boardLine.removeCardAt(toIndex(position));
+        this.m_boardLine.removeCardAt(position);
         //m_bonesToken++; // Règle : +1 os par sacrifice
         this.m_bonesToken++;
     }
 
     // Transfert définitif d'une carte de la main vers le plateau.
     public void playCardToBoard(int handIndex, int boardPosition) {
-        Card cardToPlay = this.m_hand.removeCard(toIndex(handIndex));
+        Card cardToPlay = this.m_hand.remove(handIndex);
 
         // On appelle placeCardAt pour la déposer sur la BoardLine
-        this.placeCardAt(cardToPlay, toIndex(boardPosition));
+        this.placeCardAt(cardToPlay, boardPosition);
     }
 
     @Override
