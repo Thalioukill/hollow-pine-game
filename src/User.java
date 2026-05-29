@@ -73,7 +73,7 @@ public class User extends Player{
         Card cardToPlay = this.m_hand.removeCard(toIndex(handIndex));
 
         // On appelle placeCardAt pour la déposer sur la BoardLine
-        this.placeCardAt(cardToPlay, boardPosition);
+        this.placeCardAt(cardToPlay, toIndex(boardPosition));
     }
 
     @Override

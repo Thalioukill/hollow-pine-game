@@ -12,15 +12,20 @@ public abstract class Player {
         this.m_boardLine = bord;
     }
 
+    // il ne faut pas gérer la position ici ?
     public Optional<Card> getCardAt(int position) {
-        return m_boardLine.getCardAt(position);
+        return m_boardLine.getCardAt(toIndex(position));
     }
 
+    private int toIndex(int position) {
+        return position - 1;
+    }
 
-
+    /*
     public void removeCardAt(int position) {
         m_boardLine.removeCardAt(position);
     }
+     */
 
     public int CombatPhase(Player opponent){
         return this.m_boardLine.attack(opponent.m_boardLine);
