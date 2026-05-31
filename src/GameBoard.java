@@ -1,45 +1,42 @@
+import java.util.ArrayList;
+import java.util.Optional;
+
 public class GameBoard {
-    private ArrayList<String>[] creationAffichageCartes(Optional<Animal>[] listeCarte){
-        ArrayList<String>[] cartes;
-        cartes = new ArrayList[4];
+    private ArrayList<String>[] creationAffichageCartes(ArrayList<Optional<Animal>> listeCarte){
+        ArrayList<String>[] cartes = new ArrayList[4];
         for (int i=0; i<4; i++){
             cartes[i] = new ArrayList<>();
-            if (listeCarte[i].isEmpty()){
-                cartes[i].add("*************");
-                for (int j = 0; j < 5; j++){
-                    cartes[i].add("*           *");
-                }
-                cartes[i].add("*************");
-            }
-            else {
-                cartes[i].add("*-----------*");
+            Optional<Card> optCard = listeCarte.get(i);
 
-                String nom = listeCarte[i].get().getNom();
-                while (nom.length() < 9){
-                    nom += " ";
-                }
-                cartes[i].add("| "+nom+" |");
-                cartes[i].add("|-----------|");
-                cartes[i].add("| PV: "+listeCarte[i].get().getPv()+"     |");
-                if (listeCarte[i].get().getAtk().isPresent()){
-                    cartes[i].add("| Atk: " + listeCarte[i].get().getAtk().get() + "    |");
-                    if (listeCarte[i].get().getEstVolant()){
-                        cartes[i].add("| Volant    |");
-                    }
-                    else cartes[i].add("|           |");
-                }
-                else {
-                    cartes[i].add("|           |");
-                    cartes[i].add("|           |");
-                }
-
-                cartes[i].add("*-----------*");
-
-
+            if (optCard.isEmpty()) {
+                remplirSlotVide(cartes[i]);
+            } else {
+                remplirSlotOccupe(cartes[i], optCard.get());
             }
         }
         return cartes;
     }
+
+    private void remplirSlotVide(ArrayList<String> lines) {
+        lines.add("*************");
+        for (int j = 0; j < 5; j++) {
+            lines.add("*           *");
+        }
+        lines.add("*************");
+    }
+
+    private void remplirSlotOccupe(ArrayList<String> lines, Card card) {
+        lines.add("*-----------*");
+        lines.add("| " + String.format("%-9s", card.getName()) + " |");
+        lines.add("|-----------|");
+        lines.add(String.format("| PV: %-6d |", card.getHealthPoints()));
+
+        // Le polymorphisme choisit la bonne version (Animal ou Obstacle)
+        //lines.addAll(card.getSpecificDisplayLines());
+
+        lines.add("*-----------*");
+}
+
 
     private void affichageCarte(ArrayList<String>[] cartes){
         for (int i=0; i<7; i++){
@@ -50,7 +47,7 @@ public class GameBoard {
             System.out.println();
         }
     }
-    public void affichage(int partie, int partiesGagneesJoueur, int tour, Optional<Animal>[] emplacementJ2, Optional<Animal>[] emplacementTour, Optional<Animal>[] emplacementJ1, int score, int os, ArrayList<Animal> main, ArrayList<Animal> pioche){
+    public void affichage(int partie, int partiesGagneesJoueur, int tour, BoardLine emplacementJ2, BoardLine emplacementTour, BoardLine emplacementJ1, int score, int os, ArrayList<Animal> main, ArrayList<Animal> pioche){
         System.out.println("Partie "+partie+" | Gagnées : "+partiesGagneesJoueur+" | Perdues : "+ (partie-partiesGagneesJoueur - 1));
         System.out.println("Tour n° "+tour);
 
@@ -83,11 +80,12 @@ public class GameBoard {
         int n = 0;
         for (Animal a : main){
             n++;
-            System.out.print("\n"+n+". "+a.getNom()+" PV: "+a.getPv()+" | Atk: "+a.getAtk().get()+" | Gouttes de sang: "+a.getSangRequis()+" | Os : "+a.getOsRequis()+"\n");
+            System.out.print("\n"+n+". "+a.getName()+" PV: "+a.getHealthPoints()+" | Atk: "+a.getAttackPoints()+" | Gouttes de sang: "+a.getBloodCost()+" | Os : "+a.getBoneCost()+"\n");
         }
         System.out.println();
 
         System.out.println("Pioche");
+
 
         System.out.println("*-----------*");
         System.out.println("|           |");
@@ -103,12 +101,6 @@ public class GameBoard {
         System.out.println("|   cartes  |");
         System.out.println("|           |");
         System.out.println("*-----------*");
-
-        System.out.println("Actions possibles: \n" +
-                "  [fin] Terminer votre tour\n" +
-                "  [piocher] Piocher une carte\n" +
-                "  [placer <numero carte> <position>] Placer une carte sur le plateau\n" +
-                "\n");
     }
 
 }

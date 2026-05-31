@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class Obstacle extends Card{
 
     public Obstacle(String name, Integer hp){
@@ -15,7 +17,6 @@ public class Obstacle extends Card{
 
     @Override
     public void attack(Card target) {
-        // Un obstacle n'attaque pas...
     }
 
     public int getAttackPoints(){
@@ -23,14 +24,21 @@ public class Obstacle extends Card{
     }
 
     @Override
-    public void isAttacked(int amount){
+    public void takeDamage(int amount){
         this.m_healthPoints-= amount;
     }
 
-        /*
-    public Card cloneCard() {
+    public Obstacle cloneObstacle() {
 
         return new Obstacle(this); // Utilise le constructeur de copie
     }
-     */
+
+
+    @Override
+    public ArrayList<String> getSpecificDisplayLines() {
+        ArrayList<String> lines = new ArrayList<>();
+        lines.add("|           |");
+        lines.add("|           |");
+        return lines;
+    }
 }

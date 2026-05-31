@@ -40,7 +40,7 @@ public class Interactions {
                 Animal handAnimal = human.getHandCard(handPosition);
                 int remainingBlood = handAnimal.getBloodCost();
                 // si l'animal est un écureuil => on a pas besoin de sacrifier quoi que ce soit pour le poser.
-                if (!handAnimal.isSquirrel()) {
+                if (!(handAnimal.getBloodCost() == 0 && handAnimal.getBoneCost() == 0)) {
                     if (canAfford(handAnimal, human)) {
                         // faire les sacrifices, puis ensuite demander la position à l'utiliateur.
                         if (remainingBlood > 0) {
@@ -50,8 +50,12 @@ public class Interactions {
                                 Card target = human.getBoardLineCardAt(sacrificePos).get();
                                 // On vérifie si elle est sacrifiable (Obstacle ou pas ?)
                                 if (target.isSacrificable()) {
-                                    human.sacrifice(sacrificePos);
-                                    this.displayMessage("Emplacement libéré. +1 os. +1 goutte de sang.");
+                                    // si c'est un CHAT -> ne peut pas etre SACRIFIE
+                                    if(!target.survivesSacrifice()){
+                                        human.sacrifice(sacrificePos);
+                                        this.displayMessage("Emplacement libéré. +1 os. +1 goutte de sang.");
+                                    }
+                                    this.displayMessage("Le chat survit au sacrifice : vous récuprez +1 os. +1 goutte de sang.");
                                 } else {
                                     this.displayMessage("Impossible : un obstacle ne peut pas être sacrifié !");
                                     i--; // On redemande cette goutte de sang
@@ -75,72 +79,72 @@ public class Interactions {
         return false;
     }
 
-        public boolean askConfirmation(String s) {
-            while (true) {
-                System.out.print(s);
-                String input = m_scanner.next().toUpperCase();
-                if (input.equals("OUI")){
-                    return true;
-                } else if (input.equals("NON")){
-                    return false;
+    public boolean askConfirmation(String s) {
+        while (true) {
+            System.out.print(s);
+            String input = m_scanner.next().toUpperCase();
+            if (input.equals("OUI")){
+                return true;
+            } else if (input.equals("NON")){
+                return false;
+            }
+            // ERREURRRR
+            System.out.println("Veuillez saisir OUI ou NON");
+        }
+    }
+
+
+    // Demande une position sur le plateau (chifres 1 à 4).
+
+    public int askPosition(User human) {
+        while (true) {
+            System.out.print("Entrez le numéro de l'emplacement où vous souhaitez poser la carte (1, 2, 3 ou 4) : ");
+            if (m_scanner.hasNextInt()) {
+                int pos = m_scanner.nextInt();
+                int index = toIndex(pos);
+                Optional<Card> result = Optional.empty();
+                if (pos > 0 && pos <= human.getHandSize()){
+                    result = human.getBoardLineCardAt(index);
                 }
+                if(result.isPresent()){
+                    System.out.println("Emplacement déjà occupé, veuillez choisir un autre emplacement");
+                    continue;
+                }
+                else{
+                    return index;
+                }
+            } else {
+                m_scanner.next(); // Lit le prochain mot
                 // ERREURRRR
-                System.out.println("Veuillez saisir OUI ou NON");
+                System.out.println("Saisie invalide ! Vous devez entrer un chiffre entier entre 1 et 4.");
             }
         }
+    }
 
-
-        // Demande une position sur le plateau (chifres 1 à 4).
-
-        public int askPosition(User human) {
-            while (true) {
-                System.out.print("Entrez le numéro de l'emplacement où vous souhaitez poser la carte (1, 2, 3 ou 4) : ");
-                if (m_scanner.hasNextInt()) {
-                    int pos = m_scanner.nextInt();
+    public int askPositionSacrifice(User human) {
+        while (true) {
+            System.out.print("Entrez le numéro de l'emplacement de la carte que vous souhaitez sacrifier (1, 2, 3 ou 4) : ");
+            if (m_scanner.hasNextInt()) {
+                int pos = m_scanner.nextInt();
+                if(pos > 0 && pos <= 4){
                     int index = toIndex(pos);
-                    Optional<Card> result = Optional.empty();
-                    if (pos > 0 && pos <= human.getHandSize()){
-                        result = human.getBoardLineCardAt(index);
-                    }
-                    if(result.isPresent()){
-                        System.out.println("Emplacement déjà occupé, veuillez choisir un autre emplacement");
-                        continue;
-                    }
-                    else{
-                        return index;
-                    }
-                } else {
-                    m_scanner.next(); // Lit le prochain mot
-                    // ERREURRRR
-                    System.out.println("Saisie invalide ! Vous devez entrer un chiffre entier entre 1 et 4.");
-                }
-            }
-        }
-
-        public int askPositionSacrifice(User human) {
-            while (true) {
-                System.out.print("Entrez le numéro de l'emplacement de la carte que vous souhaitez sacrifier (1, 2, 3 ou 4) : ");
-                if (m_scanner.hasNextInt()) {
-                    int pos = m_scanner.nextInt();
-                    if(pos > 0 && pos <= 4){
-                        int index = toIndex(pos);
-                        Optional<Card> result = human.getCardAt(index);
-                        if (result.isPresent()) {
-                            if(result.get().isSacrificable()){
-                                return index; // on retourne juste l'int
-                            }
+                    Optional<Card> result = human.getCardAt(index);
+                    if (result.isPresent()) {
+                        if(result.get().isSacrificable()){
+                            return index; // on retourne juste l'int
                         }
                     }
-                    else{
-                        System.out.println("Veuillez choisir un chiffre entre 1 et 4...");
-                    }
-                } else {
-                    m_scanner.next(); // Lit le prochain mot
-                    // ERREURRRR
-                    System.out.println("Saisie invalide ! Vous devez entrer un chiffre entier entre 1 et 4.");
                 }
+                else{
+                    System.out.println("Veuillez choisir un chiffre entre 1 et 4...");
+                }
+            } else {
+                m_scanner.next(); // Lit le prochain mot
+                // ERREURRRR
+                System.out.println("Saisie invalide ! Vous devez entrer un chiffre entier entre 1 et 4.");
             }
         }
+    }
 
     // Demande la lettre d'une carte en main (lettres A, B, C...) + handSize taille actuelle de la main pour limiter le chiox
     public int askCardLetter(int handSize, User human) {
@@ -226,14 +230,59 @@ public class Interactions {
         if (victory) {
             System.out.println("Félicitations ! Vous avez survécu à la forêt.");
         } else {
-            System.out.println("L'obscurité vous a englouti... Partie terminée.");
+            System.out.println("L'obscurité vous englouti... Partie terminée.");
         }
     }
 
 
-    public void offerNewCard(User human) {
-        //human.addPermanentCard();
+    public Animal offerNewCardChoice(Animal card1, Animal card2) {
+        System.out.println("\n--- RÉCOMPENSE ---");
+        System.out.println("Félicitations ! Vous avez survécu aux deux première parties ! Cela en sera t-il pour la dernière ? ");
+        System.out.println("Pour vous aider à vaincre Leshy voici deux cartes, choisissez en UNE pour parfaire votre deck :");
+
+        // Affichage des cartes pour aider
+        displayCardOption(1, card1);
+        displayCardOption(2, card2);
+
+        while (true) {
+            System.out.print("Votre choix (1 ou 2) : ");
+
+            if (m_scanner.hasNextInt()) {
+                int choice = m_scanner.nextInt();
+                if (!Character.isDigit(choice)) {
+                    System.out.println("Saisie invalide ! Veuillez entrer 1 ou 2.");
+                    continue;
+                }
+                if (choice == 1) {
+                    return card1;
+                }
+                if (choice == 2) {
+                    return card2;
+                }
+            }
+            System.out.println("Erreur : Choix inconnu. Veuillez saisir le chiffre 1 ou 2.");
+        }
     }
+
+
+    private void displayCardOption(int index, Animal card) {
+        String labelCout;
+
+        if (card.getBloodCost() > 0) {
+            // Si la carte coûte du sang
+            labelCout = card.getBloodCost() + " Sang";
+        } else {
+            // Sinon, on affiche le coût en os
+            labelCout = card.getBoneCost() + " Os";
+        }
+
+        // ligne finale :
+        System.out.println("  [" + index + "] " + card.getName() + " (Atk: " + card.getAttackPoints() + ", HP: " + card.getHealthPoints() + ", Coût: " + labelCout + ")");
+    }
+
+
+
+    //human.addPermanentCard();
 
            /*
         public boolean prepareSlot(int pos, int bloodAlreadyPaid, User human) {

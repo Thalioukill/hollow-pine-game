@@ -5,19 +5,19 @@ public class SecondGame implements GameStrategy{
     public Opponent initOpponent(){
         // création du deck de l'opponent
         // création du deck de l'opponent
-        CardStock stock = new CardStock();
+        AnimalStock stock = new AnimalStock();
         ArrayList<Animal> playerDeck = new ArrayList<Animal>();
-        playerDeck.add(stock.getCard(CardStock.HERMINE).get());
-        playerDeck.add(stock.getCard(CardStock.HERMINE).get());
-        playerDeck.add(stock.getCard(CardStock.LOUVETEAU).get());
-        playerDeck.add(stock.getCard(CardStock.LOUVETEAU).get());
-        playerDeck.add(stock.getCard(CardStock.LOUP).get());
-        playerDeck.add(stock.getCard(CardStock.LOUP).get());
-        playerDeck.add(stock.getCard(CardStock.ELAN).get());
+        playerDeck.add(stock.getCard(AnimalStock.HERMINE).get());
+        playerDeck.add(stock.getCard(AnimalStock.HERMINE).get());
+        playerDeck.add(stock.getCard(AnimalStock.LOUVETEAU).get());
+        playerDeck.add(stock.getCard(AnimalStock.LOUVETEAU).get());
+        playerDeck.add(stock.getCard(AnimalStock.LOUP).get());
+        playerDeck.add(stock.getCard(AnimalStock.LOUP).get());
+        playerDeck.add(stock.getCard(AnimalStock.ELAN).get());
 
         BoardLine attackBoard = new BoardLine();
         BoardLine previsionBoard = new BoardLine();
-        previsionBoard.set(3, Optional.of(stock.getCard(CardStock.COYOTE).get()));
+        previsionBoard.set(3, Optional.of(stock.getCard(AnimalStock.COYOTE).get()));
         return new Opponent(playerDeck, attackBoard, previsionBoard);
     };
 

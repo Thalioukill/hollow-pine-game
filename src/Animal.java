@@ -56,65 +56,176 @@ public class Animal extends Card {
         return new Animal(this); // Utilise le constructeur de copie
     }
 
-    public void attack(Card target) {
-        target.isAttacked(this.m_attackPoints);
-    }
-
-    public boolean isSquirrel(){
-        return (this.getBloodCost() == 0 && this.getBoneCost() == 0);
-    }
+    public void revive() { this.m_healthPoints = 1; }
 
     public int getBloodCost() {
         return this.m_bloodCost;
     }
 
-    @Override
-    public void isAttacked(int amount){
-        this.m_healthPoints-= amount;
-    }
-
-    /*
-    public void attack(int position, Player opponent, Game game) {
-        if (m_abilities.isEmpty()) {
-            defaultAttack(position, opponent, game);
-        } else {
+    public void attack(Card target) {
+        target.isAttacked(this.m_attackPoints, this);
+        if (!target.isDead()) {
             for (Ability a : m_abilities) {
-                a.onAttack(this, position, opponent, game);
+                a.onKill(target);
             }
         }
     }
-    */
-// Anciennes méthodes d'attaque....
-/*
-    public void takeDamage(int amount, Animal attacker, Game game) {
+
+    public void isAttacked(int amount, Animal attacker) {
         int finalDamage = amount;
 
-        // On demande aux pouvoirs s'ils modifient les dégâts (ex: Puant)
+        // Puant — modifie les dégâts
+        for (Ability a : this.m_abilities) {
+            finalDamage = a.modifyIncomingDamage(finalDamage);
+        }
+
+        takeDamage(finalDamage); // ← délègue les dégâts bruts
+
+        // Piques pointues — riposte
+        for (Ability a : this.m_abilities) {
+            a.onHit(this, attacker);
+        }
+    }
+
+
+
+    @Override
+    public boolean isTargetBypassed() {
         for (Ability a : m_abilities) {
-            finalDamage = a.modifyIncomingAttack(finalDamage);
+            if (a.bypassTarget()) {
+                return true; // Dès qu'un pouvoir (ex: Volant) dit vrai, on bypass
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void triggerPostAttack(int position, BoardLine line) {
+        // On notifie chaque pouvoir de l'animal que l'attaque est terminée
+        for (Ability a : m_abilities) {
+            // Chaque ability décidera si elle doit agir ou non
+            a.afterAttack(this, position, line);
+        }
+    }
+
+    @Override
+    public boolean survivesSacrifice() {
+        for (Ability a : m_abilities) {
+            if (a.onSacrifice(this)) return true; // Le pouvoir "Nombreuses Vies" renverra true
+        }
+        return false;
+    }
+
+    @Override
+    public void triggerStartTurn(int position, BoardLine line) {
+        // On parcourt la liste générique des capacités
+        for (Ability a : m_abilities) {
+            // 'this' est passé car l'Ability a besoin de l'animal pour le transformer
+            a.onTurnUpdate(this, position, line);
+        }
+    }
+
+    // takeDamage — dégâts bruts, pas d'abilities
+    public void takeDamage(int amount) {
+        this.m_healthPoints -= Math.max(0, amount);
+    }
+
+    //for cat
+    public void setHealthPoints(int amount) {
+        this.m_healthPoints = amount;
+    }
+
+    /*
+    @Override
+    public ArrayList<String> getSpecificDisplayLines() {
+        ArrayList<String> lines = new ArrayList<>();
+        lines.add(String.format("| Atk: %-5d |", this.m_attackPoints));
+
+        String volant = this.hasAbility("Volant") ? "Volant    " : "          ";
+        lines.add("| " + volant + "|");
+        return lines;
+    }
+     */
+
+     // Vérifie si l'animal possède une capacité spécifique par son nom.
+    public boolean hasAbility(String name) {
+        for (Ability ability : m_abilities) {
+            // On compare les noms (ne jamais utiliser == sur des String)
+            if (ability.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+
+    /*
+     public void takeDamage(int amount, Animal animal, Player attacker, Game game) {
+        int finalDamage = amount;
+
+        //Puant
+        for (Ability a : m_abilities) {
+            finalDamage = a.modifyIncomingDamage(finalDamage);
+        }
+        if (finalDamage < 0) {
+            finalDamage = 0;
         }
 
         this.m_healthPoints -= finalDamage;
 
-        // On déclenche les effets de réaction (ex: Piques pointues)
+        //SharpQuills will be here
         for (Ability a : m_abilities) {
-            a.onHit(this, attacker, game);
+            a.onHit(this, animal, attacker, game);
         }
     }
 
-
-    private void defaultAttack(int position, Player opponent, Game game) {
-        Optional<Card> target = opponent.getCardAt(position);
-        if (target.isPresent()) {
-            Card card = target.get();
-            card.takeDamage(m_attackPoints);
-            if (card.isDead()) {
-                opponent.removeCardAt(position);
-                game.addBones(1);
+    public void attack(int position, Player attacker, Player defender, Game game) {
+        for (Ability a : m_abilities) {
+            //volant
+            boolean abilityAttack = a.onAttack(this, position, attacker, game);
+            if (abilityAttack) {
+                //coureur
+                for (Ability b : m_abilities) {
+                    b.afterAttack(this, position, attacker, game);
+                }
+                return;
             }
-        } else {
-            game.updateScore(m_attackPoints);
+            Optional<Card> target = defender.getCardAt(position);
+            if (target.isPresent() && isSacrificable()) {
+                Card card = target.get();
+                card.takeDamage(m_attackPoints, this, attacker, game);
+
+                //Poison
+                for (Ability ability : m_abilities) {
+                    ability.kill(this, defender, game);
+                }
+                //death
+                if (card.isDead()) {
+
+                    //manylives
+                    boolean deathCancelled = false;
+                    for (Ability ability : m_abilities) {
+                        boolean cancelled = ability.onDeath(this, position, defender, game);
+                        if (cancelled) {
+                            deathCancelled = true;
+                        }
+                        if (!deathCancelled) {
+                            defender.removeCardAt(position);
+                            attacker.addBones();
+                        }
+                    }
+                }
+            } else
+                game.updateScore(m_attackPoints);
         }
+        //coureur
+        for (Ability b : m_abilities) {
+            b.afterAttack(this, position, attacker, game);
+        }
+
     }
- */
+
+     */
+
 }

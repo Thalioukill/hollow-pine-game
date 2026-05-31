@@ -1,24 +1,34 @@
 import java.util.ArrayList;
-import java.util.Optional;
 
 public class FirstGame implements GameStrategy{
     public Opponent initOpponent(){
         // création du deck de l'opponent
-        CardStock stock = new CardStock();
+        AnimalStock stock = new AnimalStock();
         ArrayList<Animal> playerDeck = new ArrayList<Animal>();
-        playerDeck.add(stock.getCard(CardStock.HERMINE).get());
-        playerDeck.add(stock.getCard(CardStock.HERMINE).get());
-        playerDeck.add(stock.getCard(CardStock.LOUVETEAU).get());
-        playerDeck.add(stock.getCard(CardStock.LOUVETEAU).get());
-        playerDeck.add(stock.getCard(CardStock.LOUP).get());
-        playerDeck.add(stock.getCard(CardStock.LOUP).get());
-        playerDeck.add(stock.getCard(CardStock.ELAN).get());
+        playerDeck.add(stock.getCard(AnimalStock.HERMINE).get());
+        playerDeck.add(stock.getCard(AnimalStock.HERMINE).get());
+        playerDeck.add(stock.getCard(AnimalStock.LOUVETEAU).get());
+        playerDeck.add(stock.getCard(AnimalStock.LOUVETEAU).get());
+        playerDeck.add(stock.getCard(AnimalStock.LOUP).get());
+        playerDeck.add(stock.getCard(AnimalStock.LOUP).get());
+        playerDeck.add(stock.getCard(AnimalStock.ELAN).get());
+
+        ObstacleStock obj = new ObstacleStock();
 
         BoardLine attackBoard = new BoardLine();
+        attackBoard.placeCardAt(obj.getObstacle(ObstacleStock.SAPIN).get(), 0);
+
         BoardLine previsionBoard = new BoardLine();
-        previsionBoard.placeCardAt(stock.getCard(CardStock.COYOTE).get(), 3);
+        previsionBoard.placeCardAt(stock.getCard(AnimalStock.COYOTE).get(), 3);
         return new Opponent(playerDeck, attackBoard, previsionBoard);
     }
+
+    /*
+        initOpponent  → Coyote en position 3 sur previsionLine (visible dès le début)
+        opponentAction(1) = fin du tour 1 → applique Coyote sur board + pioche 1 carte pour la prévision du tour 2
+        opponentAction(2) = fin du tour 2 → applique la prévision + pioche pour tour 3
+        ...
+     */
 
     public void opponentAction(Opponent opponent, int roundNumber){
         switch(roundNumber){
@@ -38,7 +48,6 @@ public class FirstGame implements GameStrategy{
             }
             case 4 -> {
                 opponent.applyPrevision();
-                opponent.placePrevisionCard(0);
             }
             default ->{}
         }

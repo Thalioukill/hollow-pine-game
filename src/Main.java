@@ -23,25 +23,25 @@ public class Main
     }
     public static void buildPlayerDeck(ArrayList<Animal> playerDeck){
         // Initialisation à l'extérieur des objets Game pour la persistance
-        CardStock stock = new CardStock();
+        AnimalStock stock = new AnimalStock();
 
         // Création du deck avec les 15 cartes de départ (majorité d'écureuils)
 
-        playerDeck.add(stock.getCard(CardStock.ECUREUIL).get());
-        playerDeck.add(stock.getCard(CardStock.ECUREUIL).get());
-        playerDeck.add(stock.getCard(CardStock.ECUREUIL).get());
-        playerDeck.add(stock.getCard(CardStock.ECUREUIL).get());
-        playerDeck.add(stock.getCard(CardStock.ECUREUIL).get());
-        playerDeck.add(stock.getCard(CardStock.ECUREUIL).get());
-        playerDeck.add(stock.getCard(CardStock.ECUREUIL).get());
-        playerDeck.add(stock.getCard(CardStock.HERMINE).get());
-        playerDeck.add(stock.getCard(CardStock.HERMINE).get());
-        playerDeck.add(stock.getCard(CardStock.LOUVETEAU).get());
-        playerDeck.add(stock.getCard(CardStock.LOUVETEAU).get());
-        playerDeck.add(stock.getCard(CardStock.LOUP).get());
-        playerDeck.add(stock.getCard(CardStock.LOUP).get());
-        playerDeck.add(stock.getCard(CardStock.CHAT).get());
-        playerDeck.add(stock.getCard(CardStock.CHAT).get());
+        playerDeck.add(stock.getCard(AnimalStock.ECUREUIL).get());
+        playerDeck.add(stock.getCard(AnimalStock.ECUREUIL).get());
+        playerDeck.add(stock.getCard(AnimalStock.ECUREUIL).get());
+        playerDeck.add(stock.getCard(AnimalStock.ECUREUIL).get());
+        playerDeck.add(stock.getCard(AnimalStock.ECUREUIL).get());
+        playerDeck.add(stock.getCard(AnimalStock.ECUREUIL).get());
+        playerDeck.add(stock.getCard(AnimalStock.ECUREUIL).get());
+        playerDeck.add(stock.getCard(AnimalStock.HERMINE).get());
+        playerDeck.add(stock.getCard(AnimalStock.HERMINE).get());
+        playerDeck.add(stock.getCard(AnimalStock.LOUVETEAU).get());
+        playerDeck.add(stock.getCard(AnimalStock.ELAN).get());
+        playerDeck.add(stock.getCard(AnimalStock.LOUP).get());
+        playerDeck.add(stock.getCard(AnimalStock.LOUP).get());
+        playerDeck.add(stock.getCard(AnimalStock.PUNAISE).get());
+        playerDeck.add(stock.getCard(AnimalStock.CHAT).get());
     }
 
 }

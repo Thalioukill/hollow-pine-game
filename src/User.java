@@ -17,7 +17,7 @@ public class User extends Player{
 
     public void resetForNewGame() {
         this.m_deck = new ArrayList<>(m_deckSave); // copie fraîche
-        this.m_boardLine = new BoardLine();
+        this.m_boardLine.clear();
         this.m_hand.clear();
     }
 
@@ -59,6 +59,7 @@ public class User extends Player{
 
     // retire la carte de la main et retourne l'élément qui était dedans à l'index de la lettre donnée (ici la Card), on l'utilise uniquement quand yune carte est
     // jouée et donc placée autre part, donc si l'index est mauvais c'est une erreur du code...
+
     public Animal removeCard(int index) {
         if (index < 0 || index >= m_hand.size()) {
             // Exception non-contrôlée pour signaler un bug interne

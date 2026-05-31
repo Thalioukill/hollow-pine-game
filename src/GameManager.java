@@ -1,6 +1,4 @@
-import java.util.ArrayList;
-import java.util.Optional;
-import java.util.Scanner;
+import java.util.*;
 
 public class GameManager {
     // Attributs privés (Encapsulation forte)
@@ -8,6 +6,13 @@ public class GameManager {
     private User m_player;
     private int m_gamesCount;
     private final int MAX_GAMES = 3;
+    // liste des stratégies du Opponent...
+    private final ArrayList<GameStrategy> m_strategies = new ArrayList<>(List.of(
+            new FirstGame(),
+            new SecondGame(),
+            new ThirdGame()
+    ));
+
 
     public GameManager(Interactions dialogue, User player) {
         this.m_player = player;
@@ -23,7 +28,7 @@ public class GameManager {
         while (m_gamesCount <= MAX_GAMES && campaignWon) {
             m_player.resetForNewGame();
             // Orchestration : on crée les nouveaux objets nécessaires à chaque match
-            campaignWon = playNewGame(m_gamesCount);
+            campaignWon = playNewGame();
 
             if (campaignWon) {
                 // Gestion de la progression entre les matchs
@@ -36,37 +41,80 @@ public class GameManager {
         this.displayFinalResult(campaignWon);
     }
 
-    private boolean playNewGame(int gamesCount) {
+    private Optional<GameStrategy> getStrategy(int index) {
+        if (index >= 0 && index < m_strategies.size()) {
+            return Optional.of(m_strategies.get(index));
+        }
+        return Optional.empty();
+    }
+
+    private boolean playNewGame() {
         // Création des objets spécifiques au match (Composition)
         GameBoard board = new GameBoard();
-        GameStrategy opponent;
 
-        if(gamesCount == 1){
-            opponent = new FirstGame();
+        int index = m_gamesCount+1;
+        Optional<GameStrategy> optStrategy = getStrategy(index);
+
+        // à enlever quand on aura regardé que le code passe bien...
+        if (optStrategy.isEmpty()) {
+            throw new IllegalArgumentException("Erreur : Stratégie de match non trouvée.");
         }
-        else if (gamesCount == 2){
-            opponent = new SecondGame();
-        }
-        else if (gamesCount == 3){
-            opponent = new ThirdGame();
-        }
+        GameStrategy strategy = optStrategy.get();
+
+        // on clear le BoardLine pour la nouvelle game => il est vide et on peut placer des Obstacles dessus si on veut...
+        this.m_player.resetForNewGame();
+
+        placeUserObstacles();
 
         // Injection de dépendances : on donne les joueurs et le plateau à la Game
-        Game currentGame = new Game(board, this.m_player,this.m_dialogue, opponent);
+        Game currentGame = new Game(board, this.m_player,this.m_dialogue, strategy);
         // Appel de la logique du match (boucle de rounds)
         return currentGame.runGame();
     }
 
+
     private void offerNewCard() {
-        //proposer deux cartes et en ajouter une au deck
-        //il faut aussi gérer le dialogue
-        //this.m_dialogue.offerNewCard();
+        ArrayList<String> rewards = new ArrayList<>(List.of(AnimalStock.GRIZZLY, AnimalStock.COYOTE, AnimalStock.VIPERE, AnimalStock.PORC_EPIC, AnimalStock.CORBEAU));
+
+        Collections.shuffle(rewards);
+        AnimalStock animalStock = new AnimalStock();
+
+        String nameA = rewards.get(0);
+        String nameB = rewards.get(1);
+
+        Optional<Animal> optA = animalStock.getCard(nameA);
+        Optional<Animal> optB = animalStock.getCard(nameB);
+
+        if (optA.isEmpty()) {
+            throw new IllegalArgumentException("Carte récompense inconnue");
+        }
+        Animal choiceA = optA.get();
+
+        if(optB.isEmpty()){
+            throw new IllegalArgumentException("Carte récompense inconnue");
+        }
+        Animal choiceB = optB.get();
+
+        // on demande à l'utilisateur
+        Animal chosen = m_dialogue.offerNewCardChoice(choiceA, choiceB);
+
+        // ajout définitif au deckSaver
+        m_player.addPermanentCard(chosen);
     }
 
     private void displayFinalResult(boolean victory) {
         this.m_dialogue.displayFinalResult(victory);
     }
 
+    private void placeUserObstacles() {
+        ObstacleStock objets = new ObstacleStock();
+        switch (this.m_gamesCount) {
+            case 1 -> {} // pas d'obstacles
+            case 2 -> { m_player.placeCardAt(objets.getObstacle(ObstacleStock.SAPIN).get(), 0);
+            }
+            case 3 -> { m_player.placeCardAt(objets.getObstacle(ObstacleStock.ROCHER).get(), 2);}
+        }
+    }
 
 
     @Override

@@ -44,7 +44,7 @@ public class Game {
 
             this.m_currentPlayer = this.m_opponent;
 
-            this.m_opponent.opponentAction(); // L'Opponent place ses cartes sur sa ligne de jeu.
+            this.m_strategy.opponentAction(this.m_opponent, nbRounds); // L'Opponent place ses cartes sur sa ligne de jeu.
 
             // appelle la méthode de combat : Opponent attaque le User
             m_score -= combatPhase(this.m_user); // Attaque des cartes + mise à jour du score

@@ -15,6 +15,12 @@ public class BoardLine {
         return position >= 0 && position < 4;
     }
 
+    public void clear() {
+        for (int i = 0; i < 4; i++) {
+            m_slots.set(i, Optional.empty());
+        }
+    }
+
     // renvoie un Optional vide si l'index est mauvais => géré dans le User avec une Interactions : froce à vérifier que tout va bien.
     public Optional<Card> getCardAt(int position) {
         return m_slots.get(position);
@@ -56,6 +62,15 @@ public class BoardLine {
         this.m_slots.set(index, card);
     }
 
+    public void notifyTurnStarted() {
+        for (int i = 0; i < 4; i++) {
+            final int pos = i; // Nécessaire pour la lambda
+            m_slots.get(i).ifPresent(card -> {
+                    card.triggerStartTurn(pos, this);
+            });
+        }
+    }
+
     @Override
     public String toString() {
         return m_slots.toString();
@@ -70,40 +85,40 @@ public class BoardLine {
 
             if (optCard.isPresent()) {
                 Card attackerCard = optCard.get();
-                Optional<Card> optTarget = opponentLine.isAttacked(i);
+                // Renvoie la carte à attaquer si elle existe, empty sinon
+                Optional<Card> optTarget = opponentLine.getCardAt(i);
 
-                if(optTarget.isPresent()){
+                if (attackerCard.isTargetBypassed() || optTarget.isEmpty()) {
+                    totalDirectDamage += attackerCard.getAttackPoints();
 
+                } else {
+                    // Combat classique carte contre carte
                     Card target = optTarget.get();
                     attackerCard.attack(target);
+                    attackerCard.triggerPostAttack(i, this);
 
-                    if(target.isDead()){
+                    if (target.isDead()) {
+
                         opponentLine.removeCardAt(i);
                     }
-                }
-                else{
-                    totalDirectDamage += attackerCard.getAttackPoints();
                 }
             }
         }
         return totalDirectDamage;
     }
 
-    // Renvoie la carte à attaquer si elle existe, empty sinon
-    public Optional<Card> isAttacked(int position) {
-        return this.getCardAt(position);
-    }
-/*
-    public int attack(BoardLine opponentLine, Game game) {
-        for (int i = 0; i < 4; i++) {
-            Optional<Card> optCard = m_slots.get(i);
-            if (optCard.isPresent()) {
-                Card card = optCard.get();
-                if (card.getAttackPoints() > 0) {
-                    card.attack(i, opponentLine, game);
-                }
-            }
+    public void replaceCard(int position, Card newCard) {
+        if (position >= 0 && position < 4) {
+            m_slots.set(position, Optional.of(newCard));
         }
     }
- */
+
+    public void moveCard(int from, int to) {
+        if (m_slots.get(from).isPresent() && m_slots.get(to).isEmpty()) {
+            Optional<Card> card = m_slots.get(from);
+            m_slots.set(to, card);           // Place la carte à la nouvelle position
+            m_slots.set(from, Optional.empty()); // Vide l'ancienne position
+        }
+    }
+
 }

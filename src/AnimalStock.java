@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.Optional;
 
-public class CardStock {
+public class AnimalStock {
     private final ArrayList<Animal> m_templates = new ArrayList<>();
     // Constantes de noms (comme un genre d'enum...
     public static final String CHAT = "Chat";
@@ -12,12 +12,12 @@ public class CardStock {
     public static final String LOUVETEAU = "Louveteau";
     public static final String LOUP = "Loup";
     public static final String PUNAISE = "Punaise";
-    public static final String ELAN = "Moineau";
+    public static final String ELAN = "Élan";
     public static final String VIPERE = "Vipère";
     public static final String PORC_EPIC = "Porc-épic";
     //Bloc d'initialisation statique pour remplir le stock au chargement de la classe.
 
-    public CardStock() {
+    public AnimalStock() {
         // Ajout des animaux terrestres (Nom, Atk, HP, Blood, Bone)
         m_templates.add(new Animal(CHAT, 0, 1, 1, 0));
         m_templates.add(new Animal(GRIZZLY,4, 6, 3, 0));

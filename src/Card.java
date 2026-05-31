@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.Collection;
+
 public abstract class Card {
     protected final String m_name; // nom cahneg pas
     protected Integer m_healthPoints;
@@ -21,11 +24,28 @@ public abstract class Card {
         return m_healthPoints;
     }
 
+    public void isAttacked(int amount, Animal attacker){
+        this.takeDamage(amount);
+    }
+
     // Attaque la carte en face
     public abstract void attack(Card target);
-    // Reçoit une attaque
-    public abstract void isAttacked(int amount);
 
+    public boolean isTargetBypassed() {
+        return false;
+    }
+
+    public void triggerPostAttack(int position, BoardLine line) {
+        // Méthode vide
+    }
+
+    public void triggerStartTurn(int position, BoardLine line) {
+        // les obstacles ignorent
+    }
+
+    public boolean survivesSacrifice() {
+        return false;
+    }
 
     public abstract int getAttackPoints();
 
@@ -35,4 +55,10 @@ public abstract class Card {
     }
 
     public abstract boolean isSacrificable();
+
+    public void takeDamage(int amount) {
+            this.m_healthPoints-= amount;
+    }
+
+    public abstract ArrayList<String> getSpecificDisplayLines();
 }
