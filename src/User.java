@@ -6,12 +6,34 @@ import java.util.Optional;
 public class User extends Player{
     private final ArrayList<Animal> m_hand;
     private int m_bonesToken;
+    private final ArrayList<Animal> m_deckSave;
 
     public User(ArrayList<Animal> deck, BoardLine bord) {
-        super(deck, bord); // Appel au constructeur de la classe mère
+        super(deepCopy(deck), bord); // Appel au constructeur de la classe mère
+        this.m_deckSave = deck;
         this.m_hand = new ArrayList<Animal>();
         this.m_bonesToken = 0;
     }
+
+    public void resetForNewGame() {
+        this.m_deck = new ArrayList<>(m_deckSave); // copie fraîche
+        this.m_boardLine = new BoardLine();
+        this.m_hand.clear();
+    }
+
+    public void addPermanentCard(Animal card) {
+        m_deckSave.add(card); // persiste pour toutes les parties futures
+    }
+
+    // Méthode utilitaire privée
+    private static ArrayList<Animal> deepCopy(ArrayList<Animal> source) {
+        ArrayList<Animal> copy = new ArrayList<>();
+        for (Animal a : source) {
+            copy.add(a.cloneAnimal()); // cloneAnimal = copie profonde...
+        }
+        return copy;
+    }
+
 
     // ----- code pour le DECK ------
 
@@ -23,7 +45,7 @@ public class User extends Player{
     //------ Code pour la MAIN ------
     public void addCard(Animal card) {
         // Une main peut techniquement grandir, contrairement au plateau
-        m_hand.add(card);
+        this.m_hand.add(card);
     }
 
     public int getHandSize() {
@@ -32,7 +54,7 @@ public class User extends Player{
 
     // Permet de regarder une carte sans la retirer.
     public Animal getHandCard(int index){
-        return m_hand.get(index);
+        return m_hand.get(index);// IndexOutOfBoundsException si bug interne
     }
 
     // retire la carte de la main et retourne l'élément qui était dedans à l'index de la lettre donnée (ici la Card), on l'utilise uniquement quand yune carte est

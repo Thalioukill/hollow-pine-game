@@ -28,7 +28,7 @@ public class Animal extends Card {
         this.m_bloodCost = other.m_bloodCost;
         this.m_boneCost = other.m_boneCost;
         for (Ability a : other.m_abilities) {
-            this.addAbility(a); // Ability sans état → pas besoin de copier
+            this.addAbility(a);
         }
     }
 

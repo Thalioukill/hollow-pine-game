@@ -13,23 +13,20 @@ public class Opponent extends Player{
 
     public void placePrevisionCard(int position){
         if (!m_previsionLine.isOccupied(position)) {
-            Animal animal = this.m_deck.removeFirst(); // lance NoSuchElementException si vide = bug
+            Animal animal = this.draw(); // lance NoSuchElementException si vide = bug
             m_previsionLine.placeCardAt(animal, position);
         }
     }
 
-    public void placeCards() {
-        // Déplacer les cartes de la ligne de prévision vers la boardLine
-        // Remplir la ligne de prévision pour le tour suivant
-
+    public void applyPrevision() {
+        for (int i = 0; i < 4; i++) {
+            Optional<Card> card = this.m_previsionLine.getCardAt(i);
+            if (card.isPresent()) {
+                this.m_boardLine.placeCardAt(card.get(), i);
+                this.m_previsionLine.removeCardAt(i);
+            }
+        }
     }
-
-    /*
-    public void round1(){
-        placePrevisionCard(1);
-        placePrevisionCard(3);
-    }
-     */
 
     @Override
     public String toString() {

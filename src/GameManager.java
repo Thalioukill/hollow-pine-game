@@ -9,40 +9,19 @@ public class GameManager {
     private int m_gamesCount;
     private final int MAX_GAMES = 3;
 
-    public GameManager(Interactions dialogue) {
+    public GameManager(Interactions dialogue, User player) {
+        this.m_player = player;
+
         this.m_dialogue = dialogue;
-        // Initialisation à l'extérieur des objets Game pour la persistance
-        CardStock stock = new CardStock();
-
-        // Création du deck avec les 15 cartes de départ (majorité d'écureuils)
-        ArrayList<Animal> playerDeck = new ArrayList<Animal>();
-        playerDeck.add(stock.getCard(CardStock.ECUREUIL).get());
-        playerDeck.add(stock.getCard(CardStock.ECUREUIL).get());
-        playerDeck.add(stock.getCard(CardStock.ECUREUIL).get());
-        playerDeck.add(stock.getCard(CardStock.ECUREUIL).get());
-        playerDeck.add(stock.getCard(CardStock.ECUREUIL).get());
-        playerDeck.add(stock.getCard(CardStock.ECUREUIL).get());
-        playerDeck.add(stock.getCard(CardStock.ECUREUIL).get());
-        playerDeck.add(stock.getCard(CardStock.HERMINE).get());
-        playerDeck.add(stock.getCard(CardStock.HERMINE).get());
-        playerDeck.add(stock.getCard(CardStock.LOUVETEAU).get());
-        playerDeck.add(stock.getCard(CardStock.LOUVETEAU).get());
-        playerDeck.add(stock.getCard(CardStock.LOUP).get());
-        playerDeck.add(stock.getCard(CardStock.LOUP).get());
-        playerDeck.add(stock.getCard(CardStock.CHAT).get());
-        playerDeck.add(stock.getCard(CardStock.CHAT).get());
-
-        BoardLine playerBord= new BoardLine();
-
-        this.m_player = new User(playerDeck, playerBord);
-        this.m_player.shuffle();
         this.m_gamesCount = 1;
     }
+
 
     public void startCampaign() {
         boolean campaignWon = true;
 
         while (m_gamesCount <= MAX_GAMES && campaignWon) {
+            m_player.resetForNewGame();
             // Orchestration : on crée les nouveaux objets nécessaires à chaque match
             campaignWon = playNewGame(m_gamesCount);
 
@@ -60,8 +39,17 @@ public class GameManager {
     private boolean playNewGame(int gamesCount) {
         // Création des objets spécifiques au match (Composition)
         GameBoard board = new GameBoard();
+        GameStrategy opponent;
 
-        GameStrategy opponent = new FirstGame();
+        if(gamesCount == 1){
+            opponent = new FirstGame();
+        }
+        else if (gamesCount == 2){
+            opponent = new SecondGame();
+        }
+        else if (gamesCount == 3){
+            opponent = new ThirdGame();
+        }
 
         // Injection de dépendances : on donne les joueurs et le plateau à la Game
         Game currentGame = new Game(board, this.m_player,this.m_dialogue, opponent);
@@ -70,8 +58,9 @@ public class GameManager {
     }
 
     private void offerNewCard() {
-        // Selon le README : proposer deux cartes et en ajouter une au deck
-        // m_player.getDeck().addCard(...)
+        //proposer deux cartes et en ajouter une au deck
+        //il faut aussi gérer le dialogue
+        //this.m_dialogue.offerNewCard();
     }
 
     private void displayFinalResult(boolean victory) {

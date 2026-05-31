@@ -5,6 +5,7 @@ import java.util.Scanner;
 //Gère exclusivement les entrées (Scanner) et sorties (System.out) console.
 public class Interactions {
     private final Scanner m_scanner;
+    // DISCLAIMER : potentiellement mattre le player en attributs
 
     public Interactions() {
         // on n'instancie qu'un seul Scanner pour System.in
@@ -21,12 +22,20 @@ public class Interactions {
         boolean test = true;
         while (test) {
             System.out.println("\n--- ACTIONS POSSIBLES ---");
-            System.out.println("[P] Placer une carte sur le plateau\n");
+            if (human.getHandSize() > 0) {
+                System.out.println("[P] Placer une carte sur le plateau\n");
+            } else {
+                System.out.println("Votre main est vide, vous ne pouvez plus placer de carte !");
+            }
             System.out.println("[F] Finir le tour");
             System.out.print("Votre choix : ");
 
             String input = m_scanner.next().toUpperCase(); // On tolère 'p' ou 'P
             if (input.equals("P")) {
+                if (human.getHandSize() == 0) {
+                    System.out.println("Vous n'avez plus de cartes en main !");
+                    continue;
+                }
                 int handPosition = this.askCardLetter(human.getHandSize(), human);
                 Animal handAnimal = human.getHandCard(handPosition);
                 int remainingBlood = handAnimal.getBloodCost();
@@ -142,16 +151,16 @@ public class Interactions {
 
             if (input.length() == 1) {
                 char letter = input.charAt(0);
-                int cardIndex = letterToIndex(letter);
 
-                Animal optAnimal = human.getHandCard(cardIndex);
-
-                /*
-                if (optAnimal.isPresent()) {
-                    // ✅ Saisie valide, on sort
-                    return new AnimalSelection(cardIndex, optAnimal.get());
+                if (!Character.isLetter(letter)) {
+                    System.out.println("Saisie invalide ! Veuillez entrer une lettre entre A et " + maxLetter + ".");
+                    continue;
                 }
-                 */
+                int cardIndex = letterToIndex(letter);
+                Animal animal = human.getHandCard(cardIndex);
+
+                return cardIndex;
+
             }
             // ❌ Saisie invalide → on reboucle et on redemande
             System.out.println("Lettre incorrecte ! Votre main va de A à " + maxLetter + ".");
@@ -171,11 +180,11 @@ public class Interactions {
 
 
     private boolean canAfford(Animal card, User human) {
-        if (!human.hasEnoughBones(card)) {
+        if (human.hasEnoughBones(card)) {
             this.displayMessage("Pas assez d'os (" + human.getBonesToken() + "/" + card.getBoneCost() + ").");
             return false;
         }
-        if(!human.hasEnoughBlood(card)){
+        if(human.hasEnoughBlood(card)){
             this.displayMessage("Pas assez de créatures à sacrifier pour poser cette carte, veuillez en choisir une autre coutant moins de "+ human.getSacrificableCount());
             return false;
         }
@@ -184,23 +193,27 @@ public class Interactions {
 
     // on pioche 1 carte dans le Deck et on l'ajoute à la main.
     public void draw(User joueur) {
+        // Si le deck ET la main sont vides, pas la peine de demander
+        if (joueur.getDeckSize() == 0 && joueur.getHandSize() == 0) {
+            this.displayMessage("Vous n'avez plus de cartes ni en main ni dans la pioche... Il va falloir faire avec !");
+            return;
+        }
         // L'utilisateur a le choix
         boolean wantsToDraw = this.askConfirmation("Voulez-vous piocher une carte pour ce tour ?");
 
         if (wantsToDraw) {
-            //pioche si le deck pas vide (gestion via Optional)
-            try{
+            try {
                 Animal drawnAnimalCard = joueur.draw();
                 joueur.addCard(drawnAnimalCard);
                 this.displayMessage("Vous avez pioché : " + drawnAnimalCard.getName());
-            }
-            catch (NoSuchElementException n){
-                displayMessage("Oups il n'y a plus de cartes dans la pioche...");
+            } catch (NoSuchElementException n) {
+                this.displayMessage("Oups il n'y a plus de cartes dans la pioche...");
             }
         } else {
-            this.displayMessage("Vous avez décidé de ne pas piocher... Etais-ce un bon choix...");
+            this.displayMessage("Vous avez décidé de ne pas piocher... Étais-ce un bon choix...");
         }
     }
+
 
 
 
@@ -215,6 +228,11 @@ public class Interactions {
         } else {
             System.out.println("L'obscurité vous a englouti... Partie terminée.");
         }
+    }
+
+
+    public void offerNewCard(User human) {
+        //human.addPermanentCard();
     }
 
            /*

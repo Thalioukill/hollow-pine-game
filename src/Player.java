@@ -28,7 +28,7 @@ public abstract class Player {
         return m_deck.removeFirst();
     }
 
-    public int getSize() {
+    public int getDeckSize() {
         return m_deck.size();
     }
 
@@ -62,6 +62,10 @@ public abstract class Player {
         return this.m_boardLine.getSacrificableCount();
     }
 
+    public void removeCardAt(int position) {
+        m_boardLine.removeCardAt(toIndex(position));
+    }
+
     // ------
 
     @Override
@@ -71,11 +75,6 @@ public abstract class Player {
                 " Plateau=" + m_boardLine + "]";
     }
 
-        /*
-    public void removeCardAt(int position) {
-        m_boardLine.removeCardAt(position);
-    }
-     */
 
         /*
     // En gros on regarde si la position est valide, et on regarde si il y a une carte, si il y a une carte, on

@@ -39,7 +39,6 @@ public class Game {
             // propose à l'utilisateur ce qu'il veut faire => placer une acrte ou finir son tour...
             takeTurn(m_dialogue, this.m_user);
 
-
             // appelle la méthode de combat : User attaque l'Opponent
             m_score += combatPhase(this.m_opponent); // Attaque des cartes + mise à jour du score
 

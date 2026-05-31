@@ -91,7 +91,7 @@ public class BoardLine {
 
     // Renvoie la carte à attaquer si elle existe, empty sinon
     public Optional<Card> isAttacked(int position) {
-        return this.getCardAt(position); // déjà un Optional<Card> !
+        return this.getCardAt(position);
     }
 /*
     public int attack(BoardLine opponentLine, Game game) {
