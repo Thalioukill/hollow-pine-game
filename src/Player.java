@@ -49,7 +49,7 @@ public abstract class Player {
         return position - 1;
     }
 
-    public int CombatPhase(Player opponent){
+    public int combatPhase(Player opponent){
         return this.m_boardLine.attack(opponent.m_boardLine);
     }
 

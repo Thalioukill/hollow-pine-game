@@ -7,6 +7,8 @@ public class AnimalStock {
     public static final String CHAT = "Chat";
     public static final String GRIZZLY = "Grizzly";
     public static final String COYOTE = "Coyote";
+    public static final String MOINEAU = "Moineau";
+    public static final String CORBEAU = "Corbeau";
     public static final String ECUREUIL = "Ecureuil";
     public static final String HERMINE = "Hermine";
     public static final String LOUVETEAU = "Louveteau";
@@ -19,33 +21,56 @@ public class AnimalStock {
 
     public AnimalStock() {
         // Ajout des animaux terrestres (Nom, Atk, HP, Blood, Bone)
-        m_templates.add(new Animal(CHAT, 0, 1, 1, 0));
         m_templates.add(new Animal(GRIZZLY,4, 6, 3, 0));
         m_templates.add(new Animal(COYOTE,2, 1, 0, 4));
-        m_templates.add(new Animal(ECUREUIL,0, 1, 0, 0));
+        m_templates.add(new Animal(ECUREUIL,1, 0, 0, 0));
         m_templates.add(new Animal(HERMINE,1, 3, 1, 0));
-        m_templates.add(new Animal(LOUVETEAU,1, 1, 1, 0));
         m_templates.add(new Animal(LOUP,3, 2, 2, 0));
-        m_templates.add(new Animal(PUNAISE,1, 2, 0, 2));
-        m_templates.add(new Animal(ELAN,2, 4, 2, 0));
-        m_templates.add(new Animal(VIPERE,1, 1, 2, 0));
-        m_templates.add(new Animal(PORC_EPIC,1, 2, 1, 0));
-        /*
-        // Animaux volants (Animals avec une FlyingAbility)
+
+        // Chat — Nombreuses Vies
+        Animal chat = new Animal(CHAT, 0, 1, 1, 0);
+        chat.addAbility(new MultipleLivesAbility());
+        m_templates.add(chat);
+
+
+        // Moineau — Volant
         Animal moineau = new Animal(MOINEAU, 1, 2, 1, 0);
         moineau.addAbility(new FlyingAbility());
         m_templates.add(moineau);
 
+        // Corbeau — Volant
         Animal corbeau = new Animal(CORBEAU, 2, 3, 2, 0);
         corbeau.addAbility(new FlyingAbility());
         m_templates.add(corbeau);
-        */
+
+        // Louveteau — Croissance (se transforme en Loup)
+        Animal louveteau = new Animal(LOUVETEAU, 1, 1, 1, 0);
+        louveteau.addAbility(new GrowthAbility(new Animal(LOUP, 3, 2, 2, 0)));
+        m_templates.add(louveteau);
+
+        // Punaise — Puant
+        Animal punaise = new Animal(PUNAISE, 1, 2, 0, 2);
+        punaise.addAbility(new StinkyAbility());
+        m_templates.add(punaise);
+
+        // Élan — Coureur
+        Animal elan = new Animal(ELAN, 2, 4, 2, 0);
+        elan.addAbility(new RunnerAbility());
+        m_templates.add(elan);
+
+        // Vipère — Contact Mortel
+        Animal vipere = new Animal(VIPERE, 1, 1, 2, 0);
+        vipere.addAbility(new DeathTouchAbility());
+        m_templates.add(vipere);
+
+        // Porc-épic — Piques Pointues
+        Animal porcEpic = new Animal(PORC_EPIC, 1, 2, 1, 0);
+        porcEpic.addAbility(new SharpQuillsAbility());
+        m_templates.add(porcEpic);
     }
 
     /*
-     Récupère une NOUVELLE instance d'une carte par son nom.
-     Il est crucial de renvoyer une copie pour éviter que les dégâts
-     en jeu ne modifient le modèle dans le stock
+     Récupère une NOUVELLE instance d'une carte par son nom = copie profonde !
      */
 
     public Optional<Animal> getCard(String name) {

@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Optional;
 
 public class Animal extends Card {
 
@@ -27,6 +26,7 @@ public class Animal extends Card {
         this.m_attackPoints = other.m_attackPoints;
         this.m_bloodCost = other.m_bloodCost;
         this.m_boneCost = other.m_boneCost;
+        this.m_abilities = new ArrayList<>();
         for (Ability a : other.m_abilities) {
             this.addAbility(a);
         }
@@ -66,7 +66,7 @@ public class Animal extends Card {
         target.isAttacked(this.m_attackPoints, this);
         if (!target.isDead()) {
             for (Ability a : m_abilities) {
-                a.onKill(target);
+                a.onAttack(target);
             }
         }
     }
@@ -156,6 +156,33 @@ public class Animal extends Card {
             }
         }
         return false;
+    }
+
+    @Override
+    public ArrayList<String> getDisplayLines() {
+        ArrayList<String> lines = new ArrayList<>();
+        lines.add("*-----------*");
+        lines.add(String.format("| %-9s |", truncate(m_name, 9)));
+        lines.add("|-----------|");
+        lines.add(String.format("| PV:  %-6d |", m_healthPoints));
+        lines.add(String.format("| Atk: %-5d |", m_attackPoints));
+        lines.add(String.format("| %-9s |", truncate(getAbilitiesDisplay(), 9)));
+        lines.add("*-----------*");
+        return lines;
+    }
+
+    private String getAbilitiesDisplay() {
+        if (m_abilities.isEmpty()) return "";
+        StringBuilder sb = new StringBuilder();
+        for (Ability a : m_abilities) {
+            sb.append(a.getName()).append(" ");
+        }
+        return sb.toString().trim();
+    }
+
+    private String truncate(String s, int maxLength) {
+        if (s.length() <= maxLength) return s;
+        return s.substring(0, maxLength);
     }
 
 

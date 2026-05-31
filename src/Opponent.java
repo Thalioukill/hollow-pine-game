@@ -28,6 +28,10 @@ public class Opponent extends Player{
         }
     }
 
+    public Optional<Card> getPrevisionCardAt(int position) {
+        return m_previsionLine.getCardAt(position);
+    }
+
     @Override
     public String toString() {
         return "Opponent[" + super.toString() + ", prévision=" + m_previsionLine + "]";

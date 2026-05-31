@@ -35,10 +35,20 @@ public class Obstacle extends Card{
 
 
     @Override
-    public ArrayList<String> getSpecificDisplayLines() {
+    public ArrayList<String> getDisplayLines() {
         ArrayList<String> lines = new ArrayList<>();
+        lines.add("*-----------*");
+        lines.add(String.format("| %-9s |", truncate(m_name, 9)));
+        lines.add("|-----------|");
+        lines.add(String.format("| PV:  %-5d |", m_healthPoints));
         lines.add("|           |");
-        lines.add("|           |");
+        lines.add("| Obstacle  |");
+        lines.add("*-----------*");
         return lines;
+    }
+
+    private String truncate(String s, int maxLength) {
+        if (s.length() <= maxLength) return s;
+        return s.substring(0, maxLength);
     }
 }

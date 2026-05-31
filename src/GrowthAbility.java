@@ -1,14 +1,23 @@
-public class GrowthAbility {
+public class GrowthAbility extends Ability{
+    private final Animal m_finalForm;
+
+    public GrowthAbility(Animal loup) {
+        this.m_finalForm = loup;
+    }
+
     @Override
-    public void onTurnStarted(Animal self, int position, BoardLine line) {
-        // L'animal s'est déjà "reposé" un tour, on procède à la transformation
+    public void onTurnUpdate(Animal self, int position, BoardLine line) {
 
-        // Création de l'instance du Loup (Atk: 3, PV: 2)
-        Animal loup = AnimalFactory.createLoup();
 
-        // 2. Remplacement physique sur le plateau
-        line.replaceCard(position, loup);
 
-        System.out.println("Le Louveteau a grandi en Loup !");
+       /* // L'animal s'est déjà "reposé" un tour, on procède à la transformation
+        AnimalStock stock = new AnimalStock();
+        Animal loup = stock.getCard(AnimalStock.LOUP).get();
+        */
+        line.replaceCard(position, m_finalForm.cloneAnimal());
+    }
+
+    public String getName(){
+        return "Croissance";
     }
 }

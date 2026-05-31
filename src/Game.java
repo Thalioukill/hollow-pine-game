@@ -1,6 +1,3 @@
-import java.util.Scanner;
-import java.util.Optional;
-
 public class Game {
     // SAVOIR OU EST CE QU'ON VA CREER UNE INTERCATIONS (1 dialogie avec l'utilisateur...)
     // Attributs privés (Encapsulation forte)
@@ -33,6 +30,8 @@ public class Game {
             // On met le USER comme premier joueur du round
             this.m_currentPlayer = this.m_user;
 
+            this.m_user.notifyTurnStarted(); // Croissance
+
             // Le joueur pioche au départ du tour...
             m_dialogue.draw(this.m_user);
 
@@ -49,60 +48,25 @@ public class Game {
             // appelle la méthode de combat : Opponent attaque le User
             m_score -= combatPhase(this.m_user); // Attaque des cartes + mise à jour du score
 
+            m_gameboard.display(m_user, m_opponent, m_score);
+
         } while (Math.abs(this.m_score) < 5);
         return this.m_score >= 5;
     }
 
     public void takeTurn(Interactions m_dialogue, User human) {
+        m_gameboard.display(human, this.m_opponent, this.m_score);
         boolean turnEnded = false;
         while (!turnEnded) {
-            boolean wantsToPlay = m_dialogue.askNextAction(human);
-            if (!wantsToPlay) {
-                turnEnded = true;
-            }
+            turnEnded = !m_dialogue.askNextAction(human);
+            m_gameboard.display(m_user, m_opponent, m_score);
         }
     }
 
     public int combatPhase(Player attackedPlayer) {
 
-        return this.m_currentPlayer.CombatPhase(attackedPlayer);
-        /*
-        // On verifie qui est le joueur qui joue actuellement (Ici m_user ce qui veut dire que la personne qui subit les dégats est le m_opponent)
-        int damagePoint = 0;
-        // equals
-        if (m_currentPlayer == m_user) {
-            for (int i = 0; i < 4; i++) {
-                int damage = m_currentPlayer.getCardAt(i).get().getAttackPoints(); // PENSER A METTRE CA DANS OBSTACLE ET RETURN 0
-                if (!m_opponent.takeDamage(damage, i)) {
-                    damagePoint += damage;
-                }
-
-            }
-            // ON change le joueur en cours
-            m_currentPlayer = m_opponent;
-        } else {
-            for (int i = 0; i < 4; i++) {
-                int damage = m_currentPlayer.getCardAt(i).getAttackPoints();
-                if (!m_user.takeDamage(damage, i)) // Faire methode qui renvoie un boolean (True si une creature s'y trouve et prend des dégats, false si y a pas de créature)
-                {
-                    damagePoint += damage;
-                }
-            }
-            m_currentPlayer = m_user;
-        }
-        // on retourne les dégats pour changer le score de Game
-        return damagePoint;
-        */
+        return this.m_currentPlayer.combatPhase(attackedPlayer);
     }
-
-/*
-// il faudrait faire un switchCase avec le nbre de Rounds, chaque round est prévu à l'avance
-    private void startRound(int nbRounds) {
-        // Affichage des prévisions de l'adversaire sur la ligne du haut.
-        // Méthode à implémenter que pour le OPPONENT !!!
-
-    }
-*/
 
     @Override
     public String toString() {

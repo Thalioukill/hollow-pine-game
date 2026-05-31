@@ -2,105 +2,88 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 public class GameBoard {
-    private ArrayList<String>[] creationAffichageCartes(ArrayList<Optional<Animal>> listeCarte){
-        ArrayList<String>[] cartes = new ArrayList[4];
-        for (int i=0; i<4; i++){
-            cartes[i] = new ArrayList<>();
-            Optional<Card> optCard = listeCarte.get(i);
+    private static final String SEP = "   ";
 
-            if (optCard.isEmpty()) {
-                remplirSlotVide(cartes[i]);
-            } else {
-                remplirSlotOccupe(cartes[i], optCard.get());
-            }
-        }
-        return cartes;
+    public void display(User user, Opponent opponent, int score) {
+        System.out.println("\n================ PLATEAU (Balance: " + score + " | Os: " + user.getBonesToken() + ") ================\n");
+        System.out.println("              -- Prévisions adversaire --");
+        renderBoardLine(opponent, true);
+        System.out.println("      ||                ||              ||            ||");
+        System.out.println("     \\/               \\/             \\/           \\/");
+        System.out.println("                      -- Adversaire --");
+        renderBoardLine(opponent, false);
+        System.out.println("\n                           -- Vous --");
+        renderBoardLine(user, false);
+        displayHand(user);
+        displayDeck(user);
     }
 
-    private void remplirSlotVide(ArrayList<String> lines) {
+    private void renderBoardLine(Player player, boolean isPrevision) {
+        ArrayList<ArrayList<String>> allLines = collectLines(player, isPrevision);
+        printAllLines(allLines);
+    }
+
+    private ArrayList<ArrayList<String>> collectLines(Player player, boolean isPrevision) {
+        ArrayList<ArrayList<String>> allLines = new ArrayList<>();
+        for (int i = 0; i < 4; i++) {
+            Optional<Card> optCard = isPrevision
+                    ? ((Opponent) player).getPrevisionCardAt(i)
+                    : player.getBoardLineCardAt(i + 1);
+            allLines.add(getCardLines(optCard));
+        }
+        return allLines;
+    }
+
+    private void printAllLines(ArrayList<ArrayList<String>> allLines) {
+        for (int row = 0; row < 7; row++) {
+            StringBuilder sb = new StringBuilder("  ");
+            for (ArrayList<String> cardLines : allLines) {
+                sb.append(cardLines.get(row)).append(SEP);
+            }
+            System.out.println(sb);
+        }
+    }
+
+    private ArrayList<String> getCardLines(Optional<Card> optCard) {
+        return optCard.map(Card::getDisplayLines)
+                .orElseGet(this::emptyCardLines);
+    }
+
+    private ArrayList<String> emptyCardLines() {
+        ArrayList<String> lines = new ArrayList<>();
         lines.add("*************");
-        for (int j = 0; j < 5; j++) {
+        for (int i = 0; i < 5; i++) {
             lines.add("*           *");
         }
         lines.add("*************");
+        return lines;
     }
 
-    private void remplirSlotOccupe(ArrayList<String> lines, Card card) {
-        lines.add("*-----------*");
-        lines.add("| " + String.format("%-9s", card.getName()) + " |");
-        lines.add("|-----------|");
-        lines.add(String.format("| PV: %-6d |", card.getHealthPoints()));
-
-        // Le polymorphisme choisit la bonne version (Animal ou Obstacle)
-        //lines.addAll(card.getSpecificDisplayLines());
-
-        lines.add("*-----------*");
-}
-
-
-    private void affichageCarte(ArrayList<String>[] cartes){
-        for (int i=0; i<7; i++){
-            System.out.print("      ");
-            for (ArrayList<String> c : cartes){
-                System.out.print(c.get(i) + "   ");
-            }
-            System.out.println();
+    private void displayHand(User user) {
+        System.out.println("\nVotre main :");
+        for (int i = 0; i < user.getHandSize(); i++) {
+            char letter = (char) ('A' + i);
+            Animal card = user.getHandCard(i);
+            System.out.println("  [" + letter + "] "
+                    + card.getName()
+                    + " | PV: "   + card.getHealthPoints()
+                    + " | Atk: "  + card.getAttackPoints()
+                    + " | Sang: " + card.getBloodCost()
+                    + " | Os: "   + card.getBoneCost());
         }
     }
-    public void affichage(int partie, int partiesGagneesJoueur, int tour, BoardLine emplacementJ2, BoardLine emplacementTour, BoardLine emplacementJ1, int score, int os, ArrayList<Animal> main, ArrayList<Animal> pioche){
-        System.out.println("Partie "+partie+" | Gagnées : "+partiesGagneesJoueur+" | Perdues : "+ (partie-partiesGagneesJoueur - 1));
-        System.out.println("Tour n° "+tour);
 
-        ArrayList<String>[] cartesAdv;
-        cartesAdv = new ArrayList[4];
-        cartesAdv = creationAffichageCartes(emplacementJ2);
-
-        ArrayList<String>[] cartesTour;
-        cartesTour = new ArrayList[4];
-        cartesTour = creationAffichageCartes(emplacementTour);
-
-        ArrayList<String>[] cartesJoueur;
-        cartesJoueur = new ArrayList[4];
-        cartesJoueur = creationAffichageCartes(emplacementJ1);
-
-        affichageCarte(cartesAdv);
-
-        System.out.println("            ||              ||              ||              ||");
-        System.out.println("            \\/              \\/              \\/              \\/");
-
-        affichageCarte(cartesTour);
-
-        System.out.println("Balance : " + score);
-        System.out.println("Os : " + os);
-
-        affichageCarte(cartesJoueur);
-
-        System.out.println("Votre main : ");
-
-        int n = 0;
-        for (Animal a : main){
-            n++;
-            System.out.print("\n"+n+". "+a.getName()+" PV: "+a.getHealthPoints()+" | Atk: "+a.getAttackPoints()+" | Gouttes de sang: "+a.getBloodCost()+" | Os : "+a.getBoneCost()+"\n");
-        }
-        System.out.println();
-
-        System.out.println("Pioche");
-
-
-        System.out.println("*-----------*");
+    private void displayDeck(User user) {
+        System.out.println("\n*-----------*");
         System.out.println("|           |");
+        System.out.printf( "|   %-2d      |%n", user.getDeckSize());
+        System.out.println("|  cartes   |");
         System.out.println("|           |");
-        if (pioche.size() < 10) //Pour prévenir le décalage de la barre de fin de ligne si la taille ne tient que sur un caractère, il y a un espace en moins dans le else
-        {
-            System.out.println("|    "+pioche.size()+"      |");
-        }
-        else
-        {
-            System.out.println("|    "+pioche.size()+"     |");
-        }
-        System.out.println("|   cartes  |");
-        System.out.println("|           |");
-        System.out.println("*-----------*");
+        System.out.println("*-----------*\n");
     }
 
+    @Override
+    public String toString() {
+        return "GameBoard[]";
+    }
 }

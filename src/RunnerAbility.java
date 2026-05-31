@@ -15,4 +15,5 @@ public class RunnerAbility extends Ability{
         // Sinon, on ne bouge pas
     }
 
+    public String getName() { return "Coureur"; }
 }

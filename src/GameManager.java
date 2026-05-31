@@ -26,7 +26,6 @@ public class GameManager {
         boolean campaignWon = true;
 
         while (m_gamesCount <= MAX_GAMES && campaignWon) {
-            m_player.resetForNewGame();
             // Orchestration : on crée les nouveaux objets nécessaires à chaque match
             campaignWon = playNewGame();
 
@@ -52,7 +51,7 @@ public class GameManager {
         // Création des objets spécifiques au match (Composition)
         GameBoard board = new GameBoard();
 
-        int index = m_gamesCount+1;
+        int index = m_gamesCount-1;
         Optional<GameStrategy> optStrategy = getStrategy(index);
 
         // à enlever quand on aura regardé que le code passe bien...

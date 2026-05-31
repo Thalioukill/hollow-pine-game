@@ -1,8 +1,10 @@
 public class DeathTouchAbility extends Ability {
     @Override
-    public void afterAttack(Animal attacker, Animal target, Player defenderOwner, Game game) {
+    public void onAttack(Card target) {
         //plus de hp point = death
         target.takeDamage(target.getHealthPoints());
     }
+
+    public String getName() { return "Contact MORTEL"; }
 }
 

@@ -3,4 +3,6 @@ public class SharpQuillsAbility extends Ability{
     public void onHit(Animal self, Animal attacker) {
         attacker.takeDamage(1); // riposte 1 dégât
     }
+
+    public String getName() { return "Piques aiguisés"; }
 }

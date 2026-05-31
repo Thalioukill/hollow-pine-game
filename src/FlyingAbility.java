@@ -4,6 +4,7 @@ public class FlyingAbility extends Ability {
         return true;
     }
 
+    public String getName() { return "Volant"; }
 
 }
 

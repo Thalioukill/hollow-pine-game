@@ -24,7 +24,7 @@ public abstract class Card {
         return m_healthPoints;
     }
 
-    public void isAttacked(int amount, Animal attacker){
+    public void isAttacked(int amount, Card attacker){
         this.takeDamage(amount);
     }
 
@@ -60,5 +60,6 @@ public abstract class Card {
             this.m_healthPoints-= amount;
     }
 
-    public abstract ArrayList<String> getSpecificDisplayLines();
+    public abstract ArrayList<String> getDisplayLines();
+
 }
