@@ -23,7 +23,7 @@ public class AnimalStock {
         // Ajout des animaux terrestres (Nom, Atk, HP, Blood, Bone)
         m_templates.add(new Animal(GRIZZLY,4, 6, 3, 0));
         m_templates.add(new Animal(COYOTE,2, 1, 0, 4));
-        m_templates.add(new Animal(ECUREUIL,1, 0, 0, 0));
+        m_templates.add(new Animal(ECUREUIL,0, 1, 0, 0));
         m_templates.add(new Animal(HERMINE,1, 3, 1, 0));
         m_templates.add(new Animal(LOUP,3, 2, 2, 0));
 

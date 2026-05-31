@@ -98,7 +98,6 @@ public class BoardLine {
                     attackerCard.triggerPostAttack(i, this);
 
                     if (target.isDead()) {
-
                         opponentLine.removeCardAt(i);
                     }
                 }

@@ -32,6 +32,8 @@ public class Game {
 
             this.m_user.notifyTurnStarted(); // Croissance
 
+            m_gameboard.display(m_user, m_opponent, m_score);
+
             // Le joueur pioche au départ du tour...
             m_dialogue.draw(this.m_user);
 
@@ -47,6 +49,7 @@ public class Game {
 
             // appelle la méthode de combat : Opponent attaque le User
             m_score -= combatPhase(this.m_user); // Attaque des cartes + mise à jour du score
+            m_user.addBones(opponentResult.enemiesKilled);
 
             m_gameboard.display(m_user, m_opponent, m_score);
 

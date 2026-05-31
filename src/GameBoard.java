@@ -5,7 +5,7 @@ public class GameBoard {
     private static final String SEP = "   ";
 
     public void display(User user, Opponent opponent, int score) {
-        System.out.println("\n================ PLATEAU (Balance: " + score + " | Os: " + user.getBonesToken() + ") ================\n");
+        System.out.println("\n================= PLATEAU (Balance: " + score + " | Os: " + user.getBonesToken() + ") =================\n");
         System.out.println("              -- Prévisions adversaire --");
         renderBoardLine(opponent, true);
         System.out.println("      ||                ||              ||            ||");
@@ -28,7 +28,7 @@ public class GameBoard {
         for (int i = 0; i < 4; i++) {
             Optional<Card> optCard = isPrevision
                     ? ((Opponent) player).getPrevisionCardAt(i)
-                    : player.getBoardLineCardAt(i + 1);
+                    : player.getBoardLineCardAt(i);
             allLines.add(getCardLines(optCard));
         }
         return allLines;

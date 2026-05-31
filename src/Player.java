@@ -41,12 +41,8 @@ public abstract class Player {
     //------- code pour la BoardLine ------
 
     // il ne faut pas gérer la position ici ?
-    public Optional<Card> getBoardLineCardAt(int position) {
-        return m_boardLine.getCardAt(toIndex(position));
-    }
-
-    private int toIndex(int position) {
-        return position - 1;
+    public Optional<Card> getBoardLineCardAt(int index) {
+        return m_boardLine.getCardAt(index);
     }
 
     public int combatPhase(Player opponent){
@@ -62,8 +58,8 @@ public abstract class Player {
         return this.m_boardLine.getSacrificableCount();
     }
 
-    public void removeCardAt(int position) {
-        m_boardLine.removeCardAt(toIndex(position));
+    public void removeCardAt(int index) {
+        m_boardLine.removeCardAt(index);
     }
 
     // ------

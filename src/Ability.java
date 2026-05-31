@@ -14,7 +14,7 @@ public abstract class Ability {
     }
 
     //Porc-épic => SharpQuills
-    protected void onHit(Animal self, Animal attacker) {
+    protected void onHit(Animal self, Card attacker) {
     }
 
     //Poison => PoisonAbility

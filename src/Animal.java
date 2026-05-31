@@ -12,7 +12,7 @@ public class Animal extends Card {
     private int m_boneCost;
     private ArrayList<Ability> m_abilities;
 
-    public Animal(String name, Integer pv, int attack, int blood, int bone) {
+    public Animal(String name, int attack, Integer pv, int blood, int bone) {
         super(name, pv);
         this.m_attackPoints = attack;
         this.m_bloodCost = blood;

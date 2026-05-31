@@ -17,9 +17,14 @@ public class User extends Player{
 
     public void resetForNewGame() {
         this.m_deck = deepCopy(m_deckSave);
+        Collections.shuffle(this.m_deck);
         this.m_boardLine.clear();
         this.m_hand.clear();
         this.m_bonesToken = 0;
+        // Pioche initiale de 4 cartes
+        for (int i = 0; i < 4; i++) {
+            this.m_hand.add(this.draw());
+        }
     }
 
     public void addPermanentCard(Animal card) {

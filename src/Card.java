@@ -24,7 +24,7 @@ public abstract class Card {
         return m_healthPoints;
     }
 
-    public void isAttacked(int amount, Card attacker){
+    public void isAttacked(int amount, Animal attacker){
         this.takeDamage(amount);
     }
 
