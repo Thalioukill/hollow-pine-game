@@ -4,6 +4,7 @@ import java.util.Optional;
 
 public class Opponent extends Player{
     private BoardLine m_previsionLine;
+    // private int m_actions
 
     public Opponent(ArrayList<Animal> deck, BoardLine bord, BoardLine previsionBoard) {
         super(deck, bord);
@@ -27,6 +28,10 @@ public class Opponent extends Player{
             }
         }
     }
+
+
+
+
 
     public Optional<Card> getPrevisionCardAt(int position) {
         return m_previsionLine.getCardAt(position);

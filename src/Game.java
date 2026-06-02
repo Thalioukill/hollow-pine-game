@@ -49,9 +49,9 @@ public class Game {
 
             // appelle la méthode de combat : Opponent attaque le User
             m_score -= combatPhase(this.m_user); // Attaque des cartes + mise à jour du score
-            m_user.addBones(opponentResult.enemiesKilled);
+            //m_user.addBones(opponentResult.enemiesKilled);
 
-            m_gameboard.display(m_user, m_opponent, m_score);
+            m_gameboard.display(this.m_user, this.m_opponent, this.m_score);
 
         } while (Math.abs(this.m_score) < 5);
         return this.m_score >= 5;
@@ -62,7 +62,7 @@ public class Game {
         boolean turnEnded = false;
         while (!turnEnded) {
             turnEnded = !m_dialogue.askNextAction(human);
-            m_gameboard.display(m_user, m_opponent, m_score);
+            m_gameboard.display(human, this.m_opponent, this.m_score);
         }
     }
 

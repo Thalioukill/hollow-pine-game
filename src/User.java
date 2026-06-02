@@ -15,6 +15,8 @@ public class User extends Player{
         this.m_bonesToken = 0;
     }
 
+    // faire Classe Deck !!!! + dans user faire une méthode qui réinit son deck (injection dépendances)
+    // classe Player deepCopy ?
     public void resetForNewGame() {
         this.m_deck = deepCopy(m_deckSave);
         Collections.shuffle(this.m_deck);

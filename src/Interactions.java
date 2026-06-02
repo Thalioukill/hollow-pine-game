@@ -190,13 +190,14 @@ public class Interactions {
             if (input.length() == 1) {
                 char letter = input.charAt(0);
 
-                if (!Character.isLetter(letter)) {
-                    System.out.println("Saisie invalide ! Veuillez entrer une lettre entre A et " + maxLetter + ".");
-                    continue;
-                }
-                int cardIndex = letterToIndex(letter);
-                //Animal animal = human.getHandCard(cardIndex);
-                return cardIndex;
+
+                    if (!Character.isLetter(letter)) {
+                        System.out.println("Saisie invalide ! Veuillez entrer une lettre entre A et " + maxLetter + ".");
+                        continue;
+                    }
+                    int cardIndex = letterToIndex(letter);
+                    //Animal animal = human.getHandCard(cardIndex);
+                    return cardIndex;
 
             }
             // ❌ Saisie invalide → on reboucle et on redemande
