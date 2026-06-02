@@ -61,6 +61,7 @@ public class GameManager {
         GameStrategy strategy = optStrategy.get();
 
         // on clear le BoardLine pour la nouvelle game => il est vide et on peut placer des Obstacles dessus si on veut...
+        // on doit utiliser un méthode ici...
         this.m_player.resetForNewGame();
 
         placeUserObstacles();
@@ -71,6 +72,21 @@ public class GameManager {
         return currentGame.runGame();
     }
 
+    // faire Classe Deck !!!! + dans user faire une méthode qui réinit son deck (injection dépendances)
+    // classe Player deepCopy ?
+    public void resetForNewGame() {
+        // récup le deckSave
+        ArrayList<Animal> templates = m_player.getDeckSave();
+
+        // copie profonde
+        ArrayList<Animal> sessionDeck = User.deepCopyDeck(templates);
+
+        // Mélange
+        Collections.shuffle(sessionDeck);
+
+        // Étape 4 : Injecter le deck prêt dans le joueur
+        m_player.resetForNewGame(sessionDeck);
+    }
 
     private void offerNewCard() {
         ArrayList<String> rewards = new ArrayList<>(List.of(AnimalStock.GRIZZLY, AnimalStock.COYOTE, AnimalStock.VIPERE, AnimalStock.PORC_EPIC, AnimalStock.CORBEAU));

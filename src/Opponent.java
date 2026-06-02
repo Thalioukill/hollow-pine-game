@@ -29,6 +29,34 @@ public class Opponent extends Player{
         }
     }
 
+    public void opponentAction(int roundNumber, int gameNumber){
+        // transfère la previsionLine vers la boardLine
+        this.applyPrevision();
+        switch(roundNumber){
+            case 1 -> {
+                // transfère la previsionLine vers la boardLine
+                // prépare la previsionLine pour le prochain round...
+                if(gameNumber == 1){
+                    this.placePrevisionCard(0);
+                }
+                else if(gameNumber == 2){
+                    this.placePrevisionCard(2);
+                }
+            }
+            case 2 -> {
+
+                this.placePrevisionCard(2);
+            }
+            case 3 -> {
+
+                this.placePrevisionCard(3);
+            }
+            case 4 -> {
+
+            }
+            default ->{}
+        }
+    };
 
 
 

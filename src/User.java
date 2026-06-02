@@ -9,7 +9,7 @@ public class User extends Player{
     private final ArrayList<Animal> m_deckSave;
 
     public User(ArrayList<Animal> deck, BoardLine bord) {
-        super(deepCopy(deck), bord); // Appel au constructeur de la classe mère
+        super(deepCopyDeck(deck), bord); // Appel au constructeur de la classe mère
         this.m_deckSave = deck;
         this.m_hand = new ArrayList<Animal>();
         this.m_bonesToken = 0;
@@ -17,8 +17,8 @@ public class User extends Player{
 
     // faire Classe Deck !!!! + dans user faire une méthode qui réinit son deck (injection dépendances)
     // classe Player deepCopy ?
-    public void resetForNewGame() {
-        this.m_deck = deepCopy(m_deckSave);
+    public void resetForNewGame(ArrayList<Animal> freshDeck) {
+        /*this.m_deck = deepCopy(m_deckSave);
         Collections.shuffle(this.m_deck);
         this.m_boardLine.clear();
         this.m_hand.clear();
@@ -27,6 +27,20 @@ public class User extends Player{
         for (int i = 0; i < 4; i++) {
             this.m_hand.add(this.draw());
         }
+         */
+
+        // remplace le deck par le nouveau deck fourni
+        this.m_deck = freshDeck;
+
+        // réinitialise les statistiques de jeu
+        this.m_bonesToken = 0;
+        this.m_hand.clear();
+        this.m_boardLine.clear();
+
+        // Pioche initiale de 4 cartes
+        for (int i = 0; i < 4; i++) {
+            this.draw();
+        }
     }
 
     public void addPermanentCard(Animal card) {
@@ -34,7 +48,7 @@ public class User extends Player{
     }
 
     // Méthode utilitaire privée
-    private static ArrayList<Animal> deepCopy(ArrayList<Animal> source) {
+    private static ArrayList<Animal> deepCopyDeck(ArrayList<Animal> source) {
         ArrayList<Animal> copy = new ArrayList<>();
         for (Animal a : source) {
             copy.add(a.cloneAnimal()); // cloneAnimal = copie profonde...
@@ -42,6 +56,9 @@ public class User extends Player{
         return copy;
     }
 
+    public ArrayList<Animal> getDeckSave() {
+        return new ArrayList<>(this.m_deckSave);
+    }
 
     // ----- code pour le DECK ------
 

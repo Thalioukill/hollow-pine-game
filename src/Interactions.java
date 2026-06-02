@@ -106,6 +106,7 @@ public class Interactions {
 
             if (target.survivesSacrifice()) {
                 displayMessage(target.getName() + " survit au sacrifice ! +1 os. +1 goutte de sang.");
+                human.addBonesToken();
             } else {
                 human.sacrifice(sacrificePos);
                 displayMessage("Emplacement libéré. +1 os. +1 goutte de sang.");
@@ -130,30 +131,34 @@ public class Interactions {
 
 
     // Demande une position sur le plateau (chifres 1 à 4).
-
     public int askPosition(User human) {
         while (true) {
-            System.out.print("Entrez le numéro de l'emplacement où vous souhaitez poser la carte (1, 2, 3 ou 4) : ");
-            if (m_scanner.hasNextInt()) {
-                int pos = m_scanner.nextInt();
-                int index = toIndex(pos);
-                Optional<Card> result = Optional.empty();
-                if (pos >= 1 && pos <= 4){
-                    result = human.getBoardLineCardAt(index);
-                }
-                if(result.isPresent()){
-                    System.out.println("Emplacement déjà occupé, veuillez choisir un autre emplacement");
-                }
-                else{
-                    return index;
-                }
-            } else {
-                m_scanner.next(); // Lit le prochain mot
-                // ERREURRRR
-                System.out.println("Saisie invalide ! Vous devez entrer un chiffre entier entre 1 et 4.");
+            System.out.print("Choisissez un emplacement où poser votre carte (1, 2, 3 ou 4) : ");
+
+            // vérif du type
+            if (!m_scanner.hasNextInt()) {
+                System.out.println("Saisie invalide ! Veuillez entrer un chiffre entier.");
+                m_scanner.next(); // on enlève la saisie incorrecte du scanner (sinon elle reste)
+                continue;
+            }
+
+            int pos = m_scanner.nextInt();
+            int index = toIndex(pos);
+
+            // vérif de l'intervalle :
+            if (pos < 1 || pos > 4) {
+                System.out.println("Chiffre incorrect ! L'emplacement doit être entre 1 et 4.");
+            }
+            // vérif si on occupe l'emplacement ou pas
+            else if (human.getBoardLineCardAt(pos).isPresent()) {
+                System.out.println("L'emplacement " + pos + " est déjà occupé, choisissez-en un autre.");
+            }
+            else {
+                return index;
             }
         }
     }
+
 
     public int askPositionSacrifice(User human) {
         while (true) {
@@ -187,23 +192,23 @@ public class Interactions {
             System.out.print("Choisissez une carte dans votre main (lettre entre A et " + maxLetter + ") : ");
             String input = m_scanner.next().toUpperCase();
 
-            if (input.length() == 1) {
-                char letter = input.charAt(0);
-
-
-                    if (!Character.isLetter(letter)) {
-                        System.out.println("Saisie invalide ! Veuillez entrer une lettre entre A et " + maxLetter + ".");
-                        continue;
-                    }
-                    int cardIndex = letterToIndex(letter);
-                    //Animal animal = human.getHandCard(cardIndex);
-                    return cardIndex;
-
+            // test de longueur
+            if (input.length() != 1) {
+                System.out.println("Saisie invalide ! Veuillez n'entrer qu'une seule lettre.");
             }
-            // ❌ Saisie invalide → on reboucle et on redemande
-            System.out.println("Lettre incorrecte ! Votre main va de A à " + maxLetter + ".");
+            else {
+                char letter = input.charAt(0);
+                // test si c'est bien une lettre et dans l'intervalle [A, maxLetter]
+                if (Character.isLetter(letter) && letter >= 'A' && letter <= maxLetter) {
+                    return letter - 'A'; // Retourne l'index 0, 1, 2... directement
+                } else {
+                    System.out.println("Lettre incorrecte ! Veuillez choisir entre A et " + maxLetter + ".");
+                }
+            }
+            // La boucle continue tant qu'on n'a pas fait de 'return'
         }
     }
+
 
     private int letterToIndex(char letter) {
         // Character.toUpperCase pour accepter 'a' ou 'A'

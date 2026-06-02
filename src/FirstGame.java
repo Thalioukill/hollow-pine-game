@@ -23,6 +23,26 @@ public class FirstGame implements GameStrategy{
         return new Opponent(playerDeck, attackBoard, previsionBoard);
     }
 
+    // méthode qui stocke juste les cartes à mettre dans le deck de l'Opponent !
+    public void initDeck(){
+        AnimalStock stock = new AnimalStock();
+        ArrayList<Animal> opponentDeck = new ArrayList<Animal>();
+        stock.getCard(AnimalStock.HERMINE).get();
+        stock.getCard(AnimalStock.HERMINE).get();
+        stock.getCard(AnimalStock.LOUVETEAU).get();
+        stock.getCard(AnimalStock.LOUVETEAU).get();
+        stock.getCard(AnimalStock.LOUP).get();
+        stock.getCard(AnimalStock.LOUP).get();
+        stock.getCard(AnimalStock.ELAN).get();
+
+    }
+
+    // méthode qui stocke les obstacles de ce tour....
+    public void initObstacle(){
+        ObstacleStock obj = new ObstacleStock();
+        obj.getObstacle(ObstacleStock.SAPIN).get();
+    }
+
     /*
         initOpponent  → Coyote en position 3 sur previsionLine (visible dès le début)
         opponentAction(1) = fin du tour 1 → applique Coyote sur board + pioche 1 carte pour la prévision du tour 2
