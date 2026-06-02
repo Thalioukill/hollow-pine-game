@@ -76,8 +76,9 @@ public class BoardLine {
         return m_slots.toString();
     }
 
-    public int attack(BoardLine opponentLine) {
+    public CombatResult attack(BoardLine opponentLine) {
         int totalDirectDamage = 0;
+        int kills = 0;
 
         for (int i = 0; i < 4; i++) {
 

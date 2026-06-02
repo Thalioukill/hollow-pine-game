@@ -8,16 +8,7 @@ public class Main
         //dialogue.displayTitle();
         dialogue.displayMessage("Another challenger... It has been ages.");
 
-        ArrayList<Animal> playerDeck = new ArrayList<Animal>();
-        buildPlayerDeck(playerDeck);
-
-        BoardLine playerBord = new BoardLine();
-
-        User player = new User(playerDeck, playerBord);
-        player.shuffle();
-
-
-        GameManager manager = new GameManager(dialogue, player);
+        GameManager manager = new GameManager(dialogue);
         manager.startCampaign();
 
     }

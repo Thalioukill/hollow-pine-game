@@ -1,11 +1,12 @@
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 
 public class FirstGame implements GameStrategy{
 
     // méthode qui stocke juste les cartes à mettre dans le deck de l'Opponent !
-    public ArrayList<Animal> getDeckOpponent(){
+    public ArrayList<Animal> getOpponentDeck(){
         AnimalStock stock = new AnimalStock();
         ArrayList<Animal> opponentDeck = new ArrayList<Animal>();
         stock.getCard(AnimalStock.HERMINE).get();
@@ -43,13 +44,65 @@ public class FirstGame implements GameStrategy{
         ...
      */
 
-    public ArrayList<Integer> opponentAction(){
-        // return les positions à mettre pour ce deck
-        return ArrayList<Integer>;
-    };
+    // méthode qui stocke les obstacles de ce tour...
+    public HashMap<Integer, Optional<Obstacle>> initObstaclesUser() {
+        return new HashMap<Integer, Optional<Obstacle>>();
+    }
+
+    @Override
+    public ArrayList<Animal> getOpponentDeck(ArrayList<Animal> deck) {
+        return new ArrayList<>();
+    }
 
 
-    public ArrayList<Animal> getDeckUser(){
+    public ArrayList<Animal> getUserDeck(){
+        AnimalStock stock = new AnimalStock();
+        ArrayList<Animal> userDeck = new ArrayList<Animal>();
 
+        // Création du deck avec les 15 cartes de départ (majorité d'écureuils)
+
+        userDeck.add(stock.getCard(AnimalStock.ECUREUIL).get());
+        userDeck.add(stock.getCard(AnimalStock.ECUREUIL).get());
+        userDeck.add(stock.getCard(AnimalStock.ECUREUIL).get());
+        userDeck.add(stock.getCard(AnimalStock.ECUREUIL).get());
+        userDeck.add(stock.getCard(AnimalStock.ECUREUIL).get());
+        userDeck.add(stock.getCard(AnimalStock.ECUREUIL).get());
+        userDeck.add(stock.getCard(AnimalStock.ECUREUIL).get());
+        userDeck.add(stock.getCard(AnimalStock.HERMINE).get());
+        userDeck.add(stock.getCard(AnimalStock.HERMINE).get());
+        userDeck.add(stock.getCard(AnimalStock.LOUVETEAU).get());
+        userDeck.add(stock.getCard(AnimalStock.ELAN).get());
+        userDeck.add(stock.getCard(AnimalStock.LOUP).get());
+        userDeck.add(stock.getCard(AnimalStock.LOUP).get());
+        userDeck.add(stock.getCard(AnimalStock.PUNAISE).get());
+        userDeck.add(stock.getCard(AnimalStock.CHAT).get());
+
+        return userDeck;
+    }
+
+    @Override
+    public ArrayList<Animal> getUserDeck(ArrayList<Animal> deck) {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public RoundAction getPrevisionAction(int roundNumber) {
+        return switch (roundNumber) {
+            case 0 -> new RoundAction(List.of(3));      // init : Coyote pos 3
+            case 1 -> new RoundAction(List.of(0));      // après round 1 : prépare pos 0
+            case 2 -> new RoundAction(List.of(2));      // après round 2 : prépare pos 2
+            case 3 -> new RoundAction(List.of(2, 3));   // plusieurs cartes possible !
+            default -> RoundAction.empty();
+        };
+    }
+
+    @Override
+    public RoundAction getInitialPrevision() {
+        return new RoundAction(List.of(3)); // Coyote en position 3 dès le départ
+    }
+
+    @Override
+    public ArrayList<String> getRewardPool(ArrayList<Animal> playerDeck) {
+        return new ArrayList<>();
     }
 }

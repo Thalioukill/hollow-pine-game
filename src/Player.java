@@ -71,6 +71,10 @@ public abstract class Player {
                 " Plateau=" + m_boardLine + "]";
     }
 
+    public ArrayList<Animal> getDeck() {
+        return new ArrayList<>(m_deck);
+    }
+
 
         /*
     // En gros on regarde si la position est valide, et on regarde si il y a une carte, si il y a une carte, on

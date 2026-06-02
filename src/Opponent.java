@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -12,12 +13,6 @@ public class Opponent extends Player{
         this.m_previsionLine = previsionBoard;
     }
 
-    public void placePrevisionCard(int position){
-        if (!m_previsionLine.isOccupied(position)) {
-            Animal animal = this.draw(); // lance NoSuchElementException si vide = bug
-            m_previsionLine.placeCardAt(animal, position);
-        }
-    }
 
     public void applyPrevision() {
         for (int i = 0; i < 4; i++) {
@@ -29,34 +24,24 @@ public class Opponent extends Player{
         }
     }
 
-    public void opponentAction(int roundNumber, int gameNumber){
-        // transfère la previsionLine vers la boardLine
-        this.applyPrevision();
-        switch(roundNumber){
-            case 1 -> {
-                // transfère la previsionLine vers la boardLine
-                // prépare la previsionLine pour le prochain round...
-                if(gameNumber == 1){
-                    this.placePrevisionCard(0);
-                }
-                else if(gameNumber == 2){
-                    this.placePrevisionCard(2);
-                }
-            }
-            case 2 -> {
-
-                this.placePrevisionCard(2);
-            }
-            case 3 -> {
-
-                this.placePrevisionCard(3);
-            }
-            case 4 -> {
-
-            }
-            default ->{}
+    public void placePrevisionCard(int position){
+        if (!m_previsionLine.isOccupied(position)) {
+            Animal animal = this.draw(); // lance NoSuchElementException si vide = bug
+            m_previsionLine.placeCardAt(animal, position);
         }
-    };
+    }
+
+
+    public void opponentAction(List<Integer> positions) {
+        //Applique la prévision du round précédent sur le board
+        applyPrevision();
+
+        //Prépare la prévision pour le round suivant à l'aide de la liste donnée en param
+        applyPrevision();
+        for (int position : positions) {
+            placePrevisionCard(position);
+        }
+    }
 
 
 

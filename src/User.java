@@ -6,12 +6,16 @@ import java.util.Optional;
 public class User extends Player{
     private final ArrayList<Animal> m_hand;
     private int m_bonesToken;
-    private final ArrayList<Animal> m_deckSave;
+    //private final ArrayList<Animal> m_deckSave;
 
     public User(ArrayList<Animal> deck, BoardLine bord) {
         super(deck, bord); // Appel au constructeur de la classe mère
-        this.m_deckSave = deck;
+        //this.m_deckSave = deck;
         this.m_hand = new ArrayList<Animal>();
+        // Pioche initiale de 4 cartes
+        for (int i = 0; i < 4; i++) {
+            this.draw();
+        }
         this.m_bonesToken = 0;
     }
 
@@ -43,11 +47,11 @@ public class User extends Player{
         }
     }
 
+    /*
     public void addPermanentCard(Animal card) {
         m_deckSave.add(card); // persiste pour toutes les parties futures
     }
 
-/*
     public static ArrayList<Animal> deepCopyDeck(ArrayList<Animal> source) {
         ArrayList<Animal> copy = new ArrayList<>();
         for (Animal a : source) {
@@ -55,14 +59,15 @@ public class User extends Player{
         }
         return copy;
     }
- */
+
 
     public ArrayList<Animal> getDeckSave() {
         return new ArrayList<>(this.m_deckSave);
     }
+ */
 
     // replaceDeck()
-    public
+
 
     // ----- code pour le DECK ------
 

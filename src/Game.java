@@ -40,18 +40,27 @@ public class Game {
             // propose à l'utilisateur ce qu'il veut faire => placer une acrte ou finir son tour...
             takeTurn(m_dialogue, this.m_user);
 
-            // appelle la méthode de combat : User attaque l'Opponent
-            m_score += combatPhase(this.m_opponent); // Attaque des cartes + mise à jour du score
+            // User attaque Opponent
+            CombatResult userAttack = combatPhase(this.m_opponent);
+            m_score += userAttack.directDamage;
+            // les kills du User sur l'Opponent ne donnent pas de bones
 
             m_gameboard.display(this.m_user, this.m_opponent, this.m_score);
 
             this.m_currentPlayer = this.m_opponent;
 
-            this.m_strategy.opponentAction(this.m_opponent, nbRounds); // L'Opponent place ses cartes sur sa ligne de jeu.
+            RoundAction action = this.m_strategy.getPrevisionAction(nbRounds); // L'Opponent place ses cartes sur sa ligne de jeu.
+            this.m_opponent.opponentAction(action.getPositions());
+
+            //this.m_strategy.opponentAction(this.m_opponent, nbRounds); // L'Opponent place ses cartes sur sa ligne de jeu.
 
             // appelle la méthode de combat : Opponent attaque le User
-            m_score -= combatPhase(this.m_user); // Attaque des cartes + mise à jour du score
-            //m_user.addBones(opponentResult.enemiesKilled);
+            CombatResult opponentAttack = combatPhase(this.m_user);
+            m_score -= opponentAttack.directDamage; // Attaque l'opponent + mise à jour du score
+            // les cartes du User tuées par l'Opponent donnent des bones au User
+            for (int i = 0; i < opponentAttack.enemiesKilled; i++) {
+                this.m_user.addBonesToken();
+            }
 
             m_gameboard.display(this.m_user, this.m_opponent, this.m_score);
 

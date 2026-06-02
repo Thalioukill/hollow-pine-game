@@ -8,15 +8,24 @@ public interface GameStrategy {
 
     public HashMap<Integer, Optional<Obstacle>> initObstaclesUser();
 
-    public ArrayList<Animal> getDeckOpponent(ArrayList<Animal> deck);
+    public ArrayList<Animal> getOpponentDeck(ArrayList<Animal> deck);
 
-    public ArrayList<Animal> getDeckUser();
+    public ArrayList<Animal> getUserDeck();
 
-    public ArrayList<Animal> getDeckUser(ArrayList<Animal> deck);
+    public ArrayList<Animal> getUserDeck(ArrayList<Animal> deck);
 
-    public ArrayList<Animal> getDeckOpponent();
+    public ArrayList<Animal> getOpponentDeck();
 
-    public void opponentAction(Opponent opponent, int roundNumber);
+    //public void opponentAction(Opponent opponent, int roundNumber);
+
+    // Retourne les positions de previsionLine à remplir pour un round donné, appelé par Opponent.oppnentAction()
+    public RoundAction getPrevisionAction(int roundNumber);
+
+    // pour initialiser le previsionLine dans le GameManager avant de faire les rounds...
+    public RoundAction getInitialPrevision();
+
+    public ArrayList<String> getRewardPool(ArrayList<Animal> playerDeck);
+
 }
 
 

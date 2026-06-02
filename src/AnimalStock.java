@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class AnimalStock {
@@ -81,6 +82,13 @@ public class AnimalStock {
             }
         }
         return Optional.empty();
+    }
+
+    public ArrayList<String> getAllAnimalNames() {
+        return new ArrayList<>(List.of(
+                GRIZZLY, COYOTE, VIPERE, PORC_EPIC, CORBEAU,
+                ECUREUIL, HERMINE, LOUVETEAU, LOUP, ELAN, PUNAISE, CHAT
+        ));
     }
 
 
