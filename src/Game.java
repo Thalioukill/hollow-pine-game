@@ -9,13 +9,13 @@ public class Game {
     private GameStrategy m_strategy;
     private Opponent m_opponent;
 
-    public Game(GameBoard board, User player, Interactions dialogue, GameStrategy strat) {
+    public Game(GameBoard board, User player, Interactions dialogue, GameStrategy strat, Opponent opponent) {
         this.m_gameboard = board;
         this.m_user = player;
         this.m_dialogue = dialogue;
         this.m_score = 0; // La balance commence à l'équilibre
         this.m_strategy = strat;
-        this.m_opponent = this.m_strategy.initOpponent();
+        this.m_opponent = opponent;
 
     }
 
@@ -42,6 +42,8 @@ public class Game {
 
             // appelle la méthode de combat : User attaque l'Opponent
             m_score += combatPhase(this.m_opponent); // Attaque des cartes + mise à jour du score
+
+            m_gameboard.display(this.m_user, this.m_opponent, this.m_score);
 
             this.m_currentPlayer = this.m_opponent;
 

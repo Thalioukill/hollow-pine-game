@@ -9,7 +9,7 @@ public class User extends Player{
     private final ArrayList<Animal> m_deckSave;
 
     public User(ArrayList<Animal> deck, BoardLine bord) {
-        super(deepCopyDeck(deck), bord); // Appel au constructeur de la classe mère
+        super(deck, bord); // Appel au constructeur de la classe mère
         this.m_deckSave = deck;
         this.m_hand = new ArrayList<Animal>();
         this.m_bonesToken = 0;
@@ -47,18 +47,22 @@ public class User extends Player{
         m_deckSave.add(card); // persiste pour toutes les parties futures
     }
 
-    // Méthode utilitaire privée
-    private static ArrayList<Animal> deepCopyDeck(ArrayList<Animal> source) {
+/*
+    public static ArrayList<Animal> deepCopyDeck(ArrayList<Animal> source) {
         ArrayList<Animal> copy = new ArrayList<>();
         for (Animal a : source) {
             copy.add(a.cloneAnimal()); // cloneAnimal = copie profonde...
         }
         return copy;
     }
+ */
 
     public ArrayList<Animal> getDeckSave() {
         return new ArrayList<>(this.m_deckSave);
     }
+
+    // replaceDeck()
+    public
 
     // ----- code pour le DECK ------
 

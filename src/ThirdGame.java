@@ -24,6 +24,22 @@ public class ThirdGame implements GameStrategy{
         return new Opponent(playerDeck, attackBoard, previsionBoard);
     };
 
+    // méthode qui stocke juste les cartes à mettre dans le deck de l'Opponent !
+    public ArrayList<Animal> getDeckOpponent(cartes){
+        AnimalStock stock = new AnimalStock();
+        ArrayList<Animal> opponentDeck = new ArrayList<Animal>();
+        stock.getCard(AnimalStock.HERMINE).get();
+        stock.getCard(AnimalStock.HERMINE).get();
+        stock.getCard(AnimalStock.LOUVETEAU).get();
+        stock.getCard(AnimalStock.LOUVETEAU).get();
+        stock.getCard(AnimalStock.LOUP).get();
+        stock.getCard(AnimalStock.LOUP).get();
+        stock.getCard(AnimalStock.ELAN).get();
+
+        return opponentDeck;
+    }
+
+
     public void opponentAction(Opponent opponent, int roundNumber){
         switch(roundNumber){
             case 1 -> {

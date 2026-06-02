@@ -95,12 +95,12 @@ public class BoardLine {
                     // Combat classique carte contre carte
                     Card target = optTarget.get();
                     attackerCard.attack(target);
-                    attackerCard.triggerPostAttack(i, this);
 
                     if (target.isDead()) {
                         opponentLine.removeCardAt(i);
                     }
                 }
+                attackerCard.triggerPostAttack(i, this);
             }
         }
         return totalDirectDamage;

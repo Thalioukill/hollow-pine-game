@@ -64,7 +64,8 @@ public class Animal extends Card {
 
     public void attack(Card target) {
         target.isAttacked(this.m_attackPoints, this);
-        if (!target.isDead()) {
+
+        if (!target.isDead() && target.isSacrificable()) {
             for (Ability a : m_abilities) {
                 a.onAttack(target);
             }
@@ -99,6 +100,7 @@ public class Animal extends Card {
         return false;
     }
 
+    // Moment : Après avoir attaqué (Élan / Coureur)
     @Override
     public void triggerPostAttack(int position, BoardLine line) {
         // On notifie chaque pouvoir de l'animal que l'attaque est terminée
@@ -108,6 +110,7 @@ public class Animal extends Card {
         }
     }
 
+    // manylives => ManyLivesAbiliy
     @Override
     public boolean survivesSacrifice() {
         for (Ability a : m_abilities) {
@@ -116,6 +119,7 @@ public class Animal extends Card {
         return false;
     }
 
+    // Louveteau / Croissance
     @Override
     public void triggerStartTurn(int position, BoardLine line) {
         // On parcourt la liste générique des capacités

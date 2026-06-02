@@ -2,7 +2,7 @@ public abstract class Ability {
 
     public abstract String getName();
 
-    // Moment : Après avoir attaqué (Élan / Coureur) =>
+    // Moment : Après avoir attaqué (Élan / Coureur)
     protected void afterAttack(Animal self, int currentPos, BoardLine line) {
     }
     //StinkyAbility
@@ -26,7 +26,7 @@ public abstract class Ability {
         return false;
     }
 
-    // Moment : Fin de tour / Début de tour (Louveteau / Croissance)=>
+    // Moment : Fin de tour / Début de tour (Louveteau / Croissance)
     protected void onTurnUpdate(Animal self, int position, BoardLine line) {
 
     }
