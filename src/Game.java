@@ -77,7 +77,7 @@ public class Game {
         }
     }
 
-    public int combatPhase(Player attackedPlayer) {
+    public CombatResult combatPhase(Player attackedPlayer) {
 
         return this.m_currentPlayer.combatPhase(attackedPlayer);
     }

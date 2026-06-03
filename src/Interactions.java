@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Scanner;
@@ -36,7 +37,7 @@ public class Interactions {
     public void displayMenu(User human){
         System.out.println("\n--- ACTIONS POSSIBLES ---");
         if (human.getHandSize() > 0) {
-            System.out.println("[P] Placer une carte sur le plateau\n");
+            System.out.println("[P] Placer une carte sur le plateau");
         } else {
             System.out.println("Votre main est vide, vous ne pouvez plus placer de carte !");
         }
@@ -93,9 +94,10 @@ public class Interactions {
 
 
     private void handleSacrifices(int bloodCost, User human) {
+        ArrayList<Integer> alreadySacrificed = new ArrayList<>();
         for (int i = 0; i < bloodCost; i++) {
             displayMessage("Sacrifice " + (i + 1) + "/" + bloodCost + " :");
-            int sacrificePos = askPositionSacrifice(human);
+            int sacrificePos = askPositionSacrifice(human, alreadySacrificed);
             Card target = human.getCardAt(sacrificePos).get();
 
             if (!target.isSacrificable()) {
@@ -106,6 +108,7 @@ public class Interactions {
 
             if (target.survivesSacrifice()) {
                 displayMessage(target.getName() + " survit au sacrifice ! +1 os. +1 goutte de sang.");
+                alreadySacrificed.add(sacrificePos);
                 human.addBonesToken();
             } else {
                 human.sacrifice(sacrificePos);
@@ -150,7 +153,7 @@ public class Interactions {
                 System.out.println("Chiffre incorrect ! L'emplacement doit être entre 1 et 4.");
             }
             // vérif si on occupe l'emplacement ou pas
-            else if (human.getBoardLineCardAt(pos).isPresent()) {
+            else if (human.getBoardLineCardAt(index).isPresent()) {
                 System.out.println("L'emplacement " + pos + " est déjà occupé, choisissez-en un autre.");
             }
             else {
@@ -160,18 +163,22 @@ public class Interactions {
     }
 
 
-    public int askPositionSacrifice(User human) {
+    public int askPositionSacrifice(User human, ArrayList<Integer> alreadySacrificed) {
         while (true) {
             System.out.print("Entrez le numéro de l'emplacement de la carte que vous souhaitez sacrifier (1, 2, 3 ou 4) : ");
             if (m_scanner.hasNextInt()) {
                 int pos = m_scanner.nextInt();
                 if(pos > 0 && pos <= 4){
                     int index = toIndex(pos);
+
+                    if (alreadySacrificed.contains(index)) {
+                        displayMessage("Cette carte a déjà été sacrifiée pour ce tour >:) !");
+                        continue;
+                    }
+
                     Optional<Card> result = human.getCardAt(index);
-                    if (result.isPresent()) {
-                        if(result.get().isSacrificable()){
-                            return index; // on retourne juste l'int
-                        }
+                    if (result.isPresent() && result.get().isSacrificable()) {
+                        return index; // on retourne juste l'int
                     }
                 }
                 else{

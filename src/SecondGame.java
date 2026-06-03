@@ -8,13 +8,13 @@ public class SecondGame implements GameStrategy{
     public ArrayList<Animal> getOpponentDeck(){
         AnimalStock stock = new AnimalStock();
         ArrayList<Animal> opponentDeck = new ArrayList<Animal>();
-        stock.getCard(AnimalStock.HERMINE).get();
-        stock.getCard(AnimalStock.HERMINE).get();
-        stock.getCard(AnimalStock.LOUVETEAU).get();
-        stock.getCard(AnimalStock.LOUVETEAU).get();
-        stock.getCard(AnimalStock.LOUP).get();
-        stock.getCard(AnimalStock.LOUP).get();
-        stock.getCard(AnimalStock.ELAN).get();
+        opponentDeck.add(stock.getCard(AnimalStock.HERMINE).get());
+        opponentDeck.add(stock.getCard(AnimalStock.HERMINE).get());
+        opponentDeck.add(stock.getCard(AnimalStock.LOUVETEAU).get());
+        opponentDeck.add(stock.getCard(AnimalStock.LOUVETEAU).get());
+        opponentDeck.add(stock.getCard(AnimalStock.LOUP).get());
+        opponentDeck.add(stock.getCard(AnimalStock.LOUP).get());
+        opponentDeck.add(stock.getCard(AnimalStock.ELAN).get());
 
         return opponentDeck;
     }

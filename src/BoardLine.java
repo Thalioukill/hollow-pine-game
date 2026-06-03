@@ -1,5 +1,7 @@
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 public class BoardLine {
     private final ArrayList<Optional<Card>> m_slots;
@@ -79,6 +81,8 @@ public class BoardLine {
     public CombatResult attack(BoardLine opponentLine) {
         int totalDirectDamage = 0;
         int kills = 0;
+        // ON SAUVEGARDE LES POSITIONS POUR PAS QUE L'ELAN SE DEPLACE ET ATTAQUE UNE DEUXIEME FOIS....
+        Set<Card> alreadyAttacked = new HashSet<>(); // ← cartes déjà traitées
 
         for (int i = 0; i < 4; i++) {
 
@@ -86,6 +90,12 @@ public class BoardLine {
 
             if (optCard.isPresent()) {
                 Card attackerCard = optCard.get();
+
+                if (alreadyAttacked.contains(attackerCard)){
+                    continue; // ← skip si déjà traitée
+                }
+                alreadyAttacked.add(attackerCard);
+
                 // Renvoie la carte à attaquer si elle existe, empty sinon
                 Optional<Card> optTarget = opponentLine.getCardAt(i);
 
@@ -99,12 +109,13 @@ public class BoardLine {
 
                     if (target.isDead()) {
                         opponentLine.removeCardAt(i);
+                        kills ++;
                     }
                 }
                 attackerCard.triggerPostAttack(i, this);
             }
         }
-        return totalDirectDamage;
+        return new CombatResult(totalDirectDamage, kills);
     }
 
     public void replaceCard(int position, Card newCard) {

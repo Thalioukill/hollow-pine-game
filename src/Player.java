@@ -45,7 +45,7 @@ public abstract class Player {
         return m_boardLine.getCardAt(index);
     }
 
-    public int combatPhase(Player opponent){
+    public CombatResult combatPhase(Player opponent){
         return this.m_boardLine.attack(opponent.m_boardLine);
     }
 
@@ -71,10 +71,14 @@ public abstract class Player {
                 " Plateau=" + m_boardLine + "]";
     }
 
+    public BoardLine getBoardLine() {
+        return this.m_boardLine;
+    }
+/*
     public ArrayList<Animal> getDeck() {
         return new ArrayList<>(m_deck);
     }
-
+*/
 
         /*
     // En gros on regarde si la position est valide, et on regarde si il y a une carte, si il y a une carte, on

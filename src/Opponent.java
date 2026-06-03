@@ -17,7 +17,7 @@ public class Opponent extends Player{
     public void applyPrevision() {
         for (int i = 0; i < 4; i++) {
             Optional<Card> card = this.m_previsionLine.getCardAt(i);
-            if (card.isPresent()) {
+            if (card.isPresent() && !this.m_boardLine.isOccupied(i)) {
                 this.m_boardLine.placeCardAt(card.get(), i);
                 this.m_previsionLine.removeCardAt(i);
             }
@@ -53,5 +53,9 @@ public class Opponent extends Player{
     @Override
     public String toString() {
         return "Opponent[" + super.toString() + ", prévision=" + m_previsionLine + "]";
+    }
+
+    public BoardLine getPrevisionLine() {
+        return this.m_previsionLine;
     }
 }

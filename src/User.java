@@ -14,7 +14,7 @@ public class User extends Player{
         this.m_hand = new ArrayList<Animal>();
         // Pioche initiale de 4 cartes
         for (int i = 0; i < 4; i++) {
-            this.draw();
+            this.m_hand.add(this.draw());
         }
         this.m_bonesToken = 0;
     }

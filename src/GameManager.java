@@ -53,9 +53,12 @@ public class GameManager {
 
         if (bonusCards.isEmpty()) {
             userDeck = strat.getUserDeck();
+
         } else {
             userDeck = strat.getUserDeck(bonusCards);
         }
+        Collections.shuffle(userDeck);
+
         User u = new User(userDeck, userBoard);
 
         u.shuffle();
@@ -189,7 +192,8 @@ public class GameManager {
 
     private Animal offerNewCard() {
         GameStrategy strat = this.m_strategies.get(m_gamesCount - 1);
-        ArrayList<String> pool = strat.getRewardPool(this.m_user.getDeck());
+        ArrayList<Animal> fullUserDeck = strat.getUserDeck(); // deck de base complet
+        ArrayList<String> pool = strat.getRewardPool(fullUserDeck);
 
         Collections.shuffle(pool);
         AnimalStock animalStock = new AnimalStock();
