@@ -1,13 +1,15 @@
+import java.util.ArrayList;
+
 public class Game {
     // SAVOIR OU EST CE QU'ON VA CREER UNE INTERCATIONS (1 dialogie avec l'utilisateur...)
     // Attributs privés (Encapsulation forte)
     private int m_score; // La balance : >0 pour l'Ami, <0 pour l'Adversaire
-    private GameBoard m_gameboard;
-    private User m_user;
+    private final GameBoard m_gameboard;
+    private final User m_user;
     private Player m_currentPlayer; // Joueur qui joue actuellement
-    private Interactions m_dialogue;
-    private GameStrategy m_strategy;
-    private Opponent m_opponent;
+    private final Interactions m_dialogue;
+    private final GameStrategy m_strategy;
+    private final Opponent m_opponent;
 
     public Game(GameBoard board, User player, Interactions dialogue, GameStrategy strat, Opponent opponent) {
         this.m_gameboard = board;
@@ -41,8 +43,7 @@ public class Game {
             takeTurn(m_dialogue, this.m_user);
 
             // User attaque Opponent
-            CombatResult userAttack = combatPhase(this.m_opponent);
-            m_score += userAttack.directDamage;
+            m_score += combatPhase(this.m_opponent);;
             // les kills du User sur l'Opponent ne donnent pas de bones
 
             m_gameboard.display(this.m_user, this.m_opponent, this.m_score);
@@ -51,18 +52,11 @@ public class Game {
 
             this.m_currentPlayer.notifyTurnStarted();
 
-            RoundAction action = this.m_strategy.getPrevisionAction(nbRounds); // L'Opponent place ses cartes sur sa ligne de jeu.
-            this.m_opponent.opponentAction(action.getPositions());
-
-            //this.m_strategy.opponentAction(this.m_opponent, nbRounds); // L'Opponent place ses cartes sur sa ligne de jeu.
+            ArrayList<Integer> action = this.m_strategy.getPrevisionAction(nbRounds); // L'Opponent place ses cartes sur sa ligne de jeu.
+            this.m_opponent.opponentAction(action);
 
             // appelle la méthode de combat : Opponent attaque le User
-            CombatResult opponentAttack = combatPhase(this.m_user);
-            m_score -= opponentAttack.directDamage; // Attaque l'opponent + mise à jour du score
-            // les cartes du User tuées par l'Opponent donnent des bones au User
-            for (int i = 0; i < opponentAttack.enemiesKilled; i++) {
-                this.m_user.addBonesToken();
-            }
+            m_score -= combatPhase(this.m_user);// Attaque l'opponent + mise à jour du score
 
             m_gameboard.display(this.m_user, this.m_opponent, this.m_score);
 
@@ -79,7 +73,7 @@ public class Game {
         }
     }
 
-    public CombatResult combatPhase(Player attackedPlayer) {
+    public int combatPhase(Player attackedPlayer) {
 
         return this.m_currentPlayer.combatPhase(attackedPlayer);
     }

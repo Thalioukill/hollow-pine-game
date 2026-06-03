@@ -45,7 +45,7 @@ public abstract class Player {
         return m_boardLine.getCardAt(index);
     }
 
-    public CombatResult combatPhase(Player opponent){
+    public int combatPhase(Player opponent){
         return this.m_boardLine.attack(opponent.m_boardLine);
     }
 

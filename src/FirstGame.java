@@ -85,20 +85,20 @@ public class FirstGame implements GameStrategy{
         return new ArrayList<>();
     }
 
+    // pour remplir l'ArrayList d'un coup sans avoir à utiliser add on utiliser List.of
     @Override
-    public RoundAction getPrevisionAction(int roundNumber) {
+    public ArrayList<Integer> getPrevisionAction(int roundNumber) {
         return switch (roundNumber) {
-            case 0 -> new RoundAction(List.of(3));      // init : Coyote pos 3
-            case 1 -> new RoundAction(List.of(0));      // après round 1 : prépare pos 0
-            case 2 -> new RoundAction(List.of(2));      // après round 2 : prépare pos 2
-            case 3 -> new RoundAction(List.of(2, 3));   // plusieurs cartes possible !
-            default -> RoundAction.empty();
+            case 1 -> new ArrayList<>(List.of(0)); // après round 1 : prépare pos 0
+            case 2 -> new ArrayList<>(List.of(2)); // après round 2 : prépare pos 2
+            case 3 -> new ArrayList<>(List.of(2, 3)); // plusieurs cartes possibles
+            default -> new ArrayList<>();
         };
     }
 
     @Override
-    public RoundAction getInitialPrevision() {
-        return new RoundAction(List.of(3)); // Coyote en position 3 dès le départ
+    public ArrayList<Integer> getInitialPrevision() {
+        return new ArrayList<>(List.of(3)); // Hermine en position 3 dès le départ
     }
 
     @Override

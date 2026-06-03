@@ -5,12 +5,26 @@ import java.util.Set;
 
 public class BoardLine {
     private final ArrayList<Optional<Card>> m_slots;
+    protected int m_bonesToken;
 
     public BoardLine() {
         m_slots = new ArrayList<>();
         for (int i = 0; i < 4; i++) {
             m_slots.add(Optional.empty());
         }
+        this.m_bonesToken = 0;
+    }
+
+    public void spendBones(int amount) {
+        this.m_bonesToken -= amount;
+    }
+
+    public void addBonesToken(){
+        this.m_bonesToken++;
+    }
+
+    public int getBonesToken(){
+        return this.m_bonesToken;
     }
 
     public boolean validateIndex(int position) {
@@ -77,9 +91,8 @@ public class BoardLine {
         return m_slots.toString();
     }
 
-    public CombatResult attack(BoardLine opponentLine) {
+    public int attack(BoardLine opponentLine) {
         int totalDirectDamage = 0;
-        int kills = 0;
         // ON SAUVEGARDE LES POSITIONS POUR PAS QUE L'ELAN SE DEPLACE ET ATTAQUE UNE DEUXIEME FOIS....
         Set<Card> alreadyAttacked = new HashSet<>(); // ← cartes déjà traitées
 
@@ -108,13 +121,13 @@ public class BoardLine {
 
                     if (target.isDead()) {
                         opponentLine.removeCardAt(i);
-                        kills ++;
+                        m_bonesToken ++;
                     }
                 }
                 attackerCard.triggerPostAttack(i, this);
             }
         }
-        return new CombatResult(totalDirectDamage, kills);
+        return totalDirectDamage;
     }
 
     public void replaceCard(int position, Card newCard) {

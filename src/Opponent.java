@@ -44,8 +44,6 @@ public class Opponent extends Player{
     }
 
 
-
-
     public Optional<Card> getPrevisionCardAt(int position) {
         return m_previsionLine.getCardAt(position);
     }

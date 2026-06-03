@@ -19,10 +19,10 @@ public interface GameStrategy {
     //public void opponentAction(Opponent opponent, int roundNumber);
 
     // Retourne les positions de previsionLine à remplir pour un round donné, appelé par Opponent.oppnentAction()
-    public RoundAction getPrevisionAction(int roundNumber);
+    public ArrayList<Integer> getPrevisionAction(int roundNumber);
 
     // pour initialiser le previsionLine dans le GameManager avant de faire les rounds...
-    public RoundAction getInitialPrevision();
+    public ArrayList<Integer> getInitialPrevision();
 
     public ArrayList<String> getRewardPool(ArrayList<Animal> playerDeck);
 

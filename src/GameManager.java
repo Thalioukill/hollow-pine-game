@@ -72,15 +72,35 @@ public class GameManager {
 
         while (m_gamesCount <= MAX_GAMES && campaignWon) {
             // Orchestration : on crée les nouveaux objets nécessaires à chaque match
-            campaignWon = playNewGame(bonusCards);
+            //campaignWon = playNewGame(bonusCards);
 
             if (campaignWon) {
                 // Gestion de la progression entre les matchs
-                if (m_gamesCount == 2) {
+                GameBoard board = new GameBoard();
+
+                int index = m_gamesCount - 1;
+                Optional<GameStrategy> optStrategy = getStrategy(index);
+
+                // à enlever quand on aura regardé que le code passe bien...
+                if (optStrategy.isEmpty()) {
+                    throw new IllegalArgumentException("Erreur : Stratégie de match non trouvée.");
+                }
+                GameStrategy strategy = optStrategy.get();
+
+                if (this.m_gamesCount != 2) {
+                    this.m_user = initPlayer(this.m_gamesCount, bonusCards);
+                } else {
                     // L'utilisateur choisit une carte, on la stocke pour la game 3
                     Animal chosen = offerNewCard();
                     bonusCards.add(chosen);
                 }
+
+                Opponent opponent = initiateOpponent(this.m_gamesCount);
+
+                // Injection de dépendances : on donne les joueurs et le plateau à la Game
+                Game currentGame = new Game(board, this.m_user, this.m_dialogue, strategy, opponent);
+                // Appel de la logique du match (boucle de rounds)
+                campaignWon = currentGame.runGame();
                 m_gamesCount++;
             }
         }
@@ -171,8 +191,8 @@ public class GameManager {
         Opponent opponent = new Opponent(strat.getOpponentDeck(), attackBoard, previsionBoard);
 
         // Initialisation de la previsionLine AVANT de passer au Game
-        RoundAction init = strat.getInitialPrevision();
-        for (int position : init.getPositions()) {
+        ArrayList<Integer> init = strat.getInitialPrevision();
+        for (int position : init) {
             opponent.placePrevisionCard(position);
         }
         return opponent;
