@@ -62,6 +62,16 @@ public abstract class Player {
         m_boardLine.removeCardAt(index);
     }
 
+
+    public BoardLine getBoardLine() {
+        return this.m_boardLine;
+    }
+
+    public void notifyTurnStarted(){
+        this.m_boardLine.notifyTurnStarted();
+    }
+
+
     // ------
 
     @Override
@@ -71,9 +81,6 @@ public abstract class Player {
                 " Plateau=" + m_boardLine + "]";
     }
 
-    public BoardLine getBoardLine() {
-        return this.m_boardLine;
-    }
 /*
     public ArrayList<Animal> getDeck() {
         return new ArrayList<>(m_deck);

@@ -30,7 +30,7 @@ public class Game {
             // On met le USER comme premier joueur du round
             this.m_currentPlayer = this.m_user;
 
-            this.m_user.notifyTurnStarted(); // Croissance
+            this.m_currentPlayer.notifyTurnStarted(); // Croissance
 
             m_gameboard.display(m_user, m_opponent, m_score);
 
@@ -48,6 +48,8 @@ public class Game {
             m_gameboard.display(this.m_user, this.m_opponent, this.m_score);
 
             this.m_currentPlayer = this.m_opponent;
+
+            this.m_currentPlayer.notifyTurnStarted();
 
             RoundAction action = this.m_strategy.getPrevisionAction(nbRounds); // L'Opponent place ses cartes sur sa ligne de jeu.
             this.m_opponent.opponentAction(action.getPositions());

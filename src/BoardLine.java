@@ -66,9 +66,8 @@ public class BoardLine {
 
     public void notifyTurnStarted() {
         for (int i = 0; i < 4; i++) {
-            final int pos = i; // Nécessaire pour la lambda
-            m_slots.get(i).ifPresent(card -> {
-                    card.triggerStartTurn(pos, this);
+            final int pos = i;
+            m_slots.get(i).ifPresent(card -> { card.triggerStartTurn(pos, this);
             });
         }
     }

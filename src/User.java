@@ -164,10 +164,6 @@ public class User extends Player{
         this.placeCardAt(cardToPlay, boardPosition);
     }
 
-    public void notifyTurnStarted(){
-        this.m_boardLine.notifyTurnStarted();
-    }
-
 
     @Override
     public String toString() {
