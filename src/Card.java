@@ -60,6 +60,4 @@ public abstract class Card {
             this.m_healthPoints-= amount;
     }
 
-    public abstract ArrayList<String> getDisplayLines();
-
 }

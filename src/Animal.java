@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class Animal extends Card {
 
@@ -139,18 +140,6 @@ public class Animal extends Card {
         this.m_healthPoints = amount;
     }
 
-    /*
-    @Override
-    public ArrayList<String> getSpecificDisplayLines() {
-        ArrayList<String> lines = new ArrayList<>();
-        lines.add(String.format("| Atk: %-5d |", this.m_attackPoints));
-
-        String volant = this.hasAbility("Volant") ? "Volant    " : "          ";
-        lines.add("| " + volant + "|");
-        return lines;
-    }
-     */
-
      // Vérifie si l'animal possède une capacité spécifique par son nom.
     public boolean hasAbility(String name) {
         for (Ability ability : m_abilities) {
@@ -162,101 +151,12 @@ public class Animal extends Card {
         return false;
     }
 
-    @Override
-    public ArrayList<String> getDisplayLines() {
-        ArrayList<String> lines = new ArrayList<>();
-        lines.add("*-----------*");
-        lines.add(String.format("| %-9s |", truncate(m_name, 9)));
-        lines.add("|-----------|");
-        lines.add(String.format("| PV:  %-6d |", m_healthPoints));
-        lines.add(String.format("| Atk: %-5d |", m_attackPoints));
-        lines.add(String.format("| %-9s |", truncate(getAbilitiesDisplay(), 9)));
-        lines.add("*-----------*");
-        return lines;
+    // récup de la premire capacité transférable pour sacrifice...
+    public Optional<Ability> getTransferableAbility() {
+        if (m_abilities.isEmpty()) {
+            return Optional.empty();
+        }
+        // Dans Inscryption, on transfère généralement le premier sigil
+        return Optional.of(m_abilities.get(0));
     }
-
-    private String getAbilitiesDisplay() {
-        if (m_abilities.isEmpty()) return "";
-        StringBuilder sb = new StringBuilder();
-        for (Ability a : m_abilities) {
-            sb.append(a.getName()).append(" ");
-        }
-        return sb.toString().trim();
-    }
-
-    private String truncate(String s, int maxLength) {
-        if (s.length() <= maxLength) return s;
-        return s.substring(0, maxLength);
-    }
-
-
-
-    /*
-     public void takeDamage(int amount, Animal animal, Player attacker, Game game) {
-        int finalDamage = amount;
-
-        //Puant
-        for (Ability a : m_abilities) {
-            finalDamage = a.modifyIncomingDamage(finalDamage);
-        }
-        if (finalDamage < 0) {
-            finalDamage = 0;
-        }
-
-        this.m_healthPoints -= finalDamage;
-
-        //SharpQuills will be here
-        for (Ability a : m_abilities) {
-            a.onHit(this, animal, attacker, game);
-        }
-    }
-
-    public void attack(int position, Player attacker, Player defender, Game game) {
-        for (Ability a : m_abilities) {
-            //volant
-            boolean abilityAttack = a.onAttack(this, position, attacker, game);
-            if (abilityAttack) {
-                //coureur
-                for (Ability b : m_abilities) {
-                    b.afterAttack(this, position, attacker, game);
-                }
-                return;
-            }
-            Optional<Card> target = defender.getCardAt(position);
-            if (target.isPresent() && isSacrificable()) {
-                Card card = target.get();
-                card.takeDamage(m_attackPoints, this, attacker, game);
-
-                //Poison
-                for (Ability ability : m_abilities) {
-                    ability.kill(this, defender, game);
-                }
-                //death
-                if (card.isDead()) {
-
-                    //manylives
-                    boolean deathCancelled = false;
-                    for (Ability ability : m_abilities) {
-                        boolean cancelled = ability.onDeath(this, position, defender, game);
-                        if (cancelled) {
-                            deathCancelled = true;
-                        }
-                        if (!deathCancelled) {
-                            defender.removeCardAt(position);
-                            attacker.addBones();
-                        }
-                    }
-                }
-            } else
-                game.updateScore(m_attackPoints);
-        }
-        //coureur
-        for (Ability b : m_abilities) {
-            b.afterAttack(this, position, attacker, game);
-        }
-
-    }
-
-     */
-
 }

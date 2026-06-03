@@ -4,96 +4,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 public class GameBoard {
-    /*
-    private static final String SEP = "   ";
-
-    public void display(User user, Opponent opponent, int score) {
-        System.out.println("\n================= PLATEAU (Balance: " + score + " | Os: " + user.getBonesToken() + ") =================\n");
-        System.out.println("              -- Prévisions adversaire --");
-        renderBoardLine(opponent, true);
-        System.out.println("      ||                ||              ||            ||");
-        System.out.println("     \\/               \\/             \\/           \\/");
-        System.out.println("                      -- Adversaire --");
-        renderBoardLine(opponent, false);
-        System.out.println("\n                           -- Vous --");
-        renderBoardLine(user, false);
-        displayHand(user);
-        displayDeck(user);
-    }
-
-    private void renderBoardLine(Player player, boolean isPrevision) {
-        ArrayList<ArrayList<String>> allLines = collectLines(player, isPrevision);
-        printAllLines(allLines);
-    }
-
-    private ArrayList<ArrayList<String>> collectLines(Player player, boolean isPrevision) {
-        ArrayList<ArrayList<String>> allLines = new ArrayList<>();
-        for (int i = 0; i < 4; i++) {
-            Optional<Card> optCard = isPrevision
-                    ? ((Opponent) player).getPrevisionCardAt(i)
-                    : player.getBoardLineCardAt(i);
-            allLines.add(getCardLines(optCard));
-        }
-        return allLines;
-    }
-
-    private void printAllLines(ArrayList<ArrayList<String>> allLines) {
-        for (int row = 0; row < 7; row++) {
-            StringBuilder sb = new StringBuilder("  ");
-            for (ArrayList<String> cardLines : allLines) {
-                sb.append(cardLines.get(row)).append(SEP);
-            }
-            System.out.println(sb);
-        }
-    }
-
-    private ArrayList<String> getCardLines(Optional<Card> optCard) {
-        return optCard.map(Card::getDisplayLines)
-                .orElseGet(this::emptyCardLines);
-    }
-
-    private ArrayList<String> emptyCardLines() {
-        ArrayList<String> lines = new ArrayList<>();
-        lines.add("*************");
-        for (int i = 0; i < 5; i++) {
-            lines.add("*           *");
-        }
-        lines.add("*************");
-        return lines;
-    }
-
-    private void displayHand(User user) {
-        System.out.println("\nVotre main :");
-        for (int i = 0; i < user.getHandSize(); i++) {
-            char letter = (char) ('A' + i);
-            Animal card = user.getHandCard(i);
-            System.out.println("  [" + letter + "] "
-                    + card.getName()
-                    + " | PV: "   + card.getHealthPoints()
-                    + " | Atk: "  + card.getAttackPoints()
-                    + " | Sang: " + card.getBloodCost()
-                    + " | Os: "   + card.getBoneCost());
-        }
-    }
-
-    private void displayDeck(User user) {
-        System.out.println("\n*-----------*");
-        System.out.println("|           |");
-        System.out.printf( "|   %-2d      |%n", user.getDeckSize());
-        System.out.println("|  cartes   |");
-        System.out.println("|           |");
-        System.out.println("*-----------*\n");
-    }
-
-    @Override
-    public String toString() {
-        return "GameBoard[]";
-    }
-
-    */
-
-    //--------------------------------------------------------------------------------
-// Constantes de dimensions
+// Constantes pour les dimensions
     private static final int CARD_HEIGHT = 7;
     private static final String SEP = "   "; // Espace entre les cartes
     private static final String BORDER_EMPTY = "*************";
@@ -101,11 +12,9 @@ public class GameBoard {
 
     private final StringBuilder m_buffer = new StringBuilder();
 
-    /**
-     * Méthode principale d'affichage. Orchestre le rendu couche par couche.
-     */
+    // affichage couche par couches
     public void display(User user, Opponent opponent, int balance) {
-        m_buffer.setLength(0); // Réinitialisation du buffer à chaque tour
+        m_buffer.setLength(0); // on réinitialise à chaque tour
 
         // Balance et os
         m_buffer.append("\n================= PLATEAU (Balance: ").append(balance)
@@ -140,7 +49,7 @@ public class GameBoard {
         }
     }
 
-     //Ajoute au buffer le texte d'une seule couche pour une carte donnée..
+     //Ajout le texte d'une seule couche pour une carte donnée..
     private void appendCardLayer(Optional<Card> optCard, int layer, int slot, boolean isUser, String color) {
         if (optCard.isEmpty()) {
             m_buffer.append(getEmptySlotContent(layer, slot, isUser));
@@ -157,7 +66,12 @@ public class GameBoard {
             return String.format("*     %d     *", slot + 1); // Affiche 1, 2, 3 ou 4
         }
         // Sinon, bordures ou vide standard
-        return (layer == 0 || layer == 6) ? BORDER_EMPTY : "*           *";
+        if((layer == 0 || layer == 6)){
+            return BORDER_EMPTY;
+        }
+        else{
+            return"*           *";
+        }
     }
 
      // texte interne de chaque ligne d'une carte
@@ -173,18 +87,22 @@ public class GameBoard {
         };
     }
 
-     // Récup la ligne de statistiques (Attaque) pour les animaux.
+     // Récup la ligne de statistiques (attaque) pour les animaux.
     private String getStatLine(Card card) {
-        // On suppose que Animal possède getAttackPoints()
-        if (card instanceof Animal animal) {
-            return String.format("| Atk: %-4d |", animal.getAttackPoints());
+        if (card.isSacrificable()) {
+            return String.format("| Atk: %-4d |", card.getAttackPoints());
         }
         return "|           |";
     }
 
      // casser les noms longs pour pas que l'affichage ne soit trop grand
     private String truncate(String name) {
-        return name.length() > 9 ? name.substring(0, 9) : name;
+
+        String nameString = name;
+        if(name.length() > 9){
+            nameString = name.substring(0, 9);
+        }
+        return nameString;
     }
 
     private void displayHand(User user) {
