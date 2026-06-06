@@ -79,12 +79,17 @@ public class User extends Player{
     }
 
     public void transferAbility(Animal from, Ability ability, Animal to) {
+        if (to.hasAnAbility(ability.getName())) {
+            throw new IllegalArgumentException(
+                    to.getName() + " possède déjà le pouvoir " + ability.getName() + " !");
+        }
         to.addAbility(ability);
         this.m_deckSave.remove(from);
     }
 
 
     public ArrayList<Animal> getDeckSave() {
+        // copie de la liste des Animals mais pas des Animals eux meme.
         return new ArrayList<>(this.m_deckSave);
     }
 

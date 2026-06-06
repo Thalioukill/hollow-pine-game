@@ -327,7 +327,6 @@ public class Interactions {
         System.out.println("Choisissez une carte pour récupérer le pouvoir de la carte que vous venez de sacrifier :");
 
         for (int i = 0; i < candidates.size(); i++) {
-            System.out.print("[" + (i + 1) + "] ");
             displayCardOption(i + 1, candidates.get(i));
         }
 
@@ -361,8 +360,18 @@ public class Interactions {
             // Sinon, on affiche le coût en os
             labelCout = card.getBoneCost() + " Os";
         }
+        String labelAbility;
+        if (!card.hasAbility()) {
+            labelAbility = "Aucun";
+        } else {
+            StringBuilder sb = new StringBuilder();
+            for (Ability a : card.getAbilities()) {
+                if (!sb.isEmpty()) sb.append(", ");
+                sb.append(a.getName());
+            }
+            labelAbility = sb.toString();
+        }
 
-        // ligne finale :
-        System.out.println("  [" + index + "] " + card.getName() + " (Atk: " + card.getAttackPoints() + ", HP: " + card.getHealthPoints() + ", Coût: " + labelCout + ")");
+        System.out.println("  [" + index + "] " + card.getName() + " (Atk: " + card.getAttackPoints() + ", HP: " + card.getHealthPoints() + ", Coût: " + labelCout + ", Pouvoir: " + labelAbility + ")");
     }
 }

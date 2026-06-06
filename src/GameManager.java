@@ -194,10 +194,21 @@ public class GameManager {
         this.m_user.addPermanentCard(chosenAnimal);
     }
 
+    private ArrayList<Animal> deduplicateByName(ArrayList<Animal> list) {
+        ArrayList<Animal> result = new ArrayList<>();
+        Set<String> seen = new HashSet<>();
+        for (Animal a : list) {
+            if (seen.add(a.getName())) { // add() retourne false si déjà présent
+                result.add(a);
+            }
+        }
+        return result;
+    }
 
     private void sacrificeStone(){
         ArrayList<Animal> sacrificePool = this.m_user.getSacrificePool();
 
+        // on part du principe que le deck du User sera généré au moins avec 1 carte avec des Abilities.
         if (sacrificePool.isEmpty()) {
             throw new IllegalStateException("Pierre de sacrifice inutilisable : AUCUNE carte avec un pouvoir dans le deck.");
         }
@@ -208,6 +219,24 @@ public class GameManager {
 
         ArrayList<Animal> candidates = new ArrayList<>(m_user.getDeckSave());
         candidates.remove(from);  // on enlève juste la carte de la liste locale pour ne pas la proposer
+        candidates = deduplicateByName(candidates); // on ne propose qu'une fois la carte pour ne pas avoir une liste entière d'écureuil par exemple....
+
+        Optional<Animal> receiver = Optional.empty();
+        while (receiver.isEmpty()) {
+            // on demande à l'utilisateur sur quelle carte il veut ajouter l'ability choisie
+            Animal candidate = m_dialogue.askCardToReceiveAbility(candidates);
+            try {
+                // on essaie de transférer si ce n'est pas su une carte qui a déjà la meme ability...
+                m_user.transferAbility(from, ability, candidate);
+                receiver = Optional.of(candidate);
+
+            // si c'est une carte qui a dejà la m ability alors on dit qu'on ne peut pas et on reboucle...
+            } catch (IllegalArgumentException e) {
+                m_dialogue.displayMessage(e.getMessage());
+            }
+        }
+
+
 
         Animal to = this.m_dialogue.askCardToReceiveAbility(candidates);
 

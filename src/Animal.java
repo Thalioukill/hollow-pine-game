@@ -140,9 +140,9 @@ public class Animal extends Card {
         this.m_healthPoints = amount;
     }
 
-    /*
+
      // Vérifie si l'animal possède une capacité spécifique par son nom.
-    public boolean hasAbility(String name) {
+    public boolean hasAnAbility(String name) {
         for (Ability ability : m_abilities) {
             // On compare les noms (ne jamais utiliser == sur des String)
             if (ability.getName().equals(name)) {
@@ -151,7 +151,23 @@ public class Animal extends Card {
         }
         return false;
     }
-     */
+
+    public ArrayList<Ability> getAbilities() {
+        return new ArrayList<>(m_abilities); // copie défensive
+    }
+/*
+    public String getAbilitiesNames() {
+        if (m_abilities.isEmpty()){
+            return "Aucune";
+        }
+        StringBuilder sb = new StringBuilder();
+        for (Ability a : m_abilities) {
+            if (!sb.isEmpty()) sb.append(", ");
+            sb.append(a.getName());
+        }
+        return sb.toString();
+    }
+ */
 
     // Vérifie si l'animal possède des capacités...
     public boolean hasAbility() {
