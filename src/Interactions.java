@@ -229,11 +229,10 @@ public class Interactions {
     }
 
     // on pioche 1 carte dans le Deck et on l'ajoute à la main.
-    public void draw(User joueur) {
+    public String draw(User joueur) {
         // Si le deck ET la main sont vides, pas la peine de demander
         if (joueur.getDeckSize() == 0 && joueur.getHandSize() == 0) {
-            this.displayMessage("Vous n'avez plus de cartes ni en main ni dans la pioche... Il va falloir faire avec !");
-            return;
+            return "Vous n'avez plus de cartes ni en main ni dans la pioche... Il va falloir faire avec !";
         }
         // L'utilisateur a le choix
         boolean wantsToDraw = this.askConfirmation("Voulez-vous piocher une carte pour ce tour ? Veuillez saisir OUI ou NON : ");
@@ -242,12 +241,12 @@ public class Interactions {
             try {
                 Animal drawnAnimalCard = joueur.draw();
                 joueur.addCard(drawnAnimalCard);
-                this.displayMessage("Vous avez pioché : " + drawnAnimalCard.getName());
+                return "Vous avez pioché : " + drawnAnimalCard.getName();
             } catch (NoSuchElementException n) {
-                this.displayMessage("Oups il n'y a plus de cartes dans la pioche...");
+                return "Oups il n'y a plus de cartes dans la pioche...";
             }
         } else {
-            this.displayMessage("Vous avez décidé de ne pas piocher... Étais-ce un bon choix...");
+            return "Vous avez décidé de ne pas piocher... Étais-ce un bon choix...";
         }
     }
 
@@ -279,19 +278,75 @@ public class Interactions {
 
         while (true) {
             System.out.print("Votre choix (1 ou 2) : ");
-
-            if (m_scanner.hasNextInt()) {
-                int choice = m_scanner.nextInt();
-                if (choice != 1 && choice != 2) {
-                    System.out.println("Saisie invalide ! Veuillez entrer 1 ou 2.");
-                    continue;
-                }
-                if (choice == 1) {
-                    return card1;
-                }
-                return card2;
+            m_scanner.next(); // ENLEVE le mot qui est
+            if (!m_scanner.hasNextInt()) {
+                m_scanner.next(); // vide le token invalide
+                System.out.println("Saisie invalide ! Veuillez entrer 1 ou 2.");
+                continue;
             }
-            System.out.println("Erreur : Choix inconnu. Veuillez saisir le chiffre 1 ou 2.");
+
+            int choice = m_scanner.nextInt();
+            if (choice != 1 && choice != 2) {
+                System.out.println("Chiffre incorrect ! Veuillez entrer 1 ou 2.");
+                continue;
+            }
+            return choice == 1 ? card1 : card2;
+        }
+    }
+
+    // le deck aura toujours une carte avec une Ability au départ instancié dans le main... mais sinon on peut gérer cela ici...
+    public Animal askToSacrificeCard(ArrayList<Animal> pool) {
+        System.out.println("\n--- PIERRE DE SACRIFICE ---");
+        System.out.println("Choisissez une carte à sacrifier pour récupérer son pouvoir :");
+
+        for (int i = 0; i < pool.size(); i++) {
+            System.out.print("[" + (i + 1) + "] ");
+            displayCardOption(i + 1, pool.get(i));
+        }
+
+        while (true) {
+            System.out.print("Votre choix (1 à " + pool.size() + ") : ");
+
+            if (!m_scanner.hasNextInt()) {
+                m_scanner.next();
+                System.out.println("Saisie invalide ! Veuillez entrer un chiffre.");
+                continue;
+            }
+
+            int choice = m_scanner.nextInt();
+            if (choice < 1 || choice > pool.size()) {
+                System.out.println("Chiffre incorrect ! Veuillez choisir entre 1 et " + pool.size() + ".");
+                continue;
+            }
+
+            return pool.get(choice - 1);
+        }
+    }
+
+    public Animal askCardToReceiveAbility(ArrayList<Animal> candidates){
+        System.out.println("Choisissez une carte pour récupérer le pouvoir de la carte que vous venez de sacrifier :");
+
+        for (int i = 0; i < candidates.size(); i++) {
+            System.out.print("[" + (i + 1) + "] ");
+            displayCardOption(i + 1, candidates.get(i));
+        }
+
+        while (true) {
+            System.out.print("Votre choix (1 à " + candidates.size() + ") : ");
+
+            if (!m_scanner.hasNextInt()) {
+                m_scanner.next();
+                System.out.println("Saisie invalide ! Veuillez entrer un chiffre.");
+                continue;
+            }
+
+            int choice = m_scanner.nextInt();
+            if (choice < 1 || choice > candidates.size()) {
+                System.out.println("Chiffre incorrect ! Veuillez choisir entre 1 et " + candidates.size() + ".");
+                continue;
+            }
+
+            return candidates.get(choice - 1);
         }
     }
 

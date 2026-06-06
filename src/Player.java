@@ -86,30 +86,4 @@ public abstract class Player {
         return new ArrayList<>(m_deck);
     }
 */
-
-        /*
-    // En gros on regarde si la position est valide, et on regarde si il y a une carte, si il y a une carte, on
-    public boolean takeDamage(int damage, int position) {
-        Optional<Card> optCard = this.getCardAt(position);
-        if (optCard.isPresent()) {
-            optCard.get().takeDamage(damage);
-            if (optCard.get().isDead()) {
-                this.removeCardAt(position);
-                // +1 os pour l'adversaire — à gérer dans Game
-            }
-            return true; // une carte a encaissé les dégâts
-        }
-        return false; // emplacement vide → dégâts directs au score
-    }
-*/
-
-        /*
-     for (int i = 0; i < 4; i++) {
-                int damage = m_currentPlayer.getCardAt(i).get().getAttackPoints(); // PENSER A METTRE CA DANS OBSTACLE ET RETURN 0
-                if (!m_opponent.takeDamage(damage, i)) {
-                    damagePoint += damage;
-                }
-
-            }
-     */
 }

@@ -140,6 +140,7 @@ public class Animal extends Card {
         this.m_healthPoints = amount;
     }
 
+    /*
      // Vérifie si l'animal possède une capacité spécifique par son nom.
     public boolean hasAbility(String name) {
         for (Ability ability : m_abilities) {
@@ -149,6 +150,12 @@ public class Animal extends Card {
             }
         }
         return false;
+    }
+     */
+
+    // Vérifie si l'animal possède des capacités...
+    public boolean hasAbility() {
+        return !this.m_abilities.isEmpty();
     }
 
     // récup de la premire capacité transférable pour sacrifice...

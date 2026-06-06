@@ -49,11 +49,12 @@ public class FirstGame implements GameStrategy{
         return new HashMap<Integer, Optional<Obstacle>>();
     }
 
+    /*
     @Override
     public ArrayList<Animal> getOpponentDeck(ArrayList<Animal> deck) {
         return new ArrayList<>();
     }
-
+    */
 
     public ArrayList<Animal> getUserDeck(){
         AnimalStock stock = new AnimalStock();
@@ -80,10 +81,11 @@ public class FirstGame implements GameStrategy{
         return userDeck;
     }
 
-    @Override
+    /*@Override
     public ArrayList<Animal> getUserDeck(ArrayList<Animal> deck) {
         return new ArrayList<>();
     }
+     */
 
     // pour remplir l'ArrayList d'un coup sans avoir à utiliser add on utiliser List.of
     @Override
@@ -101,8 +103,10 @@ public class FirstGame implements GameStrategy{
         return new ArrayList<>(List.of(3)); // Hermine en position 3 dès le départ
     }
 
+    /*
     @Override
     public ArrayList<String> getRewardPool(ArrayList<Animal> playerDeck) {
         return new ArrayList<>();
     }
+     */
 }

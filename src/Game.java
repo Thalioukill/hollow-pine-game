@@ -10,6 +10,7 @@ public class Game {
     private final Interactions m_dialogue;
     private final GameStrategy m_strategy;
     private final Opponent m_opponent;
+    private final ArrayList<String> m_turnMessages = new ArrayList<>();
 
     public Game(GameBoard board, User player, Interactions dialogue, GameStrategy strat, Opponent opponent) {
         this.m_gameboard = board;
@@ -37,7 +38,8 @@ public class Game {
             m_gameboard.display(m_user, m_opponent, m_score);
 
             // Le joueur pioche au départ du tour...
-            m_dialogue.draw(this.m_user);
+            String drawMessage = m_dialogue.draw(this.m_user);
+            this.m_turnMessages.add(drawMessage);
 
             // propose à l'utilisateur ce qu'il veut faire => placer une acrte ou finir son tour...
             takeTurn(m_dialogue, this.m_user);

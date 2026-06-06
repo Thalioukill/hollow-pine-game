@@ -37,13 +37,6 @@ public class ThirdGame implements GameStrategy{
     }
 
 
-    /*
-        initOpponent  → Coyote en position 3 sur previsionLine (visible dès le début)
-        opponentAction(1) = fin du tour 1 → applique Coyote sur board + pioche 1 carte pour la prévision du tour 2
-        opponentAction(2) = fin du tour 2 → applique la prévision + pioche pour tour 3
-        ...
-     */
-
     // méthode qui stocke les obstacles de ce tour...
     public HashMap<Integer, Optional<Obstacle>> initObstaclesUser() {
         HashMap<Integer, Optional<Obstacle>> listeObstacles = new HashMap<>();
@@ -60,16 +53,19 @@ public class ThirdGame implements GameStrategy{
         return listeObstacles;
     }
 
+    /*
     @Override
     public ArrayList<Animal> getOpponentDeck(ArrayList<Animal> deck) {
         return null;
     }
+     */
 
 
     public ArrayList<Animal> getUserDeck(){
         return null;
     }
 
+    /*
     @Override
     public ArrayList<Animal> getUserDeck(ArrayList<Animal> deck) {
         AnimalStock stock = new AnimalStock();
@@ -103,6 +99,7 @@ public class ThirdGame implements GameStrategy{
 
         return userDeck;
     }
+     */
 
     @Override
     public ArrayList<Integer> getPrevisionAction(int roundNumber) {
@@ -117,21 +114,6 @@ public class ThirdGame implements GameStrategy{
     @Override
     public ArrayList<Integer> getInitialPrevision() {
         return new ArrayList<>(List.of(3)); // Hermine en position 3 dès le départ
-    }
-
-    @Override
-    public ArrayList<String> getRewardPool(ArrayList<Animal> playerDeck) {
-        AnimalStock animalStock = new AnimalStock();
-        ArrayList<String> allCards = animalStock.getAllAnimalNames();
-
-        // On retire les cartes que le joueur a déjà
-        ArrayList<String> playerCardNames = new ArrayList<>();
-        for (Animal a : playerDeck) {
-            playerCardNames.add(a.getName());
-        }
-        allCards.removeAll(playerCardNames);
-
-        return allCards;
     }
 
 }

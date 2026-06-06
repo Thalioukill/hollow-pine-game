@@ -35,6 +35,7 @@ public class BoardLine {
         for (int i = 0; i < 4; i++) {
             m_slots.set(i, Optional.empty());
         }
+        this.m_bonesToken = 0;
     }
 
     // renvoie un Optional vide si l'index est mauvais => géré dans le User avec une Interactions : froce à vérifier que tout va bien.
@@ -94,7 +95,7 @@ public class BoardLine {
     public int attack(BoardLine opponentLine) {
         int totalDirectDamage = 0;
         // ON SAUVEGARDE LES POSITIONS POUR PAS QUE L'ELAN SE DEPLACE ET ATTAQUE UNE DEUXIEME FOIS....
-        Set<Card> alreadyAttacked = new HashSet<>(); // ← cartes déjà traitées
+        Set<Card> alreadyAttacked = new HashSet<>(); // cartes déjà traitées (HashSet() parce que chaque élément est unique..)
 
         for (int i = 0; i < 4; i++) {
 
@@ -104,7 +105,7 @@ public class BoardLine {
                 Card attackerCard = optCard.get();
 
                 if (alreadyAttacked.contains(attackerCard)){
-                    continue; // ← skip si déjà traitée
+                    continue; // ← skip si déjà traitée (pour le runnerAbility)
                 }
                 alreadyAttacked.add(attackerCard);
 
@@ -121,7 +122,8 @@ public class BoardLine {
 
                     if (target.isDead()) {
                         opponentLine.removeCardAt(i);
-                        m_bonesToken ++;
+                        // meme si l'Opponent n'utilise pas ses os il faut quand meme que la méthode puisse permettre d'implémenter cela...
+                        opponentLine.addBonesToken();
                     }
                 }
                 attackerCard.triggerPostAttack(i, this);

@@ -15,92 +15,26 @@ public class GameManager {
     ));
 
 
-    public GameManager(Interactions dialogue) {
+    public GameManager(Interactions dialogue, User user) {
         this.m_dialogue = dialogue;
+        this.m_user = user;
         this.m_gamesCount = 1;
-    }
-
-
-
-    public User initPlayer(int nbGames, ArrayList<Animal> bonusCards){
-        ArrayList<Animal> playerDeck = new ArrayList<Animal>();
-
-        BoardLine userBoard = new BoardLine();
-
-        // On recup la strat propre au Game en cours
-        GameStrategy strat = this.m_strategies.get(nbGames - 1);
-
-        if(nbGames == 1){
-            strat = this.m_strategies.getFirst();
-
-            HashMap<Integer, Optional<Obstacle>> board = strat.initObstaclesUser();
-            placeObstacles(board, userBoard);
-        }
-        else if(nbGames == 2){
-            strat = this.m_strategies.get(1);
-
-            HashMap<Integer, Optional<Obstacle>> board = strat.initObstaclesUser();
-            placeObstacles(board, userBoard);
-        }
-        else{
-            strat = this.m_strategies.getLast();
-
-            HashMap<Integer, Optional<Obstacle>> board = strat.initObstaclesUser();
-            placeObstacles(board, userBoard);
-        }
-
-        ArrayList<Animal> userDeck;
-
-        if (bonusCards.isEmpty()) {
-            userDeck = strat.getUserDeck();
-
-        } else {
-            userDeck = strat.getUserDeck(bonusCards);
-        }
-        Collections.shuffle(userDeck);
-
-        User u = new User(userDeck, userBoard);
-
-        u.shuffle();
-        return u;
     }
 
 
     public void startCampaign() {
         boolean campaignWon = true;
-        ArrayList<Animal> bonusCards = new ArrayList<>(); // vide au départ
 
         while (m_gamesCount <= MAX_GAMES && campaignWon) {
             // Orchestration : on crée les nouveaux objets nécessaires à chaque match
-            //campaignWon = playNewGame(bonusCards);
+            campaignWon = playNewGame();
 
             if (campaignWon) {
                 // Gestion de la progression entre les matchs
-                GameBoard board = new GameBoard();
-
-                int index = m_gamesCount - 1;
-                Optional<GameStrategy> optStrategy = getStrategy(index);
-
-                // à enlever quand on aura regardé que le code passe bien...
-                if (optStrategy.isEmpty()) {
-                    throw new IllegalArgumentException("Erreur : Stratégie de match non trouvée.");
+                if (m_gamesCount == 2) {
+                    this.offerNewCard();
+                    this.sacrificeStone();
                 }
-                GameStrategy strategy = optStrategy.get();
-
-                if (this.m_gamesCount != 2) {
-                    this.m_user = initPlayer(this.m_gamesCount, bonusCards);
-                } else {
-                    // L'utilisateur choisit une carte, on la stocke pour la game 3
-                    Animal chosen = offerNewCard();
-                    bonusCards.add(chosen);
-                }
-
-                Opponent opponent = initiateOpponent(this.m_gamesCount);
-
-                // Injection de dépendances : on donne les joueurs et le plateau à la Game
-                Game currentGame = new Game(board, this.m_user, this.m_dialogue, strategy, opponent);
-                // Appel de la logique du match (boucle de rounds)
-                campaignWon = currentGame.runGame();
                 m_gamesCount++;
             }
         }
@@ -114,9 +48,7 @@ public class GameManager {
         return Optional.empty();
     }
 
-
-
-    private boolean playNewGame(ArrayList<Animal> bonusCards) {
+    private boolean playNewGame() {
         // Création des objets spécifiques au match (Composition)
         GameBoard board = new GameBoard();
 
@@ -129,40 +61,46 @@ public class GameManager {
         }
         GameStrategy strategy = optStrategy.get();
 
-        this.m_user = initPlayer(this.m_gamesCount, bonusCards);
-
         Opponent opponent = initiateOpponent(this.m_gamesCount);
 
-        //this.resetForNewGame();
+        this.resetForNewGame();
+
+        placeUserObstacles(this.m_gamesCount);
 
         // Injection de dépendances : on donne les joueurs et le plateau à la Game
-        Game currentGame = new Game(board, this.m_user ,this.m_dialogue, strategy, opponent);
+        Game currentGame = new Game(board, this.m_user,this.m_dialogue, strategy, opponent);
         // Appel de la logique du match (boucle de rounds)
         return currentGame.runGame();
     }
 
+    private void placeUserObstacles(int nbGames) {
+        // On recup la strat propre au Game en cours
+        GameStrategy strat = this.m_strategies.get(nbGames - 1);
 
-    // faire Classe Deck !!!! + dans user faire une méthode qui réinit son deck (injection dépendances)
-    // classe Player deepCopy ?
-    // on clear le BoardLine pour la nouvelle game => il est vide et on peut placer des Obstacles dessus si on veut...
-    // on doit utiliser un méthode ici...
-            /*
-    public void resetForNewGame() {
-        // récup le deckSave
-        ArrayList<Animal> templates = m_player.getDeckSave();
+        if (nbGames == 1) {
+            strat = this.m_strategies.getFirst();
 
-        // copie profonde
-        ArrayList<Animal> sessionDeck = User.deepCopyDeck(templates);
+            HashMap<Integer, Optional<Obstacle>> board = strat.initObstaclesUser();
+            placeObstacles(board, this.m_user.getBoardLine());
+        }
+        else if (nbGames == 2) {
+            strat = this.m_strategies.get(1);
 
-        // Mélange
-        Collections.shuffle(sessionDeck);
-        // Étape 4 : Injecter le deck prêt dans le joueur
-        m_player.resetForNewGame(sessionDeck);
+            HashMap<Integer, Optional<Obstacle>> board = strat.initObstaclesUser();
+            placeObstacles(board, this.m_user.getBoardLine());
+        } else {
+            strat = this.m_strategies.getLast();
+
+            HashMap<Integer, Optional<Obstacle>> board = strat.initObstaclesUser();
+            placeObstacles(board, this.m_user.getBoardLine());
+
+        }
+        //
     }
-    */
 
 
-    private Opponent initiateOpponent(int nbGames){
+
+        private Opponent initiateOpponent(int nbGames){
         // On recup la strat propre au Game en cours
         GameStrategy strat = this.m_strategies.get(nbGames - 1);
 
@@ -198,6 +136,22 @@ public class GameManager {
         return opponent;
     }
 
+    public void resetForNewGame() {
+        // récup le deckSave
+        ArrayList<Animal> templates = m_user.getDeckSave();
+
+        // copie profonde
+        ArrayList<Animal> sessionDeck = User.deepCopyDeck(templates);
+
+        // Mélange
+        Collections.shuffle(sessionDeck);
+
+        // Étape 4 : Injecter le deck prêt dans le joueur
+        m_user.resetForNewGame(sessionDeck);
+    }
+
+
+
 
     private void placeObstacles(HashMap<Integer, Optional<Obstacle>> obstacleBoard, BoardLine line) {
         for (int i = 0; i < obstacleBoard.size(); i++) {
@@ -210,10 +164,11 @@ public class GameManager {
     }
 
 
-    private Animal offerNewCard() {
-        GameStrategy strat = this.m_strategies.get(m_gamesCount - 1);
-        ArrayList<Animal> fullUserDeck = strat.getUserDeck(); // deck de base complet
-        ArrayList<String> pool = strat.getRewardPool(fullUserDeck);
+    private void offerNewCard() {
+        //GameStrategy strat = this.m_strategies.get(m_gamesCount - 1);
+        //ArrayList<Animal> fullUserDeck = this.m_user.getDeckSave(); // deck de base complet
+        //ArrayList<String> pool = strat.getRewardPool(fullUserDeck);
+        ArrayList<String> pool = this.m_user.getRewardPool();
 
         Collections.shuffle(pool);
         AnimalStock animalStock = new AnimalStock();
@@ -235,7 +190,29 @@ public class GameManager {
         Animal choiceB = optB.get();
 
         // on demande à l'utilisateur
-        return this.m_dialogue.offerNewCardChoice(choiceA, choiceB);
+        Animal chosenAnimal = this.m_dialogue.offerNewCardChoice(choiceA, choiceB);
+        this.m_user.addPermanentCard(chosenAnimal);
+    }
+
+
+    private void sacrificeStone(){
+        ArrayList<Animal> sacrificePool = this.m_user.getSacrificePool();
+
+        if (sacrificePool.isEmpty()) {
+            throw new IllegalStateException("Pierre de sacrifice inutilisable : AUCUNE carte avec un pouvoir dans le deck.");
+        }
+
+        Animal from = m_dialogue.askToSacrificeCard(sacrificePool);
+
+        Ability ability = from.getTransferableAbility().get();
+
+        ArrayList<Animal> candidates = new ArrayList<>(m_user.getDeckSave());
+        candidates.remove(from);  // on enlève juste la carte de la liste locale pour ne pas la proposer
+
+        Animal to = this.m_dialogue.askCardToReceiveAbility(candidates);
+
+
+        this.m_user.transferAbility(from, ability, to); // retire définitivement from du deckSave
     }
 
     private void displayFinalResult(boolean victory) {

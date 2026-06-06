@@ -5,17 +5,92 @@ import java.util.Optional;
 
 public class User extends Player{
     private final ArrayList<Animal> m_hand;
-    //private final ArrayList<Animal> m_deckSave;
+    private final ArrayList<Animal> m_deckSave;
 
     public User(ArrayList<Animal> deck, BoardLine bord) {
         super(deck, bord); // Appel au constructeur de la classe mère
-        //this.m_deckSave = deck;
+        this.m_deckSave = deck;
         this.m_hand = new ArrayList<Animal>();
+    }
+
+    // ------ code pour le DECK SAVE ----
+    public void addPermanentCard(Animal card) {
+        m_deckSave.add(card); // persiste pour toutes les parties futures
+    }
+
+    public void resetForNewGame(ArrayList<Animal> freshDeck) {
+        // remplace le deck par le nouveau deck fourni
+        this.m_deck = freshDeck;
+
+        // réinitialise les statistiques de jeu
+        this.m_hand.clear();
+        this.m_boardLine.clear();
+
         // Pioche initiale de 4 cartes
         for (int i = 0; i < 4; i++) {
             this.m_hand.add(this.draw());
         }
     }
+
+
+    public ArrayList<String> getRewardPool() {
+        AnimalStock animalStock = new AnimalStock();
+        ArrayList<String> allCards = animalStock.getAllAnimalNames();
+
+        // On retire les cartes que le joueur a déjà
+        ArrayList<String> playerCardNames = new ArrayList<>();
+        for (Animal a : this.m_deckSave) {
+            playerCardNames.add(a.getName());
+        }
+        allCards.removeAll(playerCardNames);
+
+        return allCards;
+    }
+
+    public ArrayList<Animal> getSacrificePool() {
+
+
+        // On retire les cartes que le joueur a déjà
+        ArrayList<Animal> playerSacrificeCards = new ArrayList<>();
+
+        for (Animal a : this.m_deckSave) {
+            if(a.hasAbility()){
+               playerSacrificeCards.add(a);
+            }
+        }
+        return playerSacrificeCards;
+    }
+
+
+    public static ArrayList<Animal> deepCopyDeck(ArrayList<Animal> source) {
+        ArrayList<Animal> copy = new ArrayList<>();
+        for (Animal a : source) {
+            copy.add(a.cloneAnimal()); // cloneAnimal = copie profonde...
+        }
+        return copy;
+    }
+
+    public void addCardToDeckSave(Animal card) {
+        this.m_deckSave.add(card.cloneAnimal());
+    }
+
+    public void removeCardToDeckSave(Animal card) {
+        this.m_deckSave.remove(card);
+    }
+
+    public void transferAbility(Animal from, Ability ability, Animal to) {
+        to.addAbility(ability);
+        this.m_deckSave.remove(from);
+    }
+
+
+    public ArrayList<Animal> getDeckSave() {
+        return new ArrayList<>(this.m_deckSave);
+    }
+
+    // replaceDeck()
+    //public
+
 
     // ----- code pour le DECK ------
 

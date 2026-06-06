@@ -48,12 +48,14 @@ public class SecondGame implements GameStrategy{
         return new HashMap<Integer, Optional<Obstacle>>();
     }
 
+    /*
     @Override
     public ArrayList<Animal> getOpponentDeck(ArrayList<Animal> deck) {
         return new ArrayList<>();
     }
+     */
 
-
+    /*
     public ArrayList<Animal> getUserDeck(){
         AnimalStock stock = new AnimalStock();
         ArrayList<Animal> userDeck = new ArrayList<Animal>();
@@ -78,11 +80,14 @@ public class SecondGame implements GameStrategy{
 
         return userDeck;
     }
+     */
 
+    /*
     @Override
     public ArrayList<Animal> getUserDeck(ArrayList<Animal> deck) {
         return new ArrayList<>();
     }
+     */
 
     @Override
     public ArrayList<Integer> getPrevisionAction(int roundNumber) {
@@ -99,8 +104,10 @@ public class SecondGame implements GameStrategy{
         return new ArrayList<>(List.of(3)); // Hermine en position 3 dès le départ
     }
 
+    /*
     @Override
     public ArrayList<String> getRewardPool(ArrayList<Animal> playerDeck) {
         return new ArrayList<>();
     }
+     */
 }

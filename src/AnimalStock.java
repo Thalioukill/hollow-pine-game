@@ -85,10 +85,7 @@ public class AnimalStock {
     }
 
     public ArrayList<String> getAllAnimalNames() {
-        return new ArrayList<>(List.of(
-                GRIZZLY, COYOTE, VIPERE, PORC_EPIC, CORBEAU,
-                ECUREUIL, HERMINE, LOUVETEAU, LOUP, ELAN, PUNAISE, CHAT
-        ));
+        return new ArrayList<>(List.of(GRIZZLY, COYOTE, VIPERE, PORC_EPIC, MOINEAU, CORBEAU, ECUREUIL, HERMINE, LOUVETEAU, LOUP, ELAN, PUNAISE, CHAT));
     }
 
 

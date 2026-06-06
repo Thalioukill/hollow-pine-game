@@ -8,11 +8,11 @@ public interface GameStrategy {
 
     public HashMap<Integer, Optional<Obstacle>> initObstaclesUser();
 
-    public ArrayList<Animal> getOpponentDeck(ArrayList<Animal> deck);
+    //public ArrayList<Animal> getOpponentDeck(ArrayList<Animal> deck);
 
-    public ArrayList<Animal> getUserDeck();
+    // public ArrayList<Animal> getUserDeck();
 
-    public ArrayList<Animal> getUserDeck(ArrayList<Animal> deck);
+    // public ArrayList<Animal> getUserDeck(ArrayList<Animal> deck);
 
     public ArrayList<Animal> getOpponentDeck();
 
@@ -24,7 +24,7 @@ public interface GameStrategy {
     // pour initialiser le previsionLine dans le GameManager avant de faire les rounds...
     public ArrayList<Integer> getInitialPrevision();
 
-    public ArrayList<String> getRewardPool(ArrayList<Animal> playerDeck);
+    //public ArrayList<String> getRewardPool(ArrayList<Animal> playerDeck);
 
 }
 
