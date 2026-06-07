@@ -1,3 +1,8 @@
+package model.abilities;
+
+import model.board.BoardLine;
+import model.cards.Animal;
+
 public class GrowthAbility extends Ability{
     private final Animal m_finalForm;
     private int m_turnsOnBoard = 0;

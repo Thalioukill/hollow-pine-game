@@ -1,3 +1,10 @@
+package view;
+
+import model.abilities.Ability;
+import model.cards.Animal;
+import model.cards.Card;
+import model.players.User;
+
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -238,13 +245,6 @@ public class Interactions {
     }
 
 
-    private int letterToIndex(char letter) {
-        // Character.toUpperCase pour accepter 'a' ou 'A'
-        // On utilise l'ASCII pour trouver l'index  'A' = 65
-        return Character.toUpperCase(letter) - 'A';
-    }
-
-
     private int toIndex(int position) {
         return position - 1;
     }
@@ -327,7 +327,7 @@ public class Interactions {
         }
     }
 
-    // le deck aura toujours une carte avec une Ability au départ instancié dans le main... mais sinon on peut gérer cela ici...
+    // le deck aura toujours une carte avec une abilities.Ability au départ instancié dans le main... mais sinon on peut gérer cela ici...
     public Animal askToSacrificeCard(ArrayList<Animal> pool) {
         System.out.println("\n--- PIERRE DE SACRIFICE ---");
         System.out.println("Choisissez une carte à sacrifier pour récupérer son pouvoir :");

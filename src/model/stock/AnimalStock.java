@@ -1,3 +1,8 @@
+package model.stock;
+
+import model.abilities.*;
+import model.cards.Animal;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

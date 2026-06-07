@@ -3,10 +3,10 @@
 
 skinparam style strictuml
 
-/'The GameManager creates the unique instance of Friend.
+/'The game.GameManager creates the unique instance of Friend.
 It launches a while loop for the 3 games.
-At each iteration, it instantiates a new Game object (the current game), a new Opponent and a new GameBoard.
-At the end of a Game object, if the player has won, the GameManager allows them to add a card to their deck before launching the next Game.'/
+At each iteration, it instantiates a new game.Game object (the current game), a new players.Opponent and a new view.GameBoard.
+At the end of a game.Game object, if the player has won, the game.GameManager allows them to add a card to their deck before launching the next game.Game.'/
 
 class main{
     + {static} main( args:String[*] )
@@ -35,18 +35,18 @@ abstract class Player <<abstract>> {
     'health points are defined at the start without needing to pass them as parameters
     '- m_healthPoints : Integer
 
-    'bones earned when killing an Animal...
+    'bones earned when killing an cards.Animal...
     # m_bonesToken : Integer
     + <<create>> Player(deck : Deck) : Player
     + placeCard()
     + drawCard()
-    ' renvoie 1 Optional<Card>
+    ' renvoie 1 Optional<cards.Card>
     + getCardAt(index : Integer) : Card
     + removeCardAt(index : Integer)
     + placeCardAt(card : Card, position : Integer)
     + toString() : String
 }
-'Chaque player a un tableau de Optional<Card> qui représente les cartes qu'il va jouer, si les emplacements sont déjà pris ALORS il faut PROPOSER UN SACRIFICE !!!!
+'Chaque player a un tableau de Optional<cards.Card> qui représente les cartes qu'il va jouer, si les emplacements sont déjà pris ALORS il faut PROPOSER UN SACRIFICE !!!!
 ' Relations d'agrégation/composition
 Player "1" *--> "1\n# m_deck" Deck : possède >
 Player "1" *--> "0..4\n# m_boardLine" Card : possède >
@@ -104,9 +104,9 @@ class GameBoard {
 
 'class CardSlot {
 '    - m_slotNumber : Integer
-'    - m_place : Optional<Card>
+'    - m_place : Optional<cards.Card>
 '    + <<create>> CardSlot (number : Integer)
-'    + <<create>> CardSlot (number : Integer, obstacle : Obstacle)
+'    + <<create>> CardSlot (number : Integer, obstacle : cards.Obstacle)
 '    + toString() : String
 '}
 
@@ -115,7 +115,7 @@ class CardStock{
     + getCard(name : String) : Animal
 
 }
-' CardStock possède 1 ArrayList<Card> et renvoie une copie profonde !!! pas une référence.
+' CardStock possède 1 ArrayList<cards.Card> et renvoie une copie profonde !!! pas une référence.
 CardStock "1" *--> "10..*\n- m_templates" Card : possède
 
 class Deck {
@@ -202,7 +202,7 @@ class Hand{
 ' A game uses a board and players
 Game "1" *--> "1\n- m_gameboard" GameBoard : possède
 Game "1" o--> "1\n- m_player" User : plays with
-'each match destroys the previous opponent to create a new one, the Main creates the new instance and gives it to the new Game.
+'each match destroys the previous opponent to create a new one, the Main creates the new instance and gives it to the new game.Game.
 Game "1" *--> "1\n- m_opponent" Opponent : affronte
 
 ' The board is composed of several slot lines
@@ -216,7 +216,7 @@ Player "1" *--> "1\n- m_deck" Deck
 
 ' A Deck contains several cards (multiplicity *)
 Deck "1" o--> "*\n- m_cards" Card
-' m_hand is an ArrayList of Card but we must check that they belong to the Deck
+' m_hand is an ArrayList of cards.Card but we must check that they belong to the Deck
 Hand "1" o-->"*\n -m_hand" Card
 
 Animal "1" o-->"*\n -m_abilities" Ability

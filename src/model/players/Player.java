@@ -1,3 +1,9 @@
+package model.players;
+
+import model.board.BoardLine;
+import model.cards.Animal;
+import model.cards.Card;
+
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -38,7 +44,7 @@ public abstract class Player {
 
     // ---------
 
-    //------- code pour la BoardLine ------
+    //------- code pour la board.BoardLine ------
 
     // il ne faut pas gérer la position ici ?
     public Optional<Card> getBoardLineCardAt(int index) {
@@ -58,10 +64,11 @@ public abstract class Player {
         return this.m_boardLine.getSacrificableCount();
     }
 
+    /*
     public void removeCardAt(int index) {
         m_boardLine.removeCardAt(index);
     }
-
+    */
 
     public BoardLine getBoardLine() {
         return this.m_boardLine;
@@ -76,13 +83,13 @@ public abstract class Player {
 
     @Override
     public String toString() {
-        // Utilisation de getClass().getSimpleName() pour différencier User/Opponent
+        // Utilisation de getClass().getSimpleName() pour différencier players.User/players.Opponent
         return this.getClass().getSimpleName() +
                 " Plateau=" + m_boardLine + "]";
     }
 
 /*
-    public ArrayList<Animal> getDeck() {
+    public ArrayList<cards.Animal> getDeck() {
         return new ArrayList<>(m_deck);
     }
 */

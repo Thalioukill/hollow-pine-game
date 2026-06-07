@@ -1,5 +1,9 @@
+package model.cards;
+
+import model.abilities.Ability;
+import model.board.BoardLine;
+
 import java.util.ArrayList;
-import java.util.Collection;
 
 public abstract class Card {
     protected final String m_name; // nom cahneg pas

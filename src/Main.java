@@ -1,3 +1,10 @@
+import model.board.BoardLine;
+import model.cards.Animal;
+import game.GameManager;
+import model.players.User;
+import model.stock.AnimalStock;
+import view.Interactions;
+
 import java.util.ArrayList;
 
 public class Main
@@ -22,7 +29,7 @@ public class Main
 
     }
     public static void buildPlayerDeck(ArrayList<Animal> playerDeck){
-        // Initialisation à l'extérieur des objets Game pour la persistance
+        // Initialisation à l'extérieur des objets game.Game pour la persistance
         AnimalStock stock = new AnimalStock();
 
         // Création du deck avec les 15 cartes de départ (majorité d'écureuils)

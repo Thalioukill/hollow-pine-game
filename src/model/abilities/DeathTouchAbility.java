@@ -1,3 +1,7 @@
+package model.abilities;
+
+import model.cards.Card;
+
 public class DeathTouchAbility extends Ability {
     @Override
     public void onAttack(Card target) {
@@ -10,7 +14,7 @@ public class DeathTouchAbility extends Ability {
 
     public String getName() { return "Contact MORTEL"; }
 
-    public String getShortName() { return "Contact ༒"; }
+    public String getShortName() { return "Contact ☠"; }
 
 }
 

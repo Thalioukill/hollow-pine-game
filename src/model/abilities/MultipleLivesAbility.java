@@ -1,3 +1,7 @@
+package model.abilities;
+
+import model.cards.Animal;
+
 public class MultipleLivesAbility extends Ability{
     @Override
     public boolean onSacrifice(Animal self) {

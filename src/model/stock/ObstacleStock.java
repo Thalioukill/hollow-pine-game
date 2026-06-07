@@ -1,3 +1,7 @@
+package model.stock;
+
+import model.cards.Obstacle;
+
 import java.util.ArrayList;
 import java.util.Optional;
 

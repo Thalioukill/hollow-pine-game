@@ -1,3 +1,8 @@
+package model.cards;
+
+import model.abilities.Ability;
+import model.board.BoardLine;
+
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -5,20 +10,20 @@ public class Animal extends Card {
 
     /*
             Méthode pour ajouter des Abilities dans le m_templates !!!!
-            + addAbility(ability : Ability)
+            + addAbility(ability : abilities.Ability)
      */
 
-    private int m_attackPoints;
-    private int m_bloodCost;
-    private int m_boneCost;
-    private ArrayList<Ability> m_abilities;
+    private final int m_attackPoints;
+    private final int m_bloodCost;
+    private final int m_boneCost;
+    private final ArrayList<Ability> m_abilities;
 
     public Animal(String name, int attack, Integer pv, int blood, int bone) {
         super(name, pv);
         this.m_attackPoints = attack;
         this.m_bloodCost = blood;
         this.m_boneCost = bone;
-        this.m_abilities = new ArrayList<Ability>();
+        this.m_abilities = new ArrayList<>();
     }
 
     // Constructeur de copie
@@ -46,9 +51,6 @@ public class Animal extends Card {
         return this.m_boneCost;
     }
 
-    public boolean isDead() {
-        return this.m_healthPoints <= 0;
-    }
 
     public boolean isSacrificable() { return true; }
 
@@ -57,7 +59,7 @@ public class Animal extends Card {
         return new Animal(this); // Utilise le constructeur de copie
     }
 
-    public void revive() { this.m_healthPoints = 1; }
+    //public void revive() { this.m_healthPoints = 1; }
 
     public int getBloodCost() {
         return this.m_bloodCost;
@@ -125,7 +127,7 @@ public class Animal extends Card {
     public void triggerStartTurn(int position, BoardLine line) {
         // On parcourt la liste générique des capacités
         for (Ability a : m_abilities) {
-            // 'this' est passé car l'Ability a besoin de l'animal pour le transformer
+            // 'this' est passé car l'abilities.Ability a besoin de l'animal pour le transformer
             a.onTurnUpdate(this, position, line);
         }
     }
@@ -168,6 +170,6 @@ public class Animal extends Card {
             return Optional.empty();
         }
         // Dans Inscryption, on transfère généralement le premier sigil
-        return Optional.of(m_abilities.get(0));
+        return Optional.of(m_abilities.getFirst());
     }
 }

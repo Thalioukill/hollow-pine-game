@@ -1,3 +1,7 @@
+package model.board;
+
+import model.cards.Card;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Optional;
@@ -38,12 +42,12 @@ public class BoardLine {
         this.m_bonesToken = 0;
     }
 
-    // renvoie un Optional vide si l'index est mauvais => géré dans le User avec une Interactions : froce à vérifier que tout va bien.
+    // renvoie un Optional vide si l'index est mauvais => géré dans le players.User avec une view.Interactions : froce à vérifier que tout va bien.
     public Optional<Card> getCardAt(int position) {
         return m_slots.get(position);
     }
 
-     // lance une exception car si le code tente de poser une carte hors-limite après les vérifications du User, c'est un bug...
+     // lance une exception car si le code tente de poser une carte hors-limite après les vérifications du players.User, c'est un bug...
     public void placeCardAt(Card card, int position) {
         if (!validateIndex(position)) {
             throw new IndexOutOfBoundsException("Bug interne : placement hors limites");
@@ -75,15 +79,16 @@ public class BoardLine {
         m_slots.set(position, Optional.empty());
     }
 
+    /*
     public void set(int index, Optional<Card> card){
         this.m_slots.set(index, card);
     }
+    */
 
     public void notifyTurnStarted() {
         for (int i = 0; i < 4; i++) {
             final int pos = i;
-            m_slots.get(i).ifPresent(card -> { card.triggerStartTurn(pos, this);
-            });
+            m_slots.get(i).ifPresent(card -> { card.triggerStartTurn(pos, this);});
         }
     }
 
@@ -122,7 +127,7 @@ public class BoardLine {
 
                     if (target.isDead()) {
                         opponentLine.removeCardAt(i);
-                        // meme si l'Opponent n'utilise pas ses os il faut quand meme que la méthode puisse permettre d'implémenter cela...
+                        // meme si l'players.Opponent n'utilise pas ses os il faut quand meme que la méthode puisse permettre d'implémenter cela...
                         opponentLine.addBonesToken();
                     }
                 }

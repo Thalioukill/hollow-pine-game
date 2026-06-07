@@ -1,9 +1,16 @@
+package model.players;
+
+import model.abilities.Ability;
+import model.board.BoardLine;
+import model.cards.Animal;
+import model.cards.Card;
+import model.stock.AnimalStock;
+
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
-public class User extends Player{
+public class User extends Player {
     private final ArrayList<Animal> m_hand;
     private final ArrayList<Animal> m_deckSave;
 
@@ -119,7 +126,7 @@ public class User extends Player{
         return m_hand.get(index);// IndexOutOfBoundsException si bug interne
     }
 
-    // retire la carte de la main et retourne l'élément qui était dedans à l'index de la lettre donnée (ici la Card), on l'utilise uniquement quand yune carte est
+    // retire la carte de la main et retourne l'élément qui était dedans à l'index de la lettre donnée (ici la cards.Card), on l'utilise uniquement quand yune carte est
     // jouée et donc placée autre part, donc si l'index est mauvais c'est une erreur du code...
 
     public Animal removeCard(int index) {
@@ -140,7 +147,7 @@ public class User extends Player{
         this.m_boardLine.addBonesToken();
     }
 
-    // ----- code pour la BoardLine -----
+    // ----- code pour la board.BoardLine -----
     public Optional<Card> getCardAt(int position){
         return this.m_boardLine.getCardAt(position);
     }
@@ -188,7 +195,7 @@ public class User extends Player{
     public void playCardToBoard(int handIndex, int boardPosition) {
         Card cardToPlay = this.m_hand.remove(handIndex);
 
-        // On appelle placeCardAt pour la déposer sur la BoardLine
+        // On appelle placeCardAt pour la déposer sur la board.BoardLine
         this.placeCardAt(cardToPlay, boardPosition);
     }
 
@@ -196,7 +203,7 @@ public class User extends Player{
     @Override
     public String toString() {
         // Utilisation de super.toString() pour la cohésion
-        return "User[" + super.toString() + ", main=" + m_hand + "]";
+        return "players.User[" + super.toString() + ", main=" + m_hand + "]";
     }
 }
 

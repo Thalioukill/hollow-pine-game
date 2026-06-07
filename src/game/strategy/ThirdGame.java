@@ -1,14 +1,21 @@
+package game.strategy;
+
+import model.cards.Animal;
+import model.cards.Obstacle;
+import model.stock.AnimalStock;
+import model.stock.ObstacleStock;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
-public class ThirdGame implements GameStrategy{
+public class ThirdGame implements GameStrategy {
 
-    // méthode qui stocke juste les cartes à mettre dans le deck de l'Opponent !
+    // méthode qui stocke juste les cartes à mettre dans le deck de l'players.Opponent !
     public ArrayList<Animal> getOpponentDeck(){
         AnimalStock stock = new AnimalStock();
-        ArrayList<Animal> opponentDeck = new ArrayList<Animal>();
+        ArrayList<Animal> opponentDeck = new ArrayList<>();
         opponentDeck.add(stock.getCard(AnimalStock.HERMINE).get());
         opponentDeck.add(stock.getCard(AnimalStock.HERMINE).get());
         opponentDeck.add(stock.getCard(AnimalStock.LOUVETEAU).get());
@@ -53,53 +60,10 @@ public class ThirdGame implements GameStrategy{
         return listeObstacles;
     }
 
-    /*
-    @Override
-    public ArrayList<Animal> getOpponentDeck(ArrayList<Animal> deck) {
-        return null;
-    }
-     */
-
-
     public ArrayList<Animal> getUserDeck(){
         return null;
     }
 
-    /*
-    @Override
-    public ArrayList<Animal> getUserDeck(ArrayList<Animal> deck) {
-        AnimalStock stock = new AnimalStock();
-        ArrayList<Animal> userDeck = new ArrayList<Animal>();
-
-        // Création du deck avec les 15 cartes de départ (majorité d'écureuils)
-
-        userDeck.add(stock.getCard(AnimalStock.ECUREUIL).get());
-        userDeck.add(stock.getCard(AnimalStock.ECUREUIL).get());
-        userDeck.add(stock.getCard(AnimalStock.ECUREUIL).get());
-        userDeck.add(stock.getCard(AnimalStock.ECUREUIL).get());
-        userDeck.add(stock.getCard(AnimalStock.ECUREUIL).get());
-        userDeck.add(stock.getCard(AnimalStock.ECUREUIL).get());
-        userDeck.add(stock.getCard(AnimalStock.ECUREUIL).get());
-        userDeck.add(stock.getCard(AnimalStock.HERMINE).get());
-        userDeck.add(stock.getCard(AnimalStock.HERMINE).get());
-        userDeck.add(stock.getCard(AnimalStock.LOUVETEAU).get());
-        userDeck.add(stock.getCard(AnimalStock.ELAN).get());
-        userDeck.add(stock.getCard(AnimalStock.LOUP).get());
-        userDeck.add(stock.getCard(AnimalStock.LOUP).get());
-        userDeck.add(stock.getCard(AnimalStock.PUNAISE).get());
-        userDeck.add(stock.getCard(AnimalStock.CHAT).get());
-
-        // copie profonde des animaux passés en paramètre...
-        for (Animal a : deck) {
-            Optional<Animal> copy = stock.getCard(a.getName());
-            if (copy.isPresent()) {
-                userDeck.add(copy.get());
-            }
-        }
-
-        return userDeck;
-    }
-     */
 
     @Override
     public ArrayList<Integer> getPrevisionAction(int roundNumber) {

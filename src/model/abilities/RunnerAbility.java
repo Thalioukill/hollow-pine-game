@@ -1,4 +1,9 @@
-public class RunnerAbility extends Ability{
+package model.abilities;
+
+import model.board.BoardLine;
+import model.cards.Animal;
+
+public class RunnerAbility extends Ability {
     @Override
     public void afterAttack(Animal self, int currentPos, BoardLine line) {
         int droite = currentPos + 1;

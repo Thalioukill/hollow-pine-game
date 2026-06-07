@@ -1,3 +1,8 @@
+package game.strategy;
+
+import model.cards.Animal;
+import model.cards.Obstacle;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
@@ -12,7 +17,7 @@ public interface GameStrategy {
 
     public ArrayList<Integer> getPrevisionAction(int roundNumber);
 
-    // pour initialiser le previsionLine dans le GameManager avant de faire les rounds...
+    // pour initialiser le previsionLine dans le game.GameManager avant de faire les rounds...
     public ArrayList<Integer> getInitialPrevision();
 
 }

@@ -1,3 +1,5 @@
+package model.abilities;
+
 public class FlyingAbility extends Ability {
     @Override
     public boolean bypassTarget(){

@@ -1,6 +1,6 @@
-import java.util.ArrayList;
+package model.cards;
 
-public class Obstacle extends Card{
+public class Obstacle extends Card {
 
     public Obstacle(String name, Integer hp){
         super(name, hp);
@@ -23,13 +23,10 @@ public class Obstacle extends Card{
         return 0;
     }
 
-    @Override
-    public void takeDamage(int amount){
-        this.m_healthPoints-= amount;
-    }
-
+    /*
     public Obstacle cloneObstacle() {
 
         return new Obstacle(this); // Utilise le constructeur de copie
     }
+     */
 }

@@ -1,3 +1,5 @@
+package model.abilities;
+
 public class StinkyAbility extends Ability{
     @Override
     public int modifyIncomingDamage(int damage) {

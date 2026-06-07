@@ -1,8 +1,13 @@
+package game;
+import model.players.User;
+import model.players.Opponent;
+import model.players.Player;
+import game.strategy.GameStrategy;
+import view.GameBoard;
+import view.Interactions;
 import java.util.ArrayList;
 
 public class Game {
-    // SAVOIR OU EST CE QU'ON VA CREER UNE INTERCATIONS (1 dialogie avec l'utilisateur...)
-    // Attributs privés (Encapsulation forte)
     private int m_score; // La balance : >0 pour l'Ami, <0 pour l'Adversaire
     private final GameBoard m_gameboard;
     private final User m_user;
@@ -27,13 +32,13 @@ public class Game {
         // La partie s'arrête si l'écart atteint 5 points
         int nbRounds = 0;
         do {
-            // appeler la méthode de GameBoard qui affiche qq chose
+            // appeler la méthode de view.GameBoard qui affiche qq chose
             nbRounds ++;
 
             // On met le USER comme premier joueur du round
             this.m_currentPlayer = this.m_user;
 
-            m_gameboard.display(m_user, m_opponent, m_score, this.m_turnMessages);
+            m_gameboard.display(this.m_user, this.m_opponent, m_score, this.m_turnMessages);
 
             // Le joueur pioche au départ du tour...
             String drawMessage = m_dialogue.draw(this.m_user);
@@ -43,13 +48,10 @@ public class Game {
             m_gameboard.display(m_user, m_opponent, m_score, this.m_turnMessages);
 
             // propose à l'utilisateur ce qu'il veut faire => placer une acrte ou finir son tour...
-            takeTurn(m_dialogue, this.m_user);
+            takeTurn(this.m_user);
             this.m_currentPlayer.notifyTurnStarted(); // Croissance
 
-            // User attaque Opponent
-            /*int degats = combatPhase(this.m_opponent);
-            m_score += degats;*/
-            //runUserCombat();
+
             runCombat(this.m_user, this.m_opponent, 1, "Vous");
 
             m_gameboard.displayCombat(this.m_user, this.m_opponent, this.m_score, this.m_turnMessages);
@@ -61,14 +63,10 @@ public class Game {
             // Tour de l'adversaire
             this.m_currentPlayer = this.m_opponent;
 
-            ArrayList<Integer> action = this.m_strategy.getPrevisionAction(nbRounds); // L'Opponent place ses cartes sur sa ligne de jeu.
+            ArrayList<Integer> action = this.m_strategy.getPrevisionAction(nbRounds); // L'players.Opponent place ses cartes sur sa ligne de jeu.
             this.m_currentPlayer.notifyTurnStarted(); // croissance pour les louveteaux de l'opponent.
             this.m_opponent.opponentAction(action);
 
-            // appelle la méthode de combat : Opponent attaque le User
-            //m_score -= combatPhase(this.m_user);// Attaque l'opponent + mise à jour du score
-            // appelle de a méthode display mais avec l'opppnent en current player
-            //runOpponentCombat();
             runCombat(this.m_opponent, this.m_user, -1, "L'adversaire");
 
             m_gameboard.displayCombat(this.m_user, this.m_opponent, this.m_score, this.m_turnMessages);
@@ -77,14 +75,14 @@ public class Game {
         return this.m_score >= 5;
     }
 
-    public void takeTurn(Interactions m_dialogue, User human) {
+    public void takeTurn(User human) {
         //m_gameboard.display(human, this.m_opponent, this.m_score, this.m_turnMessages);
         boolean turnEnded = false;
         while (!turnEnded) {
-            turnEnded = !m_dialogue.askNextAction(human, this.m_turnMessages);
+            turnEnded = !this.m_dialogue.askNextAction(human, this.m_turnMessages);
             if (!turnEnded) {
                 // On ne réaffiche PAS si l'utilisateur veut terminer le tour ('est affocher après avec displayCombat...)
-                m_gameboard.display(human, this.m_opponent, this.m_score, this.m_turnMessages);
+                this.m_gameboard.display(human, this.m_opponent, this.m_score, this.m_turnMessages);
             }
         }
     }
@@ -93,21 +91,7 @@ public class Game {
 
         return this.m_currentPlayer.combatPhase(attackedPlayer);
     }
-/*
-    private int runUserCombat() {
-        int degats = combatPhase(this.m_opponent);
-        this.m_score += degats;
-        this.m_turnMessages.add(m_dialogue.getPlayerAttackMessage(degats));
-        return degats;
-    }
 
-    private int runOpponentCombat() {
-        int degats = combatPhase(this.m_user);
-        this.m_score -= degats;
-        this.m_turnMessages.add(m_dialogue.getOpponentAttackMessage(degats));
-        return degats;
-    }
-*/
     private void runCombat(Player attacker, Player defender, int scoreSign, String attackerName) {
         this.m_currentPlayer = attacker;
         int degats = combatPhase(defender);
@@ -117,6 +101,6 @@ public class Game {
 
     @Override
     public String toString() {
-        return "Game(score=" + m_score + ", board=" + m_gameboard + ")";
+        return "game.Game(score=" + m_score + ", board=" + m_gameboard + ")";
     }
 }

@@ -1,3 +1,11 @@
+package view;
+
+import model.abilities.Ability;
+import model.board.BoardLine;
+import model.cards.Animal;
+import model.cards.Card;
+import model.players.Opponent;
+import model.players.User;
 import textcolors.Color;
 import java.util.ArrayList;
 import java.util.Optional;

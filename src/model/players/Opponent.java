@@ -1,10 +1,15 @@
+package model.players;
+
+import model.board.BoardLine;
+import model.cards.Animal;
+import model.cards.Card;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
-public class Opponent extends Player{
-    private BoardLine m_previsionLine;
+public class Opponent extends Player {
+    private final BoardLine m_previsionLine;
     // private int m_actions
 
     public Opponent(ArrayList<Animal> deck, BoardLine bord, BoardLine previsionBoard) {
@@ -37,20 +42,20 @@ public class Opponent extends Player{
         applyPrevision();
 
         //Prépare la prévision pour le round suivant à l'aide de la liste donnée en param
-        applyPrevision();
         for (int position : positions) {
             placePrevisionCard(position);
         }
     }
 
-
+    /*
     public Optional<Card> getPrevisionCardAt(int position) {
         return m_previsionLine.getCardAt(position);
     }
+     */
 
     @Override
     public String toString() {
-        return "Opponent[" + super.toString() + ", prévision=" + m_previsionLine + "]";
+        return "players.Opponent[" + super.toString() + ", prévision=" + m_previsionLine + "]";
     }
 
     public BoardLine getPrevisionLine() {

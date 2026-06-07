@@ -1,19 +1,27 @@
+package game;
+
+import game.strategy.FirstGame;
+import game.strategy.GameStrategy;
+import game.strategy.SecondGame;
+import game.strategy.ThirdGame;
+import model.abilities.Ability;
+import model.board.BoardLine;
+import model.cards.Animal;
+import model.cards.Obstacle;
+import model.players.Opponent;
+import model.players.User;
+import model.stock.AnimalStock;
+import view.*;
+
 import java.util.*;
 
 public class GameManager {
-    // Attributs privés (Encapsulation forte)
     private final Interactions m_dialogue;
     private int m_gamesCount;
-    private final int MAX_GAMES = 3;
-    private User m_user;
+    private final User m_user;
 
-    // liste des stratégies du Opponent...
-    private final ArrayList<GameStrategy> m_strategies = new ArrayList<>(List.of(
-            new FirstGame(),
-            new SecondGame(),
-            new ThirdGame()
-    ));
-
+    // liste des stratégies du players.Opponent...
+    private final ArrayList<GameStrategy> m_strategies = new ArrayList<>(List.of(new FirstGame(), new SecondGame(), new ThirdGame()));
 
     public GameManager(Interactions dialogue, User user) {
         this.m_dialogue = dialogue;
@@ -21,9 +29,10 @@ public class GameManager {
         this.m_gamesCount = 1;
     }
 
-
     public void startCampaign() {
         boolean campaignWon = true;
+
+        int MAX_GAMES = 3;
 
         while (m_gamesCount <= MAX_GAMES && campaignWon) {
             // Orchestration : on crée les nouveaux objets nécessaires à chaque match
@@ -68,14 +77,14 @@ public class GameManager {
 
         placeUserObstacles(this.m_gamesCount);
 
-        // Injection de dépendances : on donne les joueurs et le plateau à la Game
+        // Injection de dépendances : on donne les joueurs et le plateau à la game.Game
         Game currentGame = new Game(board, this.m_user,this.m_dialogue, strategy, opponent);
         // Appel de la logique du match (boucle de rounds)
         return currentGame.runGame();
     }
 
     private void placeUserObstacles(int nbGames) {
-        // On recup la strat propre au Game en cours
+        // On recup la strat propre au game.Game en cours
         GameStrategy strat = this.m_strategies.get(nbGames - 1);
 
         if (nbGames == 1) {
@@ -98,7 +107,7 @@ public class GameManager {
     }
 
         private Opponent initiateOpponent(int nbGames){
-        // On recup la strat propre au Game en cours
+        // On recup la strat propre au game.Game en cours
         GameStrategy strat = this.m_strategies.get(nbGames - 1);
 
         BoardLine attackBoard = new BoardLine();
@@ -125,7 +134,7 @@ public class GameManager {
 
         Opponent opponent = new Opponent(strat.getOpponentDeck(), attackBoard, previsionBoard);
 
-        // Initialisation de la previsionLine AVANT de passer au Game
+        // Initialisation de la previsionLine AVANT de passer au game.Game
         ArrayList<Integer> init = strat.getInitialPrevision();
         for (int position : init) {
             opponent.placePrevisionCard(position);
@@ -133,7 +142,7 @@ public class GameManager {
         return opponent;
     }
 
-    public void resetForNewGame() {
+    private void resetForNewGame() {
         // récup le deckSave
         ArrayList<Animal> templates = m_user.getDeckSave();
 
@@ -159,9 +168,6 @@ public class GameManager {
 
 
     private void offerNewCard() {
-        //GameStrategy strat = this.m_strategies.get(m_gamesCount - 1);
-        //ArrayList<Animal> fullUserDeck = this.m_user.getDeckSave(); // deck de base complet
-        //ArrayList<String> pool = strat.getRewardPool(fullUserDeck);
         ArrayList<String> pool = this.m_user.getRewardPool();
 
         Collections.shuffle(pool);
@@ -202,7 +208,7 @@ public class GameManager {
     private void sacrificeStone(){
         ArrayList<Animal> sacrificePool = this.m_user.getSacrificePool();
 
-        // on part du principe que le deck du User sera généré au moins avec 1 carte avec des Abilities.
+        // on part du principe que le deck du players.User sera généré au moins avec 1 carte avec des Abilities.
         if (sacrificePool.isEmpty()) {
             throw new IllegalStateException("Pierre de sacrifice inutilisable : AUCUNE carte avec un pouvoir dans le deck.");
         }
