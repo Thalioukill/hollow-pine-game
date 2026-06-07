@@ -29,7 +29,7 @@ public class Animal extends Card {
         this.m_boneCost = other.m_boneCost;
         this.m_abilities = new ArrayList<>();
         for (Ability a : other.m_abilities) {
-            this.addAbility(a);
+            this.addAbility(a.cloneAbility());
         }
     }
 
@@ -155,21 +155,9 @@ public class Animal extends Card {
     public ArrayList<Ability> getAbilities() {
         return new ArrayList<>(m_abilities); // copie défensive
     }
-/*
-    public String getAbilitiesNames() {
-        if (m_abilities.isEmpty()){
-            return "Aucune";
-        }
-        StringBuilder sb = new StringBuilder();
-        for (Ability a : m_abilities) {
-            if (!sb.isEmpty()) sb.append(", ");
-            sb.append(a.getName());
-        }
-        return sb.toString();
-    }
- */
 
     // Vérifie si l'animal possède des capacités...
+    @Override
     public boolean hasAbility() {
         return !this.m_abilities.isEmpty();
     }

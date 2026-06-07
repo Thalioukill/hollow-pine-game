@@ -30,6 +30,7 @@ public class GameManager {
             campaignWon = playNewGame();
 
             if (campaignWon) {
+                this.displayGameResult();
                 // Gestion de la progression entre les matchs
                 if (m_gamesCount == 2) {
                     this.offerNewCard();
@@ -93,12 +94,8 @@ public class GameManager {
 
             HashMap<Integer, Optional<Obstacle>> board = strat.initObstaclesUser();
             placeObstacles(board, this.m_user.getBoardLine());
-
         }
-        //
     }
-
-
 
         private Opponent initiateOpponent(int nbGames){
         // On recup la strat propre au Game en cours
@@ -146,11 +143,8 @@ public class GameManager {
         // Mélange
         Collections.shuffle(sessionDeck);
 
-        // Étape 4 : Injecter le deck prêt dans le joueur
         m_user.resetForNewGame(sessionDeck);
     }
-
-
 
 
     private void placeObstacles(HashMap<Integer, Optional<Obstacle>> obstacleBoard, BoardLine line) {
@@ -221,31 +215,17 @@ public class GameManager {
         candidates.remove(from);  // on enlève juste la carte de la liste locale pour ne pas la proposer
         candidates = deduplicateByName(candidates); // on ne propose qu'une fois la carte pour ne pas avoir une liste entière d'écureuil par exemple....
 
-        Optional<Animal> receiver = Optional.empty();
-        while (receiver.isEmpty()) {
-            // on demande à l'utilisateur sur quelle carte il veut ajouter l'ability choisie
-            Animal candidate = m_dialogue.askCardToReceiveAbility(candidates);
-            try {
-                // on essaie de transférer si ce n'est pas su une carte qui a déjà la meme ability...
-                m_user.transferAbility(from, ability, candidate);
-                receiver = Optional.of(candidate);
-
-            // si c'est une carte qui a dejà la m ability alors on dit qu'on ne peut pas et on reboucle...
-            } catch (IllegalArgumentException e) {
-                m_dialogue.displayMessage(e.getMessage());
-            }
-        }
-
-
-
-        Animal to = this.m_dialogue.askCardToReceiveAbility(candidates);
-
-
-        this.m_user.transferAbility(from, ability, to); // retire définitivement from du deckSave
+        Animal receiver = m_dialogue.askCardToReceiveAbility(candidates, ability);
+        m_user.transferAbility(from, ability, receiver); // retire définitivement from du deckSave
+        this.m_dialogue.displayTransferResult(from.getName(), ability.getName(), receiver.getName());
     }
 
     private void displayFinalResult(boolean victory) {
         this.m_dialogue.displayFinalResult(victory);
+    }
+
+    private void displayGameResult(){
+        this.m_dialogue.displayGameResult(this.m_gamesCount);
     }
 
 }

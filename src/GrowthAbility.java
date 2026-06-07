@@ -1,5 +1,6 @@
 public class GrowthAbility extends Ability{
     private final Animal m_finalForm;
+    private int m_turnsOnBoard = 0;
 
     public GrowthAbility(Animal loup) {
         this.m_finalForm = loup;
@@ -7,17 +8,21 @@ public class GrowthAbility extends Ability{
 
     @Override
     public void onTurnUpdate(Animal self, int position, BoardLine line) {
+        m_turnsOnBoard++;
+        if (m_turnsOnBoard >= 2) { // se transforme seulement au début du deuxième tour
+            line.replaceCard(position, m_finalForm.cloneAnimal());
+        }
+    }
 
-
-
-       /* // L'animal s'est déjà "reposé" un tour, on procède à la transformation
-        AnimalStock stock = new AnimalStock();
-        Animal loup = stock.getCard(AnimalStock.LOUP).get();
-        */
-        line.replaceCard(position, m_finalForm.cloneAnimal());
+    @Override
+    public Ability cloneAbility() {
+        return new GrowthAbility(m_finalForm.cloneAnimal());
     }
 
     public String getName(){
         return "Croissance";
     }
+
+    public String getShortName() { return "Grandir"; }
+
 }

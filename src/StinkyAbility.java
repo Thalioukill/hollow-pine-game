@@ -5,7 +5,13 @@ public class StinkyAbility extends Ability{
         return damage - 1;
     }
 
+    @Override
+    public Ability cloneAbility() { return new StinkyAbility(); }
+
     public String getName() { return "Puant"; }
+
+    public String getShortName() { return "Puant"; }
+
 
 }
 

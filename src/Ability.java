@@ -30,4 +30,8 @@ public abstract class Ability {
     protected void onTurnUpdate(Animal self, int position, BoardLine line) {
 
     }
+
+    public abstract Ability cloneAbility();
+
+    public abstract String getShortName(); // ← max 9 caractères pour l'affichage carte
 }

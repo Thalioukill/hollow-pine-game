@@ -15,5 +15,11 @@ public class RunnerAbility extends Ability{
         // Sinon, on ne bouge pas
     }
 
+    @Override
+    public Ability cloneAbility() { return new RunnerAbility(); }
+
     public String getName() { return "Coureur"; }
+
+    public String getShortName() { return "Coureur"; }
+
 }

@@ -1,46 +1,86 @@
 import textcolors.Color;
-
 import java.util.ArrayList;
 import java.util.Optional;
 
 public class GameBoard {
-// Constantes pour les dimensions
-    private static final int CARD_HEIGHT = 7;
-    private static final String SEP = "   "; // Espace entre les cartes
-    private static final String BORDER_EMPTY = "*************";
-    private static final String BORDER_CARD  = "*-----------*";
+
+    // Chaque carte fait exactement 17 caractères de large
+    private static final int    CARD_HEIGHT  = 9;
+    private static final String SEP          = "   ";               // 3 espaces entre cartes
+    private static final String PREFIX       = "          ";        // 10 espaces : marge gauche
+    private static final String BORDER_EMPTY = "*****************"; // 17 chars
+    private static final String BORDER_CARD  = "*---------------*"; // 17 chars
 
     private final StringBuilder m_buffer = new StringBuilder();
 
-    // affichage couche par couches
-    public void display(User user, Opponent opponent, int balance) {
-        m_buffer.setLength(0); // on réinitialise à chaque tour
 
-        // Balance et os
-        m_buffer.append("\n================= PLATEAU (Balance: ").append(balance)
-                .append(" | Os: ").append(user.getBonesToken()).append(") =================\n\n");
+    // Méthode principale
+    public void displayCombat(User user, Opponent opponent, int balance, ArrayList<String> messages) {
+        m_buffer.setLength(0);
 
-        // ligne de prévision de l'adversaire (Top)
-        renderBoardLine(opponent.getPrevisionLine(), Color.RED, false);
-        m_buffer.append("      ||              ||              ||              ||      \n");
-        m_buffer.append("      \\/              \\/              \\/              \\/      \n");
-        // ligne de combat de l'adversaire
-        renderBoardLine(opponent.getBoardLine(), Color.RED, false);
-        m_buffer.append("      /\\              /\\              /\\              /\\      \n");
-        m_buffer.append("      --              --     VOUS     --              --      \n\n");
+        m_buffer.append("\n").append(PREFIX).append("=============================================================================\n");
+        m_buffer.append(PREFIX).append("                                 PLATEAU\n");
+        m_buffer.append(PREFIX).append("=============================================================================\n\n");
 
-        // ligne de combat du joueur
-        renderBoardLine(user.getBoardLine(), Color.GREEN, true); // JOUEUR (avec numéros)
-        m_buffer.append("==============================================================\n");
+        // Ligne de prévision de l'adversaire
+        renderBoardLine(opponent.getPrevisionLine(), Color.RED, false, false, 0);
 
-        System.out.print(m_buffer.toString());
-        displayHand(user);
-        displayDeck(user);
+        // marge de gauche de 10 espaces(PREFIX) puis les flèches alignées sur chaque carte
+        m_buffer.append(PREFIX).append("       ||                   ||                 ||                  ||      \n");
+        m_buffer.append(PREFIX).append("       \\/                   \\/                 \\/                  \\/      \n");
+
+        // Ligne de combat adversaire + BALANCE dans la marge gauche
+        renderBoardLine(opponent.getBoardLine(), Color.RED, false, true, balance);
+
+        // Flèches
+        m_buffer.append(PREFIX).append("       /\\                  /\\                  /\\                  /\\      \n");
+        m_buffer.append(PREFIX).append("       --                  --       VOUS       --                  --      \n\n");
+
+        // Ligne de combat joueur
+        renderBoardLine(user.getBoardLine(), Color.GREEN, true, false, 0);
+
+        m_buffer.append(PREFIX).append("=============================================================================\n");
+
+        System.out.print(m_buffer);
+        displayMessages(messages); // après la main
+        messages.clear();           // vide la liste après affichage
     }
 
-    // rendu d'une ligne complète (4 slots) couche par couche (hauteur).
-    private void renderBoardLine(BoardLine line, String color, boolean isUserLine) {
+    public void display(User user, Opponent opponent, int balance, ArrayList<String> messages) {
+        displayCombat(user, opponent, balance, messages);
+        displayHandAndDeck(user);
+    }
+
+    private void displayMessages(ArrayList<String> messages) {
+        if (messages.isEmpty()) return;
+        System.out.println("\n--- Événements ---");
+        for (String msg : messages) {
+            System.out.println("  > " + msg);
+        }
+    }
+
+
+    // Rendu d'une ligne de 4 slots, couche par couche
+    // showScore=true : affiche "BALANCE" puis la valeur dans la marge gauche
+    private void renderBoardLine(BoardLine line, String color, boolean isUserLine, boolean showScore, int score) {
+        // layer 3 = milieu visuel de la carte (entre le nom et les stats)
+        int labelLayer = 3;
+        int valueLayer = 4;
+
         for (int layer = 0; layer < CARD_HEIGHT; layer++) {
+            // Marge gauche
+            if (showScore && layer == labelLayer) {
+                m_buffer.append(String.format("%-10s", "BALANCE"));
+            } else if (showScore && layer == valueLayer) {
+                // centré sur 10 chars
+                String val = String.valueOf(score);
+                int padding = (10 - val.length()) / 2;
+                m_buffer.append(String.format("%" + (padding + val.length()) + "s%-"+ (10 - padding - val.length()) + "s", val, ""));
+            } else {
+                m_buffer.append(PREFIX);
+            }
+
+            // 4 slots
             for (int slot = 0; slot < 4; slot++) {
                 appendCardLayer(line.getCardAt(slot), layer, slot, isUserLine, color);
                 m_buffer.append(SEP);
@@ -49,77 +89,128 @@ public class GameBoard {
         }
     }
 
-     //Ajout le texte d'une seule couche pour une carte donnée..
+    // Contenu d'un slot pour une layer
     private void appendCardLayer(Optional<Card> optCard, int layer, int slot, boolean isUser, String color) {
         if (optCard.isEmpty()) {
             m_buffer.append(getEmptySlotContent(layer, slot, isUser));
             return;
         }
-
-        // on applique la couleur passée en param
         m_buffer.append(color).append(getLayerContent(optCard.get(), layer)).append(Color.RESET);
     }
 
+    // Slot vide
     private String getEmptySlotContent(int layer, int slot, boolean isUser) {
-        // Si c'est la ligne du joueur et qu'on est au milieu de la carte (layer 3)
-        if (isUser && layer == 3) {
-            return String.format("*     %d     *", slot + 1); // Affiche 1, 2, 3 ou 4
-        }
-        // Sinon, bordures ou vide standard
-        if((layer == 0 || layer == 6)){
+        if (layer == 0 || layer == 8) {
             return BORDER_EMPTY;
         }
-        else{
-            return"*           *";
+        if (isUser && layer == 4) {
+            // index du slot centré : 1 + 8 + 1chiffre + 8 + 1 = 18
+            return String.format("*       %d       *", slot + 1);
         }
+        return "*               *";                        // 17 chars
     }
 
-     // texte interne de chaque ligne d'une carte
+    // Carte occupée
     private String getLayerContent(Card card, int layer) {
         return switch (layer) {
-            case 0, 6 -> BORDER_CARD;
-            case 1    -> String.format("| %-9s |", truncate(card.getName()));
-            case 2    -> "|-----------|";
-            case 3    -> String.format("| PV: %-5d |", card.getHealthPoints());
-            case 4    -> getStatLine(card); // ligne d'attaque ou vide
-            case 5    -> card.isSacrificable() ? "|  ANIMAL   |" : "| OBSTACLE  |";
-            default   -> "|           |";
+            case 0, 8 -> BORDER_CARD;
+            case 1    -> card.isSacrificable() ? "|    ANIMAL     |"
+                    : "|   OBSTACLE    |";
+            case 2    -> String.format("| %-13s |", truncate(card.getName()));
+            case 3    -> "|---------------|";
+            case 4    -> String.format("| PV: %-9d |", card.getHealthPoints());
+            case 5    -> getStatLine(card);
+            case 6    -> getAbilityLine(card, 0);
+            case 7    -> getAbilityLine(card, 1);
+            default   -> "|               |";
         };
     }
 
-     // Récup la ligne de statistiques (attaque) pour les animaux.
     private String getStatLine(Card card) {
         if (card.isSacrificable()) {
-            return String.format("| Atk: %-4d |", card.getAttackPoints());
+            return String.format("| Atk: %-8d |", card.getAttackPoints());
         }
-        return "|           |";
+        return "|               |";
     }
 
-     // casser les noms longs pour pas que l'affichage ne soit trop grand
+    private String getAbilityLine(Card card, int index) {
+        if (!card.hasAbility()) {
+            return "|               |";
+        }
+        ArrayList<Ability> abilities = card.getAbilities();
+        if (index >= abilities.size()) {
+            return "|               |";
+        }
+        return String.format("| %-13s |", truncate(abilities.get(index).getShortName()));
+    }
+
+    // Tronque à 13 caractères max (espace interne d'une carte)
     private String truncate(String name) {
-
-        String nameString = name;
-        if(name.length() > 9){
-            nameString = name.substring(0, 9);
-        }
-        return nameString;
+        return name.length() > 13 ? name.substring(0, 13) : name;
     }
 
-    private void displayHand(User user) {
+     // Main + pioche côte à côte
+    // cardLine fait exactement 92 chars (calculé)
+    // La pioche (6 lignes) est centrée verticalement sur la main
+    private void displayHandAndDeck(User user) {
+        int handSize = user.getHandSize();
+        int deckSize = user.getDeckSize();
+
+        String[] deckLines = {"*-----------*", "|           |", String.format("|   %-2d      |", deckSize), "|  cartes   |", "|           |", "*-----------*"};
+        int DECK_HEIGHT = deckLines.length; // 6
+
+        // Ligne de la pioche commençant à deckStart dans la liste des lignes de main
+        int deckStart = Math.max(0, (handSize - DECK_HEIGHT) / 2);
+
+        // Largeur fixe d'une ligne de carte : 92 chars (calculé précisément)
+        int cardLineWidth = 92;
+
         System.out.println("\nVotre main :");
-        for (int i = 0; i < user.getHandSize(); i++) {
-            char letter = (char) ('A' + i);
-            Animal card = user.getHandCard(i);
-            System.out.println("  [" + letter + "] "+ card.getName()+ " | PV: "   + card.getHealthPoints()+ " | Atk: "  + card.getAttackPoints()+ " | Sang: " + card.getBloodCost()+ " | Os: "   + card.getBoneCost());
-        }
-    }
 
-    private void displayDeck(User user) {
-        System.out.println("\n*-----------*");
-        System.out.println("|           |");
-        System.out.printf( "|   %-2d      |%n", user.getDeckSize());
-        System.out.println("|  cartes   |");
-        System.out.println("|           |");
-        System.out.println("*-----------*\n");
+        int totalLines = Math.max(handSize, deckStart + DECK_HEIGHT);
+
+        for (int i = 0; i < totalLines; i++) {
+
+            // Ligne de carte ou vide
+            String cardLine = "";
+            if (i < handSize) {
+                char letter = (char) ('A' + i);
+                Animal card  = user.getHandCard(i);
+
+                String abilities = "Aucun pouvoir";
+                if (card.hasAbility()) {
+                    StringBuilder sb = new StringBuilder();
+                    for (Ability a : card.getAbilities()) {
+                        if (!sb.isEmpty()) sb.append(", ");
+                        sb.append(a.getName());
+                    }
+                    abilities = sb.toString();
+                }
+
+                // 6+12+7+3+8+3+9+2+7+2+11+20 = 90 chars + 2 espaces fin = 92
+                cardLine = String.format(
+                        "  [%c] %-12s | PV: %-3d | Atk: %-3d | Sang: %-2d | Os: %-2d | Pouvoir: %-20s",
+                        letter,
+                        card.getName(),
+                        card.getHealthPoints(),
+                        card.getAttackPoints(),
+                        card.getBloodCost(),
+                        card.getBoneCost(),
+                        abilities);
+            }
+
+            // Ligne de pioche ou vide
+            int deckIndex = i - deckStart;
+            if (deckIndex >= 0 && deckIndex < DECK_HEIGHT) {
+                System.out.printf("%-" + cardLineWidth + "s  %s%n",
+                        cardLine, deckLines[deckIndex]);
+            } else if (!cardLine.isEmpty()) {
+                System.out.println(cardLine);
+            }
+        }
+
+        // Os sous la main, avec une ligne de séparation
+        System.out.println("Os disponibles : " + user.getBonesToken());
+        System.out.println();
     }
 }

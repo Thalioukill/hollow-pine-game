@@ -20,6 +20,15 @@ public abstract class Card {
         return this.m_name;
     }
 
+    public boolean hasAbility() {
+        return false;
+    }
+
+
+    public ArrayList<Ability> getAbilities() {
+        return new ArrayList<>(); // liste vide par défaut
+    }
+
     public int getHealthPoints() {
         return m_healthPoints;
     }

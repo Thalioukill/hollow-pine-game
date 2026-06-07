@@ -4,5 +4,10 @@ public class SharpQuillsAbility extends Ability{
         attacker.takeDamage(1); // riposte 1 dégât
     }
 
+    @Override
+    public Ability cloneAbility() { return new SharpQuillsAbility(); }
+
     public String getName() { return "Piques aiguisés"; }
+
+    public String getShortName() { return "Piques ⚔"; }
 }

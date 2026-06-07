@@ -5,5 +5,15 @@ public class MultipleLivesAbility extends Ability{
         return true;
     }
 
-    public String getName() { return "Nombreuses vies"; }
+    @Override
+    public Ability cloneAbility() { return new MultipleLivesAbility(); }
+
+    public String getName() {
+        return "Nombreuses vies";
+    }
+
+    public String getShortName() {
+        return "Vies ++";
+    }
+
 }

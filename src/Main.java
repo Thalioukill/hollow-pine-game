@@ -36,12 +36,12 @@ public class Main
         playerDeck.add(stock.getCard(AnimalStock.ECUREUIL).get());
         playerDeck.add(stock.getCard(AnimalStock.HERMINE).get());
         playerDeck.add(stock.getCard(AnimalStock.HERMINE).get());
-        playerDeck.add(stock.getCard(AnimalStock.LOUVETEAU).get());
+        playerDeck.add(stock.getCard(AnimalStock.GRIZZLY).get());
         playerDeck.add(stock.getCard(AnimalStock.ELAN).get());
         playerDeck.add(stock.getCard(AnimalStock.LOUP).get());
-        playerDeck.add(stock.getCard(AnimalStock.LOUP).get());
+        playerDeck.add(stock.getCard(AnimalStock.VIPERE).get());
         playerDeck.add(stock.getCard(AnimalStock.PUNAISE).get());
-        playerDeck.add(stock.getCard(AnimalStock.CHAT).get());
+        playerDeck.add(stock.getCard(AnimalStock.PORC_EPIC).get());
     }
 
 

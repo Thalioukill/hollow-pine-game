@@ -19,22 +19,22 @@ public class Interactions {
     }
 
     // Demande à l'utilisateur de choisir sa prochaine action via un menu et retourne membre de l'énumération Actions validé.
-    public boolean askNextAction(User human) {
+    public boolean askNextAction(User human, ArrayList<String> messages) {
         displayMenu(human);
         String input = m_scanner.next().toUpperCase(); // On tolère 'p' ou 'P
         if (input.equals("P")) {
-            return handlePlacement(human);
+            return handlePlacement(human, messages);
         }
         if (input.equals("F")) {
             return false;
         }
         // Sinon la saisie est invalide...
         this.displayMessage("Choix inconnu ! Veuillez saisir P ou F.");
-        return true;
+        return askNextAction(human, messages); // reboucle sans réafficher
     }
 
 
-    public void displayMenu(User human){
+    public void displayMenu(User human) {
         System.out.println("\n--- ACTIONS POSSIBLES ---");
         if (human.getHandSize() > 0) {
             System.out.println("[P] Placer une carte sur le plateau");
@@ -46,10 +46,10 @@ public class Interactions {
 
     }
 
-    private boolean handlePlacement(User human) {
+    private boolean handlePlacement(User human, ArrayList<String> messages) {
         if (human.getHandSize() == 0) {
             System.out.println("Vous n'avez plus de cartes en main !");
-            return askNextAction(human);
+            return askNextAction(human, messages);
         }
 
         int handIndex = askCardLetter(human);
@@ -57,18 +57,18 @@ public class Interactions {
 
         // Carte gratuite (écureuil) → on pose directement
         if (card.getBloodCost() == 0 && card.getBoneCost() == 0) {
-            placeCard(human, handIndex);
+            placeCard(human, handIndex, messages);
             return true;
         }
 
         // Carte à coût en SANG
         if (card.getBloodCost() > 0) {
             if (!human.hasEnoughBlood(card)) {
-                displayMessage("Pas assez de créatures à sacrifier pour poser cette carte, veuillez en choisir une autre coutant moins de "+ human.getSacrificableCount()+".");
+                displayMessage("Pas assez de créatures à sacrifier pour poser cette carte, veuillez en choisir une autre coutant moins de " + human.getSacrificableCount() + ".");
                 return true;
             }
             handleSacrifices(card.getBloodCost(), human);
-            placeCard(human, handIndex);
+            placeCard(human, handIndex, messages);
             return true;
         }
 
@@ -79,17 +79,19 @@ public class Interactions {
                 return true;
             }
             human.spendBones(card.getBoneCost());
-            placeCard(human, handIndex);
+            placeCard(human, handIndex, messages);
             return true;
         }
 
         return true;
     }
 
-    private void placeCard(User human, int handIndex) {
+    private void placeCard(User human, int handIndex, ArrayList<String> messages) {
+        Animal card = human.getHandCard(handIndex); // on récupère le nom AVANT de la jouer
+        String cardName = card.getName();
         int position = askPosition(human);
         human.playCardToBoard(handIndex, position);
-        displayMessage("Carte posée !");
+        messages.add(cardName + " posé(e) en position " + (position + 1) + " !");
     }
 
 
@@ -117,14 +119,33 @@ public class Interactions {
         }
     }
 
+    public String getAttackMessage(String attackerName, int degats) {
+        if (degats == 0) {
+            if (attackerName.equals("Vous")) {
+                return "Votre attaque n'a pas infligé de dégâts directs.";
+            }
+            return "L'adversaire ne vous a pas infligé de dégâts directs.";
+        }
+        else{
+            if (attackerName.equals("Vous")) {
+                return attackerName+" avez infligé " + degats + " dégât(s) direct(s) !";
+            }
+            return "L'adversaire vous a infligé " + degats + " dégât(s) !";
+        }
+    }
+
+    public void displayTransferResult(String fromName, String abilityName, String toName) {
+        System.out.println("\n✓ Le pouvoir \"" + abilityName + "\" de " + fromName
+                + " a été transféré à " + toName + " !");
+    }
 
     public boolean askConfirmation(String s) {
         while (true) {
             System.out.print(s);
             String input = m_scanner.next().toUpperCase();
-            if (input.equals("OUI")){
+            if (input.equals("OUI")) {
                 return true;
-            } else if (input.equals("NON")){
+            } else if (input.equals("NON")) {
                 return false;
             }
             // ERREURRRR
@@ -155,8 +176,7 @@ public class Interactions {
             // vérif si on occupe l'emplacement ou pas
             else if (human.getBoardLineCardAt(index).isPresent()) {
                 System.out.println("L'emplacement " + pos + " est déjà occupé, choisissez-en un autre.");
-            }
-            else {
+            } else {
                 return index;
             }
         }
@@ -168,7 +188,7 @@ public class Interactions {
             System.out.print("Entrez le numéro de l'emplacement de la carte que vous souhaitez sacrifier (1, 2, 3 ou 4) : ");
             if (m_scanner.hasNextInt()) {
                 int pos = m_scanner.nextInt();
-                if(pos > 0 && pos <= 4){
+                if (pos > 0 && pos <= 4) {
                     int index = toIndex(pos);
 
                     if (alreadySacrificed.contains(index)) {
@@ -180,8 +200,7 @@ public class Interactions {
                     if (result.isPresent() && result.get().isSacrificable()) {
                         return index; // on retourne juste l'int
                     }
-                }
-                else{
+                } else {
                     System.out.println("Veuillez choisir un chiffre entre 1 et 4...");
                 }
             } else {
@@ -196,14 +215,16 @@ public class Interactions {
     public int askCardLetter(User human) {
         char maxLetter = (char) ('A' + human.getHandSize() - 1);
         while (true) {
-            System.out.print("Choisissez une carte dans votre main (lettre entre A et " + maxLetter + ") : ");
+            String message = (maxLetter == 'A') ? "Choisissez une carte dans votre main (il n'y a plus que la carte A... Le choix va être dur) : " : "Choisissez une carte dans votre main (lettre entre A et " + maxLetter + ") : ";
+
+            System.out.print(message);
+
             String input = m_scanner.next().toUpperCase();
 
             // test de longueur
             if (input.length() != 1) {
                 System.out.println("Saisie invalide ! Veuillez n'entrer qu'une seule lettre.");
-            }
-            else {
+            } else {
                 char letter = input.charAt(0);
                 // test si c'est bien une lettre et dans l'intervalle [A, maxLetter]
                 if (Character.isLetter(letter) && letter >= 'A' && letter <= maxLetter) {
@@ -251,34 +272,46 @@ public class Interactions {
     }
 
 
-
-
     // Affiche un message simple (dégâts, pioche,etc)
     public void displayMessage(String message) {
         System.out.println(message);
     }
 
-    public void displayFinalResult(boolean victory){
+    public void displayFinalResult(boolean victory) {
         if (victory) {
-            System.out.println("Félicitations ! Vous avez survécu à la forêt.");
+            System.out.println("\nFélicitations ! Vous avez vaincu Leshy et survécu à la forêt. La nuit s'achève enfin...");
         } else {
-            System.out.println("L'obscurité vous englouti... Partie terminée.");
+            System.out.println("\nL'obscurité vous englouti... Partie terminée.");
+        }
+    }
+
+    public void displayGameResult(int gameNumber) {
+
+        System.out.println("\nVous avez SURVÉCU à la partie " + gameNumber + " !");
+
+        if (gameNumber == 1) {
+            System.out.println("Leshy semble s'amuser... Les prochaines parties seront plus difficiles.");
+        } else if (gameNumber == 2) {
+            System.out.println("Impressionnant. Mais la dernière partie sera la plus redoutable...");
+        }
+
+        if (gameNumber < 3) {
+            System.out.println("\nPARTIE N° " + (gameNumber + 1) + " :");
         }
     }
 
 
     public Animal offerNewCardChoice(Animal card1, Animal card2) {
-        System.out.println("\n--- RÉCOMPENSE ---");
-        System.out.println("Félicitations ! Vous avez survécu aux deux première parties ! Cela en sera t-il pour la dernière ? ");
-        System.out.println("Pour vous aider à vaincre Leshy voici deux cartes, choisissez en UNE pour parfaire votre deck :");
+    System.out.println("\n--- RÉCOMPENSE ---");
+    System.out.println("Pour vous aider à vaincre Leshy voici deux cartes, choisissez en UNE pour parfaire votre deck :");
 
-        // Affichage des cartes pour aider
-        displayCardOption(1, card1);
-        displayCardOption(2, card2);
+    // Affichage des cartes pour aider
+    displayCardOption(1, card1);
+    displayCardOption(2, card2);
 
         while (true) {
             System.out.print("Votre choix (1 ou 2) : ");
-            m_scanner.next(); // ENLEVE le mot qui est
+            //m_scanner.next(); // ENLEVE le mot qui est
             if (!m_scanner.hasNextInt()) {
                 m_scanner.next(); // vide le token invalide
                 System.out.println("Saisie invalide ! Veuillez entrer 1 ou 2.");
@@ -300,12 +333,11 @@ public class Interactions {
         System.out.println("Choisissez une carte à sacrifier pour récupérer son pouvoir :");
 
         for (int i = 0; i < pool.size(); i++) {
-            System.out.print("[" + (i + 1) + "] ");
             displayCardOption(i + 1, pool.get(i));
         }
 
         while (true) {
-            System.out.print("Votre choix (1 à " + pool.size() + ") : ");
+            System.out.print("\nVotre choix (1 à " + pool.size() + ") : ");
 
             if (!m_scanner.hasNextInt()) {
                 m_scanner.next();
@@ -323,15 +355,15 @@ public class Interactions {
         }
     }
 
-    public Animal askCardToReceiveAbility(ArrayList<Animal> candidates){
-        System.out.println("Choisissez une carte pour récupérer le pouvoir de la carte que vous venez de sacrifier :");
+    public Animal askCardToReceiveAbility(ArrayList<Animal> candidates, Ability ability) {
+        System.out.println("\nChoisissez une carte pour récupérer le pouvoir de la carte que vous venez de sacrifier :");
 
         for (int i = 0; i < candidates.size(); i++) {
             displayCardOption(i + 1, candidates.get(i));
         }
 
         while (true) {
-            System.out.print("Votre choix (1 à " + candidates.size() + ") : ");
+            System.out.print("\nVotre choix (1 à " + candidates.size() + ") : ");
 
             if (!m_scanner.hasNextInt()) {
                 m_scanner.next();
@@ -345,7 +377,13 @@ public class Interactions {
                 continue;
             }
 
-            return candidates.get(choice - 1);
+            Animal candidate = candidates.get(choice - 1);
+            if (candidate.hasAnAbility(ability.getName())) {
+                System.out.println(candidate.getName() + " possède déjà le pouvoir \"" + ability.getName() + "\", choisissez une autre carte.");
+                continue;
+            }
+
+            return candidate;
         }
     }
 

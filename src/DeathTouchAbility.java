@@ -5,6 +5,12 @@ public class DeathTouchAbility extends Ability {
         target.takeDamage(target.getHealthPoints());
     }
 
+    @Override
+    public Ability cloneAbility() { return new DeathTouchAbility(); }
+
     public String getName() { return "Contact MORTEL"; }
+
+    public String getShortName() { return "Contact ༒"; }
+
 }
 
