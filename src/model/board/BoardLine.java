@@ -79,12 +79,6 @@ public class BoardLine {
         m_slots.set(position, Optional.empty());
     }
 
-    /*
-    public void set(int index, Optional<Card> card){
-        this.m_slots.set(index, card);
-    }
-    */
-
     public void notifyTurnStarted() {
         for (int i = 0; i < 4; i++) {
             final int pos = i;

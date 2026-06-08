@@ -22,11 +22,4 @@ public class Obstacle extends Card {
     public int getAttackPoints(){
         return 0;
     }
-
-    /*
-    public Obstacle cloneObstacle() {
-
-        return new Obstacle(this); // Utilise le constructeur de copie
-    }
-     */
 }

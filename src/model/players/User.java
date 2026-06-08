@@ -17,7 +17,7 @@ public class User extends Player {
     public User(ArrayList<Animal> deck, BoardLine bord) {
         super(deck, bord); // Appel au constructeur de la classe mère
         this.m_deckSave = deck;
-        this.m_hand = new ArrayList<Animal>();
+        this.m_hand = new ArrayList<>();
     }
 
     // ------ code pour le DECK SAVE ----
@@ -77,14 +77,6 @@ public class User extends Player {
         return copy;
     }
 
-    public void addCardToDeckSave(Animal card) {
-        this.m_deckSave.add(card.cloneAnimal());
-    }
-
-    public void removeCardToDeckSave(Animal card) {
-        this.m_deckSave.remove(card);
-    }
-
     public void transferAbility(Animal from, Ability ability, Animal to) {
         if (to.hasAnAbility(ability.getName())) {
             throw new IllegalArgumentException(
@@ -100,18 +92,14 @@ public class User extends Player {
         return new ArrayList<>(this.m_deckSave);
     }
 
-    // replaceDeck()
-    //public
-
-
-    // ----- code pour le DECK ------
+    // ----- code pour le DECK
 
     // melange les cartes du deck.
     public void shuffle() {
         Collections.shuffle(this.m_deck);
     }
 
-    //------ Code pour la MAIN ------
+    //------ Code pour la MAIN
     public void addCard(Animal card) {
         // Une main peut techniquement grandir, contrairement au plateau
         this.m_hand.add(card);
@@ -126,17 +114,6 @@ public class User extends Player {
         return m_hand.get(index);// IndexOutOfBoundsException si bug interne
     }
 
-    // retire la carte de la main et retourne l'élément qui était dedans à l'index de la lettre donnée (ici la cards.Card), on l'utilise uniquement quand yune carte est
-    // jouée et donc placée autre part, donc si l'index est mauvais c'est une erreur du code...
-
-    public Animal removeCard(int index) {
-        if (index < 0 || index >= m_hand.size()) {
-            // Exception non-contrôlée pour signaler un bug interne
-            throw new IndexOutOfBoundsException("Bug interne : retrait d'une lettre invalide '" + (char)('A' + index) + "'");
-        }
-        return m_hand.remove(index);
-    }
-
     // ---------
 
     public int getBonesToken(){
@@ -147,7 +124,7 @@ public class User extends Player {
         this.m_boardLine.addBonesToken();
     }
 
-    // ----- code pour la board.BoardLine -----
+    // ----- code pour la board.BoardLine
     public Optional<Card> getCardAt(int position){
         return this.m_boardLine.getCardAt(position);
     }
@@ -157,37 +134,16 @@ public class User extends Player {
         return test.getBoneCost() == 0 || this.getBonesToken() >= test.getBoneCost();
     }
 
-    /*
-        if (test.getBoneCost() > 0 && this.getBonesToken() < test.getBoneCost()){
-        return false;
-        }
-        return true;
-     */
-
     public boolean hasEnoughBlood(Animal test){
         return test.getBloodCost() == 0 || this.m_boardLine.getSacrificableCount() >= test.getBloodCost();
     }
-    /*
-        if(test.getBloodCost() > 0 && this.m_boardLine.getSacrificableCount() < test.getBloodCost()){
-            return false;
-        }
-     */
 
-    public boolean validatePosition(int position) {
-        return this.m_boardLine.validateIndex(position);
-    }
-    /*
-    private int toIndex(int position) {
-        return position - 1;
-    }
-    */
     public void spendBones(int amount) {
         this.m_boardLine.spendBones(amount);
     }
 
     public void sacrifice(int position){
         this.m_boardLine.removeCardAt(position);
-        //m_bonesToken++; // Règle : +1 os par sacrifice
         this.m_boardLine.addBonesToken();
     }
 
@@ -199,12 +155,6 @@ public class User extends Player {
         this.placeCardAt(cardToPlay, boardPosition);
     }
 
-
-    @Override
-    public String toString() {
-        // Utilisation de super.toString() pour la cohésion
-        return "players.User[" + super.toString() + ", main=" + m_hand + "]";
-    }
 }
 
 

@@ -98,9 +98,4 @@ public class Game {
         m_score += scoreSign * degats;
         m_turnMessages.add(m_dialogue.getAttackMessage(attackerName, degats));
     }
-
-    @Override
-    public String toString() {
-        return "game.Game(score=" + m_score + ", board=" + m_gameboard + ")";
-    }
 }

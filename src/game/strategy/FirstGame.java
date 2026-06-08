@@ -17,13 +17,11 @@ public class FirstGame implements GameStrategy {
         AnimalStock stock = new AnimalStock();
         ArrayList<Animal> opponentDeck = new ArrayList<>();
         opponentDeck.add(stock.getCard(AnimalStock.HERMINE).get());
+        opponentDeck.add(stock.getCard(AnimalStock.LOUVETEAU).get());
+        opponentDeck.add(stock.getCard(AnimalStock.ELAN).get());
         opponentDeck.add(stock.getCard(AnimalStock.HERMINE).get());
         opponentDeck.add(stock.getCard(AnimalStock.LOUVETEAU).get());
-        opponentDeck.add(stock.getCard(AnimalStock.LOUVETEAU).get());
         opponentDeck.add(stock.getCard(AnimalStock.LOUP).get());
-        opponentDeck.add(stock.getCard(AnimalStock.LOUP).get());
-        opponentDeck.add(stock.getCard(AnimalStock.ELAN).get());
-
         return opponentDeck;
     }
 
@@ -45,32 +43,7 @@ public class FirstGame implements GameStrategy {
 
     // méthode qui stocke les obstacles de ce tour...
     public HashMap<Integer, Optional<Obstacle>> initObstaclesUser() {
-        return new HashMap<Integer, Optional<Obstacle>>();
-    }
-
-    public ArrayList<Animal> getUserDeck(){
-        AnimalStock stock = new AnimalStock();
-        ArrayList<Animal> userDeck = new ArrayList<Animal>();
-
-        // Création du deck avec les 15 cartes de départ (majorité d'écureuils)
-
-        userDeck.add(stock.getCard(AnimalStock.ECUREUIL).get());
-        userDeck.add(stock.getCard(AnimalStock.ECUREUIL).get());
-        userDeck.add(stock.getCard(AnimalStock.ECUREUIL).get());
-        userDeck.add(stock.getCard(AnimalStock.ECUREUIL).get());
-        userDeck.add(stock.getCard(AnimalStock.ECUREUIL).get());
-        userDeck.add(stock.getCard(AnimalStock.ECUREUIL).get());
-        userDeck.add(stock.getCard(AnimalStock.ECUREUIL).get());
-        userDeck.add(stock.getCard(AnimalStock.HERMINE).get());
-        userDeck.add(stock.getCard(AnimalStock.HERMINE).get());
-        userDeck.add(stock.getCard(AnimalStock.LOUVETEAU).get());
-        userDeck.add(stock.getCard(AnimalStock.ELAN).get());
-        userDeck.add(stock.getCard(AnimalStock.LOUP).get());
-        userDeck.add(stock.getCard(AnimalStock.LOUP).get());
-        userDeck.add(stock.getCard(AnimalStock.PUNAISE).get());
-        userDeck.add(stock.getCard(AnimalStock.CHAT).get());
-
-        return userDeck;
+        return new HashMap<>();
     }
 
     // pour remplir l'ArrayList d'un coup sans avoir à utiliser add on utiliser List.of

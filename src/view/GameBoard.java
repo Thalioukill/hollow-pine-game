@@ -82,7 +82,7 @@ public class GameBoard {
             } else if (showScore && layer == valueLayer) {
                 // centré sur 10 chars
                 String val = String.valueOf(score);
-                int padding = (10 - val.length()) / 2;
+                int padding = (8 - val.length()) / 2;
                 m_buffer.append(String.format("%" + (padding + val.length()) + "s%-"+ (10 - padding - val.length()) + "s", val, ""));
             } else {
                 m_buffer.append(PREFIX);
@@ -185,7 +185,7 @@ public class GameBoard {
                 char letter = (char) ('A' + i);
                 Animal card  = user.getHandCard(i);
 
-                String abilities = "Aucun pouvoir";
+                String abilities = "Aucun";
                 if (card.hasAbility()) {
                     StringBuilder sb = new StringBuilder();
                     for (Ability a : card.getAbilities()) {
@@ -193,6 +193,10 @@ public class GameBoard {
                         sb.append(a.getName());
                     }
                     abilities = sb.toString();
+                }
+                // Tronquer à 20 chars pour l'alignement (deux abilities peut décaler la pioche...)
+                if (abilities.length() > 20) {
+                    abilities = abilities.substring(0, 17) + "...";
                 }
 
                 // 6+12+7+3+8+3+9+2+7+2+11+20 = 90 chars + 2 espaces fin = 92

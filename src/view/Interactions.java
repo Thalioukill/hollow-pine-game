@@ -13,16 +13,10 @@ import java.util.Scanner;
 //Gère exclusivement les entrées (Scanner) et sorties (System.out) console.
 public class Interactions {
     private final Scanner m_scanner;
-    // DISCLAIMER : potentiellement mattre le player en attributs
 
     public Interactions() {
         // on n'instancie qu'un seul Scanner pour System.in
         this.m_scanner = new Scanner(System.in);
-    }
-
-    // Constructeur de test
-    public Interactions(Scanner scanner) {
-        this.m_scanner = scanner;
     }
 
     // Demande à l'utilisateur de choisir sa prochaine action via un menu et retourne membre de l'énumération Actions validé.
@@ -60,6 +54,9 @@ public class Interactions {
         }
 
         int handIndex = askCardLetter(human);
+        if (handIndex == -1) {
+            return askNextAction(human, messages); // retour au menu sans réaffichage
+        }
         Animal card = human.getHandCard(handIndex);
 
         // Carte gratuite (écureuil) → on pose directement
@@ -72,7 +69,7 @@ public class Interactions {
         if (card.getBloodCost() > 0) {
             if (!human.hasEnoughBlood(card)) {
                 displayMessage("Pas assez de créatures à sacrifier pour poser cette carte, veuillez en choisir une autre coutant moins de " + human.getSacrificableCount() + ".");
-                return true;
+                return handlePlacement(human, messages); // reboucle sans réafficher
             }
             handleSacrifices(card.getBloodCost(), human);
             placeCard(human, handIndex, messages);
@@ -83,7 +80,7 @@ public class Interactions {
         if (card.getBoneCost() > 0) {
             if (!human.hasEnoughBones(card)) {
                 displayMessage("Pas assez d'os (" + human.getBonesToken() + "/" + card.getBoneCost() + ").");
-                return true;
+                return handlePlacement(human, messages);
             }
             human.spendBones(card.getBoneCost());
             placeCard(human, handIndex, messages);
@@ -135,15 +132,14 @@ public class Interactions {
         }
         else{
             if (attackerName.equals("Vous")) {
-                return attackerName+" avez infligé " + degats + " dégât(s) direct(s) !";
+                return "Vous avez infligé " + degats + " dégât(s) direct(s) à Leshy, continuez comme cela !";
             }
-            return "L'adversaire vous a infligé " + degats + " dégât(s) !";
+            return "L'adversaire vous a infligé " + degats + " dégât(s), cela semble mal parti...";
         }
     }
 
     public void displayTransferResult(String fromName, String abilityName, String toName) {
-        System.out.println("\n✓ Le pouvoir \"" + abilityName + "\" de " + fromName
-                + " a été transféré à " + toName + " !");
+        System.out.println("\n✓ Le pouvoir \"" + abilityName + "\" de " + fromName + " a été transféré à " + toName + " !");
     }
 
     public boolean askConfirmation(String s) {
@@ -204,15 +200,20 @@ public class Interactions {
                     }
 
                     Optional<Card> result = human.getCardAt(index);
-                    if (result.isPresent() && result.get().isSacrificable()) {
-                        return index; // on retourne juste l'int
+                    if (result.isEmpty()) {
+                        displayMessage("Cet emplacement est vide, choisissez un emplacement occupé par une carte afin de la sacrifier.");
+                        continue;
                     }
+                    if (!result.get().isSacrificable()) {
+                        displayMessage("Impossible : un obstacle ne peut pas être sacrifié !");
+                        continue;
+                    }
+                    return index;
                 } else {
                     System.out.println("Veuillez choisir un chiffre entre 1 et 4...");
                 }
             } else {
                 m_scanner.next(); // Lit le prochain mot
-                // ERREURRRR
                 System.out.println("Saisie invalide ! Vous devez entrer un chiffre entier entre 1 et 4.");
             }
         }
@@ -222,11 +223,15 @@ public class Interactions {
     public int askCardLetter(User human) {
         char maxLetter = (char) ('A' + human.getHandSize() - 1);
         while (true) {
-            String message = (maxLetter == 'A') ? "Choisissez une carte dans votre main (il n'y a plus que la carte A... Le choix va être dur) : " : "Choisissez une carte dans votre main (lettre entre A et " + maxLetter + ") : ";
+            String message = (maxLetter == 'A') ? "Choisissez une carte dans votre main (il n'y a plus que la carte A... Le choix va être dur) ou [X] pour annuler: " : "Choisissez une carte dans votre main (lettre entre A et " + maxLetter + ") ou saisissez [E] pour annuler : ";
 
             System.out.print(message);
 
             String input = m_scanner.next().toUpperCase();
+
+            if (input.equals("X")){
+                return -1; //ANNULATION
+            }
 
             // test de longueur
             if (input.length() != 1) {

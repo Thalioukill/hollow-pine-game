@@ -19,7 +19,7 @@ public abstract class Player {
         this.m_boardLine = bord;
     }
 
-    //-------- code pour le Deck -----
+    //-------- code pour le Deck
     //Ajoute une carte au deck : utilisé pour l'initialisation et les récompenses
     public void addCard(Animal card) {
         m_deck.add(card);
@@ -44,7 +44,7 @@ public abstract class Player {
 
     // ---------
 
-    //------- code pour la board.BoardLine ------
+    //------- code pour la board.BoardLine
 
     // il ne faut pas gérer la position ici ?
     public Optional<Card> getBoardLineCardAt(int index) {
@@ -64,12 +64,6 @@ public abstract class Player {
         return this.m_boardLine.getSacrificableCount();
     }
 
-    /*
-    public void removeCardAt(int index) {
-        m_boardLine.removeCardAt(index);
-    }
-    */
-
     public BoardLine getBoardLine() {
         return this.m_boardLine;
     }
@@ -78,19 +72,4 @@ public abstract class Player {
         this.m_boardLine.notifyTurnStarted();
     }
 
-
-    // ------
-
-    @Override
-    public String toString() {
-        // Utilisation de getClass().getSimpleName() pour différencier players.User/players.Opponent
-        return this.getClass().getSimpleName() +
-                " Plateau=" + m_boardLine + "]";
-    }
-
-/*
-    public ArrayList<cards.Animal> getDeck() {
-        return new ArrayList<>(m_deck);
-    }
-*/
 }

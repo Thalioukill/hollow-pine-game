@@ -16,12 +16,11 @@ public class ThirdGame implements GameStrategy {
     public ArrayList<Animal> getOpponentDeck(){
         AnimalStock stock = new AnimalStock();
         ArrayList<Animal> opponentDeck = new ArrayList<>();
-        opponentDeck.add(stock.getCard(AnimalStock.HERMINE).get());
-        opponentDeck.add(stock.getCard(AnimalStock.HERMINE).get());
-        opponentDeck.add(stock.getCard(AnimalStock.LOUVETEAU).get());
-        opponentDeck.add(stock.getCard(AnimalStock.LOUVETEAU).get());
+        opponentDeck.add(stock.getCard(AnimalStock.MOINEAU).get());
         opponentDeck.add(stock.getCard(AnimalStock.LOUP).get());
-        opponentDeck.add(stock.getCard(AnimalStock.LOUP).get());
+        opponentDeck.add(stock.getCard(AnimalStock.VIPERE).get());
+        opponentDeck.add(stock.getCard(AnimalStock.PUNAISE).get());
+        opponentDeck.add(stock.getCard(AnimalStock.LOUVETEAU).get());
         opponentDeck.add(stock.getCard(AnimalStock.ELAN).get());
 
         return opponentDeck;
@@ -29,18 +28,7 @@ public class ThirdGame implements GameStrategy {
 
     // méthode qui stocke les obstacles de ce tour...
     public HashMap<Integer, Optional<Obstacle>> initObstaclesOpponent() {
-        HashMap<Integer, Optional<Obstacle>> listeObstacles = new HashMap<>();
-        ObstacleStock stock = new ObstacleStock();
-
-        for (int i = 0; i < 4; i++) {
-            listeObstacles.put(i, Optional.empty());
-        }
-
-        // On récupère l'Optional directement depuis le stock
-        Optional<Obstacle> sapin = stock.getObstacle(ObstacleStock.SAPIN);
-        listeObstacles.put(0, sapin);
-
-        return listeObstacles;
+        return new HashMap<>();
     }
 
 
@@ -54,8 +42,8 @@ public class ThirdGame implements GameStrategy {
         }
 
         // On récupère l'Optional directement depuis le stock
-        Optional<Obstacle> sapin = stock.getObstacle(ObstacleStock.SAPIN);
-        listeObstacles.put(0, sapin);
+        Optional<Obstacle> sapin = stock.getObstacle(ObstacleStock.ROCHER);
+        listeObstacles.put(2, sapin);
 
         return listeObstacles;
     }
@@ -68,16 +56,20 @@ public class ThirdGame implements GameStrategy {
     @Override
     public ArrayList<Integer> getPrevisionAction(int roundNumber) {
         return switch (roundNumber) {
-            case 1 -> new ArrayList<>(List.of(0)); // après round 1 : prépare pos 0
-            case 2 -> new ArrayList<>(List.of(2)); // après round 2 : prépare pos 2
-            case 3 -> new ArrayList<>(List.of(2, 3)); // plusieurs cartes possibles
+            case 1 -> new ArrayList<>(List.of(0));
+            case 2 -> new ArrayList<>(List.of(3));
+            case 3 -> new ArrayList<>(List.of(1));
+            case 4 -> new ArrayList<>();
+            case 5 -> new ArrayList<>(List.of(1));
+            case 6 -> new ArrayList<>(List.of(0));
+            case 7 -> new ArrayList<>(List.of(2));
             default -> new ArrayList<>();
         };
     }
 
     @Override
     public ArrayList<Integer> getInitialPrevision() {
-        return new ArrayList<>(List.of(3)); // Hermine en position 3 dès le départ
+        return new ArrayList<>(List.of(1)); // Moineau en position 2 derrière le rocher.
     }
 
 }

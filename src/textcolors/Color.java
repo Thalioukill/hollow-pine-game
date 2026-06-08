@@ -1,6 +1,5 @@
 package textcolors;
 
-// Classe pour les couleurs + dans le terminal.
 public class Color {
     // Codes de réinitialisation
     public static final String RESET = "\u001B[0m";

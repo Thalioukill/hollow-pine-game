@@ -8,17 +8,16 @@ import java.util.HashMap;
 import java.util.Optional;
 
 public interface GameStrategy {
+    HashMap<Integer, Optional<Obstacle>> initObstaclesOpponent();
 
-    public HashMap<Integer, Optional<Obstacle>> initObstaclesOpponent();
+    HashMap<Integer, Optional<Obstacle>> initObstaclesUser();
 
-    public HashMap<Integer, Optional<Obstacle>> initObstaclesUser();
+    ArrayList<Animal> getOpponentDeck();
 
-    public ArrayList<Animal> getOpponentDeck();
-
-    public ArrayList<Integer> getPrevisionAction(int roundNumber);
+    ArrayList<Integer> getPrevisionAction(int roundNumber);
 
     // pour initialiser le previsionLine dans le game.GameManager avant de faire les rounds...
-    public ArrayList<Integer> getInitialPrevision();
+    ArrayList<Integer> getInitialPrevision();
 
 }
 

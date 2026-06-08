@@ -84,57 +84,22 @@ public class GameManager {
     }
 
     private void placeUserObstacles(int nbGames) {
-        // On recup la strat propre au game.Game en cours
         GameStrategy strat = this.m_strategies.get(nbGames - 1);
-
-        if (nbGames == 1) {
-            strat = this.m_strategies.getFirst();
-
-            HashMap<Integer, Optional<Obstacle>> board = strat.initObstaclesUser();
-            placeObstacles(board, this.m_user.getBoardLine());
-        }
-        else if (nbGames == 2) {
-            strat = this.m_strategies.get(1);
-
-            HashMap<Integer, Optional<Obstacle>> board = strat.initObstaclesUser();
-            placeObstacles(board, this.m_user.getBoardLine());
-        } else {
-            strat = this.m_strategies.getLast();
-
-            HashMap<Integer, Optional<Obstacle>> board = strat.initObstaclesUser();
-            placeObstacles(board, this.m_user.getBoardLine());
-        }
+        HashMap<Integer, Optional<Obstacle>> board = strat.initObstaclesUser();
+        placeObstacles(board, this.m_user.getBoardLine());
     }
 
-        private Opponent initiateOpponent(int nbGames){
-        // On recup la strat propre au game.Game en cours
+    private Opponent initiateOpponent(int nbGames){
         GameStrategy strat = this.m_strategies.get(nbGames - 1);
 
         BoardLine attackBoard = new BoardLine();
         BoardLine previsionBoard = new BoardLine();
 
-        if(nbGames == 1){
-            strat = this.m_strategies.getFirst();
-
-            HashMap<Integer, Optional<Obstacle>> board = strat.initObstaclesOpponent();
-            placeObstacles(board, attackBoard);
-        }
-        else if(nbGames == 2){
-            strat = this.m_strategies.get(1);
-
-            HashMap<Integer, Optional<Obstacle>> board = strat.initObstaclesOpponent();
-            placeObstacles(board, attackBoard);
-        }
-        else{
-            strat = this.m_strategies.getLast();
-
-            HashMap<Integer, Optional<Obstacle>> board = strat.initObstaclesOpponent();
-            placeObstacles(board, attackBoard);
-        }
+        HashMap<Integer, Optional<Obstacle>> board = strat.initObstaclesOpponent();
+        placeObstacles(board, attackBoard);
 
         Opponent opponent = new Opponent(strat.getOpponentDeck(), attackBoard, previsionBoard);
 
-        // Initialisation de la previsionLine AVANT de passer au game.Game
         ArrayList<Integer> init = strat.getInitialPrevision();
         for (int position : init) {
             opponent.placePrevisionCard(position);
