@@ -15,7 +15,6 @@ public class Game {
     private final Interactions m_dialogue;
     private final GameStrategy m_strategy;
     private final Opponent m_opponent;
-    private final ArrayList<String> m_turnMessages = new ArrayList<>();
 
     public Game(GameBoard board, User player, Interactions dialogue, GameStrategy strat, Opponent opponent) {
         this.m_gameboard = board;
@@ -38,14 +37,13 @@ public class Game {
             // On met le USER comme premier joueur du round
             this.m_currentPlayer = this.m_user;
 
-            m_gameboard.display(this.m_user, this.m_opponent, m_score, this.m_turnMessages);
+            m_gameboard.display(this.m_user, this.m_opponent, m_score, this.m_dialogue.getAndClearMessages());
 
             // Le joueur pioche au départ du tour... :
-            String drawMessage = m_dialogue.draw(this.m_user);
-            this.m_turnMessages.add(drawMessage);
+            m_dialogue.draw(this.m_user);
 
             // Reaffiche le board avec le message de pioche
-            m_gameboard.display(m_user, m_opponent, m_score, this.m_turnMessages);
+            m_gameboard.display(m_user, m_opponent, m_score, this.m_dialogue.getAndClearMessages());
 
             // propose à l'utilisateur ce qu'il veut faire => placer une acrte ou finir son tour...
             takeTurn(this.m_user);
@@ -54,7 +52,7 @@ public class Game {
 
             runCombat(this.m_user, this.m_opponent, 1, "Vous");
 
-            m_gameboard.displayCombat(this.m_user, this.m_opponent, this.m_score, this.m_turnMessages);
+            m_gameboard.displayCombat(this.m_user, this.m_opponent, this.m_score, this.m_dialogue.getAndClearMessages());
             // on vérifie déjà ici qu'on ait pas dépassé 5 au niveau de la balance sinon on arrete direct a boucle..
             if(Math.abs(this.m_score) >= 5){
                 break;
@@ -69,7 +67,7 @@ public class Game {
 
             runCombat(this.m_opponent, this.m_user, -1, "L'adversaire");
 
-            m_gameboard.displayCombat(this.m_user, this.m_opponent, this.m_score, this.m_turnMessages);
+            m_gameboard.displayCombat(this.m_user, this.m_opponent, this.m_score, this.m_dialogue.getAndClearMessages());
 
         } while (Math.abs(this.m_score) < 5);
         return this.m_score >= 5;
@@ -79,10 +77,10 @@ public class Game {
         //m_gameboard.display(human, this.m_opponent, this.m_score, this.m_turnMessages);
         boolean turnEnded = false;
         while (!turnEnded) {
-            turnEnded = !this.m_dialogue.askNextAction(human, this.m_turnMessages);
+            turnEnded = !this.m_dialogue.askNextAction(human);
             if (!turnEnded) {
                 // On ne réaffiche PAS si l'utilisateur veut terminer le tour ('est afficher après avec displayCombat...)
-                this.m_gameboard.display(human, this.m_opponent, this.m_score, this.m_turnMessages);
+                this.m_gameboard.display(human, this.m_opponent, this.m_score, this.m_dialogue.getAndClearMessages());
             }
         }
     }
@@ -95,7 +93,7 @@ public class Game {
     private void runCombat(Player attacker, Player defender, int scoreSign, String attackerName) {
         this.m_currentPlayer = attacker;
         int degats = combatPhase(defender);
-        m_score += scoreSign * degats;
-        m_turnMessages.add(m_dialogue.getAttackMessage(attackerName, degats));
+        this.m_score += scoreSign * degats;
+        this.m_dialogue.addAttackMessage(attackerName, degats);
     }
 }

@@ -1,7 +1,6 @@
 import model.board.BoardLine;
 import model.cards.Animal;
 import model.cards.AnimalType;
-import model.cards.Card;
 import model.players.User;
 import model.stock.AnimalStock;
 import org.junit.jupiter.api.Test;
@@ -270,6 +269,6 @@ public class UserTest {
         ArrayList<AnimalType> pool = user.getRewardPool();
 
         assertFalse(pool.isEmpty(),"Le pool de récompense devrait contenir des cartes non possédées");
-        assertFalse(pool.contains(AnimalType.ECUREUIL.getDisplayName()),"L'Écureuil (déjà possédé) ne devrait pas apparaître dans le pool");
+        assertFalse(pool.contains(AnimalType.ECUREUIL),"L'Écureuil (déjà possédé) ne devrait pas apparaître dans le pool");
     }
 }

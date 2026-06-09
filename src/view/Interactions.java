@@ -13,25 +13,36 @@ import java.util.Scanner;
 //Gère exclusivement les entrées (Scanner) et sorties (System.out) console.
 public class Interactions {
     private final Scanner m_scanner;
+    private final ArrayList<String> m_turnMessages = new ArrayList<>();
 
     public Interactions() {
         // on n'instancie qu'un seul Scanner pour System.in
         this.m_scanner = new Scanner(System.in);
     }
 
+    public void addMessage(String message) {
+        this.m_turnMessages.add(message);
+    }
+
+    public ArrayList<String> getAndClearMessages() {
+        ArrayList<String> copy = new ArrayList<>(this.m_turnMessages);
+        this.m_turnMessages.clear();
+        return copy;
+    }
+
     // Demande à l'utilisateur de choisir sa prochaine action via un menu et retourne membre de l'énumération Actions validé.
-    public boolean askNextAction(User human, ArrayList<String> messages) {
+    public boolean askNextAction(User human) {
         displayMenu(human);
         String input = m_scanner.next().toUpperCase(); // On tolère 'p' ou 'P
         if (input.equals("P")) {
-            return handlePlacement(human, messages);
+            return handlePlacement(human);
         }
         if (input.equals("F")) {
             return false;
         }
         // Sinon la saisie est invalide...
         this.displayMessage("Choix inconnu ! Veuillez saisir P ou F.");
-        return askNextAction(human, messages); // reboucle sans réafficher
+        return askNextAction(human); // reboucle sans réafficher
     }
 
 
@@ -47,21 +58,21 @@ public class Interactions {
 
     }
 
-    private boolean handlePlacement(User human, ArrayList<String> messages) {
+    private boolean handlePlacement(User human) {
         if (human.getHandSize() == 0) {
             System.out.println("Vous n'avez plus de cartes en main !");
-            return askNextAction(human, messages);
+            return askNextAction(human);
         }
 
         int handIndex = askCardLetter(human);
         if (handIndex == -1) {
-            return askNextAction(human, messages); // retour au menu sans réaffichage
+            return askNextAction(human); // retour au menu sans réaffichage
         }
         Animal card = human.getHandCard(handIndex);
 
         // Carte gratuite (écureuil) → on pose directement
         if (card.getBloodCost() == 0 && card.getBoneCost() == 0) {
-            placeCard(human, handIndex, messages);
+            placeCard(human, handIndex);
             return true;
         }
 
@@ -69,10 +80,10 @@ public class Interactions {
         if (card.getBloodCost() > 0) {
             if (!human.hasEnoughBlood(card)) {
                 displayMessage("Pas assez de créatures à sacrifier pour poser cette carte, veuillez en choisir une autre coutant moins de " + human.getSacrificableCount() + ".");
-                return handlePlacement(human, messages); // reboucle sans réafficher
+                return handlePlacement(human); // reboucle sans réafficher
             }
             handleSacrifices(card.getBloodCost(), human);
-            placeCard(human, handIndex, messages);
+            placeCard(human, handIndex);
             return true;
         }
 
@@ -80,22 +91,22 @@ public class Interactions {
         if (card.getBoneCost() > 0) {
             if (!human.hasEnoughBones(card)) {
                 displayMessage("Pas assez d'os (" + human.getBonesToken() + "/" + card.getBoneCost() + ").");
-                return handlePlacement(human, messages);
+                return handlePlacement(human);
             }
             human.spendBones(card.getBoneCost());
-            placeCard(human, handIndex, messages);
+            placeCard(human, handIndex);
             return true;
         }
 
         return true;
     }
 
-    private void placeCard(User human, int handIndex, ArrayList<String> messages) {
+    private void placeCard(User human, int handIndex) {
         Animal card = human.getHandCard(handIndex); // on récupère le nom AVANT de la jouer
         String cardName = card.getName();
         int position = askPosition(human);
         human.playCardToBoard(handIndex, position);
-        messages.add(cardName + " posé(e) en position " + (position + 1) + " !");
+        addMessage(cardName + " posé(e) en position " + (position + 1) + " !");
     }
 
 
@@ -123,18 +134,18 @@ public class Interactions {
         }
     }
 
-    public String getAttackMessage(String attackerName, int degats) {
+    public void addAttackMessage(String attackerName, int degats) {
         if (degats == 0) {
             if (attackerName.equals("Vous")) {
-                return "Votre attaque n'a pas infligé de dégâts directs.";
+                addMessage("Votre attaque n'a pas infligé de dégâts directs.");
             }
-            return "L'adversaire ne vous a pas infligé de dégâts directs.";
+            addMessage("L'adversaire ne vous a pas infligé de dégâts directs.");
         }
         else{
             if (attackerName.equals("Vous")) {
-                return "Vous avez infligé " + degats + " dégât(s) direct(s) à Leshy, continuez comme cela !";
+                addMessage("Vous avez infligé " + degats + " dégât(s) direct(s) à Leshy, continuez comme cela !");
             }
-            return "L'adversaire vous a infligé " + degats + " dégât(s), cela semble mal parti...";
+            addMessage("L'adversaire vous a infligé " + degats + " dégât(s), cela semble mal parti...");
         }
     }
 
@@ -255,10 +266,11 @@ public class Interactions {
     }
 
     // on pioche 1 carte dans le Deck et on l'ajoute à la main.
-    public String draw(User joueur) {
+    public void draw(User joueur) {
         // Si le deck ET la main sont vides, pas la peine de demander
         if (joueur.getDeckSize() == 0 && joueur.getHandSize() == 0) {
-            return "Vous n'avez plus de cartes ni en main ni dans la pioche... Il va falloir faire avec !";
+            addMessage("Vous n'avez plus de cartes ni en main ni dans la pioche... Il va falloir faire avec !");
+            return;
         }
         // L'utilisateur a le choix
         boolean wantsToDraw = this.askConfirmation("Voulez-vous piocher une carte pour ce tour ? Veuillez saisir OUI ou NON : ");
@@ -267,12 +279,12 @@ public class Interactions {
             try {
                 Animal drawnAnimalCard = joueur.draw();
                 joueur.addCard(drawnAnimalCard);
-                return "Vous avez pioché : " + drawnAnimalCard.getName();
+                addMessage("Vous avez pioché : " + drawnAnimalCard.getName());
             } catch (NoSuchElementException n) {
-                return "Oups il n'y a plus de cartes dans la pioche...";
+                addMessage("Oups il n'y a plus de cartes dans la pioche...");
             }
         } else {
-            return "Vous avez décidé de ne pas piocher... Étais-ce un bon choix...";
+            addMessage("Vous avez décidé de ne pas piocher... Étais-ce un bon choix...");
         }
     }
 
