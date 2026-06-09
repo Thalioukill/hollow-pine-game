@@ -27,4 +27,7 @@ public class RunnerAbility extends Ability {
 
     public String getShortName() { return "Coureur"; }
 
+    @Override
+    public AbilityType getType() { return AbilityType.RUNNER; }
+
 }

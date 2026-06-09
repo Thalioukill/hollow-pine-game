@@ -13,5 +13,8 @@ public class FlyingAbility extends Ability {
 
     public String getShortName() { return "Volant"; }
 
+    @Override
+    public AbilityType getType() { return AbilityType.FLYING; }
+
 }
 

@@ -6,6 +6,8 @@ import model.cards.Card;
 
 public abstract class Ability {
 
+    public abstract AbilityType getType();
+
     public abstract String getName();
 
     // Moment : Après avoir attaqué (Élan / Coureur)
@@ -14,7 +16,7 @@ public abstract class Ability {
     //abilities.StinkyAbility
     public int modifyIncomingDamage(int damage) {return damage;}
 
-    //manylives => ManyLivesAbili
+    //manylives => ManyLivesAbility
     public boolean onSacrifice(Animal self) {
         return false;
     }

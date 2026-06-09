@@ -383,7 +383,7 @@ public class Interactions {
             }
 
             Animal candidate = candidates.get(choice - 1);
-            if (candidate.hasAnAbility(ability.getName())) {
+            if (candidate.hasAnAbility(ability.getType())) {
                 System.out.println(candidate.getName() + " possède déjà le pouvoir \"" + ability.getName() + "\", choisissez une autre carte.");
                 continue;
             }

@@ -1,6 +1,8 @@
 import model.board.BoardLine;
 import model.cards.Animal;
+import model.cards.AnimalType;
 import model.cards.Obstacle;
+import model.cards.ObstacleType;
 import model.players.Opponent;
 import model.stock.AnimalStock;
 import model.stock.ObstacleStock;
@@ -13,19 +15,19 @@ import java.util.ArrayList;
 public class OpponentTest {
 
     private Animal hermine() {
-        return new AnimalStock().getCard(AnimalStock.HERMINE).get();
+        return new AnimalStock().getCard(AnimalType.HERMINE).get();
     }
 
     private Animal loup() {
-        return new AnimalStock().getCard(AnimalStock.LOUP).get();
+        return new AnimalStock().getCard(AnimalType.LOUP).get();
     }
 
     private Animal louveteau() {
-        return new AnimalStock().getCard(AnimalStock.LOUVETEAU).get();
+        return new AnimalStock().getCard(AnimalType.LOUVETEAU).get();
     }
 
     private Animal elan() {
-        return new AnimalStock().getCard(AnimalStock.ELAN).get();
+        return new AnimalStock().getCard(AnimalType.ELAN).get();
     }
 
     private Opponent opponentWith(Animal... animals) {
@@ -175,7 +177,7 @@ public class OpponentTest {
         BoardLine previsionBoard = new BoardLine();
 
         ObstacleStock obstacleStock = new ObstacleStock();
-        Obstacle sapin = obstacleStock.getObstacle(ObstacleStock.SAPIN).get();
+        Obstacle sapin = obstacleStock.getObstacle(ObstacleType.SAPIN).get();
         attackBoard.placeCardAt(sapin, 0);
 
         ArrayList<Animal> deck = new ArrayList<>();
@@ -200,8 +202,7 @@ public class OpponentTest {
         opponent.getBoardLine().notifyTurnStarted();
 
         assertTrue(opponent.getPrevisionLine().getCardAt(0).isPresent());
-        assertEquals("Louveteau",
-                opponent.getPrevisionLine().getCardAt(0).get().getName(),"Le Louveteau sur la ligne de prévision ne devrait pas se transformer");
+        assertEquals("Louveteau", opponent.getPrevisionLine().getCardAt(0).get().getName(),"Le Louveteau sur la ligne de prévision ne devrait pas se transformer");
     }
 
     @Test

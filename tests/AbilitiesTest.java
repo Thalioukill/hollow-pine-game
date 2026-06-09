@@ -1,5 +1,6 @@
 import model.board.BoardLine;
 import model.cards.Animal;
+import model.cards.AnimalType;
 import model.stock.AnimalStock;
 import org.junit.jupiter.api.Test;
 
@@ -10,20 +11,20 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class AbilitiesTest {
 
     // test sur les ABILITIES
-    private Animal animal(String name, int atk, int hp, int blood, int bone) {
-        return new Animal(name, atk, hp, blood, bone);
+    private Animal animal(String name, int atk, int hp, int blood, int bone, AnimalType type) {
+        return new Animal(name, atk, hp, blood, bone, type);
     }
 
-    private Animal hermine() { return new AnimalStock().getCard(AnimalStock.HERMINE).get(); }
-    private Animal loup() { return new AnimalStock().getCard(AnimalStock.LOUP).get(); }
-    private Animal louveteau() { return new AnimalStock().getCard(AnimalStock.LOUVETEAU).get(); }
-    private Animal corbeau() { return new AnimalStock().getCard(AnimalStock.CORBEAU).get(); }
-    private Animal punaise() { return new AnimalStock().getCard(AnimalStock.PUNAISE).get(); }
-    private Animal elan() { return new AnimalStock().getCard(AnimalStock.ELAN).get(); }
-    private Animal vipere() { return new AnimalStock().getCard(AnimalStock.VIPERE).get(); }
-    private Animal grizzly() { return new AnimalStock().getCard(AnimalStock.GRIZZLY).get(); }
-    private Animal porcEpic() { return new AnimalStock().getCard(AnimalStock.PORC_EPIC).get(); }
-    private Animal chat() { return new AnimalStock().getCard(AnimalStock.CHAT).get(); }
+    private Animal hermine() { return new AnimalStock().getCard(AnimalType.HERMINE).get(); }
+    private Animal loup() { return new AnimalStock().getCard(AnimalType.LOUP).get(); }
+    private Animal louveteau() { return new AnimalStock().getCard(AnimalType.LOUVETEAU).get(); }
+    private Animal corbeau() { return new AnimalStock().getCard(AnimalType.CORBEAU).get(); }
+    private Animal punaise() { return new AnimalStock().getCard(AnimalType.PUNAISE).get(); }
+    private Animal elan() { return new AnimalStock().getCard(AnimalType.ELAN).get(); }
+    private Animal vipere() { return new AnimalStock().getCard(AnimalType.VIPERE).get(); }
+    private Animal grizzly() { return new AnimalStock().getCard(AnimalType.GRIZZLY).get(); }
+    private Animal porcEpic() { return new AnimalStock().getCard(AnimalType.PORC_EPIC).get(); }
+    private Animal chat() { return new AnimalStock().getCard(AnimalType.CHAT).get(); }
 
 
     @Test

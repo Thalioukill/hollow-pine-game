@@ -14,6 +14,8 @@ public class StinkyAbility extends Ability{
 
     public String getShortName() { return "Puant"; }
 
+    @Override
+    public AbilityType getType() { return AbilityType.STINKY; }
 
 }
 

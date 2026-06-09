@@ -1,6 +1,7 @@
 import model.board.BoardLine;
 import model.cards.Animal;
 import game.GameManager;
+import model.cards.AnimalType;
 import model.players.User;
 import model.stock.AnimalStock;
 import view.Interactions;
@@ -28,27 +29,27 @@ public class Main
         manager.startCampaign();
 
     }
-    public static void buildPlayerDeck(ArrayList<Animal> playerDeck){
+    private static void buildPlayerDeck(ArrayList<Animal> playerDeck){
         // Initialisation à l'extérieur des objets game.Game pour la persistance
         AnimalStock stock = new AnimalStock();
 
         // Création du deck avec les 15 cartes de départ (majorité d'écureuils)
 
-        playerDeck.add(stock.getCard(AnimalStock.ECUREUIL).get());
-        playerDeck.add(stock.getCard(AnimalStock.ECUREUIL).get());
-        playerDeck.add(stock.getCard(AnimalStock.ECUREUIL).get());
-        playerDeck.add(stock.getCard(AnimalStock.ECUREUIL).get());
-        playerDeck.add(stock.getCard(AnimalStock.ECUREUIL).get());
-        playerDeck.add(stock.getCard(AnimalStock.ECUREUIL).get());
-        playerDeck.add(stock.getCard(AnimalStock.ECUREUIL).get());
-        playerDeck.add(stock.getCard(AnimalStock.HERMINE).get());
-        playerDeck.add(stock.getCard(AnimalStock.HERMINE).get());
-        playerDeck.add(stock.getCard(AnimalStock.LOUVETEAU).get());
-        playerDeck.add(stock.getCard(AnimalStock.ELAN).get());
-        playerDeck.add(stock.getCard(AnimalStock.LOUP).get());
-        playerDeck.add(stock.getCard(AnimalStock.VIPERE).get());
-        playerDeck.add(stock.getCard(AnimalStock.PUNAISE).get());
-        playerDeck.add(stock.getCard(AnimalStock.PORC_EPIC).get());
+        playerDeck.add(stock.getCard(AnimalType.ECUREUIL).get());
+        playerDeck.add(stock.getCard(AnimalType.ECUREUIL).get());
+        playerDeck.add(stock.getCard(AnimalType.ECUREUIL).get());
+        playerDeck.add(stock.getCard(AnimalType.ECUREUIL).get());
+        playerDeck.add(stock.getCard(AnimalType.ECUREUIL).get());
+        playerDeck.add(stock.getCard(AnimalType.ECUREUIL).get());
+        playerDeck.add(stock.getCard(AnimalType.ECUREUIL).get());
+        playerDeck.add(stock.getCard(AnimalType.HERMINE).get());
+        playerDeck.add(stock.getCard(AnimalType.HERMINE).get());
+        playerDeck.add(stock.getCard(AnimalType.LOUVETEAU).get());
+        playerDeck.add(stock.getCard(AnimalType.ELAN).get());
+        playerDeck.add(stock.getCard(AnimalType.LOUP).get());
+        playerDeck.add(stock.getCard(AnimalType.VIPERE).get());
+        playerDeck.add(stock.getCard(AnimalType.PUNAISE).get());
+        playerDeck.add(stock.getCard(AnimalType.PORC_EPIC).get());
     }
 
 

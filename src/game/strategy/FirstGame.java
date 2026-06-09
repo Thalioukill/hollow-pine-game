@@ -1,7 +1,9 @@
 package game.strategy;
 
 import model.cards.Animal;
+import model.cards.AnimalType;
 import model.cards.Obstacle;
+import model.cards.ObstacleType;
 import model.stock.AnimalStock;
 import model.stock.ObstacleStock;
 
@@ -16,12 +18,12 @@ public class FirstGame implements GameStrategy {
     public ArrayList<Animal> getOpponentDeck(){
         AnimalStock stock = new AnimalStock();
         ArrayList<Animal> opponentDeck = new ArrayList<>();
-        opponentDeck.add(stock.getCard(AnimalStock.HERMINE).get());
-        opponentDeck.add(stock.getCard(AnimalStock.LOUVETEAU).get());
-        opponentDeck.add(stock.getCard(AnimalStock.ELAN).get());
-        opponentDeck.add(stock.getCard(AnimalStock.HERMINE).get());
-        opponentDeck.add(stock.getCard(AnimalStock.LOUVETEAU).get());
-        opponentDeck.add(stock.getCard(AnimalStock.LOUP).get());
+        opponentDeck.add(stock.getCard(AnimalType.HERMINE).get());
+        opponentDeck.add(stock.getCard(AnimalType.LOUVETEAU).get());
+        opponentDeck.add(stock.getCard(AnimalType.ELAN).get());
+        opponentDeck.add(stock.getCard(AnimalType.HERMINE).get());
+        opponentDeck.add(stock.getCard(AnimalType.LOUVETEAU).get());
+        opponentDeck.add(stock.getCard(AnimalType.LOUP).get());
         return opponentDeck;
     }
 
@@ -35,7 +37,7 @@ public class FirstGame implements GameStrategy {
         }
 
         // On récupère l'Optional directement depuis le stock
-        Optional<Obstacle> sapin = stock.getObstacle(ObstacleStock.SAPIN);
+        Optional<Obstacle> sapin = stock.getObstacle(ObstacleType.SAPIN);
         listeObstacles.put(0, sapin);
 
         return listeObstacles;

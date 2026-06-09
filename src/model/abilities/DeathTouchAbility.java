@@ -16,5 +16,8 @@ public class DeathTouchAbility extends Ability {
 
     public String getShortName() { return "Contact ☠"; }
 
+    @Override
+    public AbilityType getType() { return AbilityType.DEATH_TOUCH; }
+
 }
 

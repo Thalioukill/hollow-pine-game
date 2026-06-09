@@ -40,7 +40,7 @@ public class Game {
 
             m_gameboard.display(this.m_user, this.m_opponent, m_score, this.m_turnMessages);
 
-            // Le joueur pioche au départ du tour...
+            // Le joueur pioche au départ du tour... :
             String drawMessage = m_dialogue.draw(this.m_user);
             this.m_turnMessages.add(drawMessage);
 
@@ -75,13 +75,13 @@ public class Game {
         return this.m_score >= 5;
     }
 
-    public void takeTurn(User human) {
+    private void takeTurn(User human) {
         //m_gameboard.display(human, this.m_opponent, this.m_score, this.m_turnMessages);
         boolean turnEnded = false;
         while (!turnEnded) {
             turnEnded = !this.m_dialogue.askNextAction(human, this.m_turnMessages);
             if (!turnEnded) {
-                // On ne réaffiche PAS si l'utilisateur veut terminer le tour ('est affocher après avec displayCombat...)
+                // On ne réaffiche PAS si l'utilisateur veut terminer le tour ('est afficher après avec displayCombat...)
                 this.m_gameboard.display(human, this.m_opponent, this.m_score, this.m_turnMessages);
             }
         }

@@ -1,5 +1,6 @@
 import model.board.BoardLine;
 import model.cards.Animal;
+import model.cards.AnimalType;
 import model.players.User;
 import model.stock.AnimalStock;
 import org.junit.jupiter.api.Test;
@@ -13,13 +14,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BoardLineTest {
 
-    private Animal hermine() { return new AnimalStock().getCard(AnimalStock.HERMINE).get(); }
-    private Animal loup() { return new AnimalStock().getCard(AnimalStock.LOUP).get(); }
-    private Animal ecureuil() { return new AnimalStock().getCard(AnimalStock.ECUREUIL).get(); }
+    private Animal hermine() { return new AnimalStock().getCard(AnimalType.HERMINE).get(); }
+    private Animal loup() { return new AnimalStock().getCard(AnimalType.LOUP).get(); }
+    private Animal punaise() { return new AnimalStock().getCard(AnimalType.PUNAISE).get(); }
+    private Animal louveteau() { return new AnimalStock().getCard(AnimalType.LOUVETEAU).get(); }
 
     private User userWith(Animal... animals) {
         ArrayList<Animal> deck = new ArrayList<>();
-        for (Animal a : animals) deck.add(a);
+        for (Animal a : animals){
+            deck.add(a);
+        }
         return new User(deck, new BoardLine());
     }
 
@@ -27,7 +31,7 @@ public class BoardLineTest {
     public void board_initiallyEmpty() {
         User user = userWith();
         for (int i = 0; i < 4; i++) {
-            assertFalse(user.getCardAt(i).isPresent(),"Tous les emplacements du plateau devraient être vides à l'init");
+            assertFalse(user.getCardAt(i).isPresent(),"Tous les emplacements du plateau devraient être vides à l'initialisation");
         }
     }
 
@@ -121,8 +125,8 @@ public class BoardLineTest {
         user.playCardToBoard(0, 0);
         user.sacrifice(0); // 1 os
 
-        Animal punaise = new AnimalStock().getCard(AnimalStock.PUNAISE).get(); // coûte 2 os
-        assertFalse(user.hasEnoughBones(punaise),"1 os n'est pas suffisant pour une carte qui en coûte 2");
+        // La punaise coûte 2 os
+        assertFalse(user.hasEnoughBones(punaise()),"1 os n'est pas suffisant pour une carte qui en coûte 2");
     }
 
     @Test
@@ -134,14 +138,13 @@ public class BoardLineTest {
             user.sacrifice(i);
         } // 2 os
 
-        Animal punaise = new AnimalStock().getCard(AnimalStock.PUNAISE).get(); // coûte 2 os
-        assertTrue(user.hasEnoughBones(punaise),"2 os suffisent pour une carte qui en coûte 2");
+        assertTrue(user.hasEnoughBones(punaise()),"2 os suffisent pour une carte qui en coûte 2");
     }
 
     @Test
     public void board_notifyTurnStartedTriggersGrowth() {
         User user = userWith();
-        user.addCard(new AnimalStock().getCard(AnimalStock.LOUVETEAU).get());
+        user.addCard(louveteau());
         user.playCardToBoard(0, 0);
 
         user.notifyTurnStarted(); // tour 1

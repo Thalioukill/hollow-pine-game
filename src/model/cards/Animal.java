@@ -1,6 +1,7 @@
 package model.cards;
 
 import model.abilities.Ability;
+import model.abilities.AbilityType;
 import model.board.BoardLine;
 
 import java.util.ArrayList;
@@ -8,22 +9,19 @@ import java.util.Optional;
 
 public class Animal extends Card {
 
-    /*
-            Méthode pour ajouter des Abilities dans le m_templates !!!!
-            + addAbility(ability : abilities.Ability)
-     */
-
     private final int m_attackPoints;
     private final int m_bloodCost;
     private final int m_boneCost;
     private final ArrayList<Ability> m_abilities;
+    private final AnimalType m_animalType;
 
-    public Animal(String name, int attack, Integer pv, int blood, int bone) {
+    public Animal(String name, int attack, Integer pv, int blood, int bone, AnimalType type) {
         super(name, pv);
         this.m_attackPoints = attack;
         this.m_bloodCost = blood;
         this.m_boneCost = bone;
         this.m_abilities = new ArrayList<>();
+        this.m_animalType = type;
     }
 
     // Constructeur de copie
@@ -36,8 +34,10 @@ public class Animal extends Card {
         for (Ability a : other.m_abilities) {
             this.addAbility(a.cloneAbility());
         }
+        this.m_animalType = other.m_animalType;
     }
 
+    public AnimalType getAnimalType() { return this.m_animalType; }
 
     public void addAbility(Ability a) {
         this.m_abilities.add(a);
@@ -58,8 +58,6 @@ public class Animal extends Card {
 
         return new Animal(this); // Utilise le constructeur de copie
     }
-
-    //public void revive() { this.m_healthPoints = 1; }
 
     public int getBloodCost() {
         return this.m_bloodCost;
@@ -90,8 +88,6 @@ public class Animal extends Card {
             a.onHit(this, attacker);
         }
     }
-
-
 
     @Override
     public boolean isTargetBypassed() {
@@ -142,12 +138,9 @@ public class Animal extends Card {
         this.m_healthPoints = amount;
     }
 
-
-     // Vérifie si l'animal possède une capacité spécifique par son nom.
-    public boolean hasAnAbility(String name) {
+    public boolean hasAnAbility(AbilityType type) {
         for (Ability ability : m_abilities) {
-            // On compare les noms (ne jamais utiliser == sur des String)
-            if (ability.getName().equals(name)) {
+            if (ability.getType() == type) {
                 return true;
             }
         }

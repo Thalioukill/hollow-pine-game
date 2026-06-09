@@ -3,6 +3,7 @@ package model.players;
 import model.abilities.Ability;
 import model.board.BoardLine;
 import model.cards.Animal;
+import model.cards.AnimalType;
 import model.cards.Card;
 import model.stock.AnimalStock;
 
@@ -39,24 +40,20 @@ public class User extends Player {
         }
     }
 
-
-    public ArrayList<String> getRewardPool() {
+    public ArrayList<AnimalType> getRewardPool() {
         AnimalStock animalStock = new AnimalStock();
-        ArrayList<String> allCards = animalStock.getAllAnimalNames();
+        ArrayList<AnimalType> allTypes = animalStock.getAllAnimalTypes();
 
-        // On retire les cartes que le joueur a déjà
-        ArrayList<String> playerCardNames = new ArrayList<>();
+        ArrayList<AnimalType> playerTypes = new ArrayList<>();
         for (Animal a : this.m_deckSave) {
-            playerCardNames.add(a.getName());
+            playerTypes.add(a.getAnimalType());
         }
-        allCards.removeAll(playerCardNames);
+        allTypes.removeAll(playerTypes);
 
-        return allCards;
+        return allTypes;
     }
 
     public ArrayList<Animal> getSacrificePool() {
-
-
         // On retire les cartes que le joueur a déjà
         ArrayList<Animal> playerSacrificeCards = new ArrayList<>();
 
@@ -78,7 +75,7 @@ public class User extends Player {
     }
 
     public void transferAbility(Animal from, Ability ability, Animal to) {
-        if (to.hasAnAbility(ability.getName())) {
+        if (to.hasAnAbility(ability.getType())) {
             throw new IllegalArgumentException(
                     to.getName() + " possède déjà le pouvoir " + ability.getName() + " !");
         }

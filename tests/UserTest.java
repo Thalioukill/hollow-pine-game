@@ -1,5 +1,6 @@
 import model.board.BoardLine;
 import model.cards.Animal;
+import model.cards.AnimalType;
 import model.cards.Card;
 import model.players.User;
 import model.stock.AnimalStock;
@@ -10,10 +11,10 @@ import java.util.ArrayList;
 
 public class UserTest {
 
-    private Animal hermine() { return new AnimalStock().getCard(AnimalStock.HERMINE).get(); }
-    private Animal loup() { return new AnimalStock().getCard(AnimalStock.LOUP).get(); }
-    private Animal elan() { return new AnimalStock().getCard(AnimalStock.ELAN).get(); }
-    private Animal ecureuil()  { return new AnimalStock().getCard(AnimalStock.ECUREUIL).get(); }
+    private Animal hermine() { return new AnimalStock().getCard(AnimalType.HERMINE).get(); }
+    private Animal loup() { return new AnimalStock().getCard(AnimalType.LOUP).get(); }
+    private Animal elan() { return new AnimalStock().getCard(AnimalType.ELAN).get(); }
+    private Animal ecureuil()  { return new AnimalStock().getCard(AnimalType.ECUREUIL).get(); }
 
     // les trois petits points permettent d'appeler la méthode sans creer une ArrayList à chaque fois.
     private User userWith(Animal... animals) {
@@ -242,17 +243,17 @@ public class UserTest {
         assertEquals(savedSize, user.getDeckSave().size(),"La carte permanente devrait toujours être dans le deckSave après un reset");
     }
 
-
     @Test
     public void reward_poolExcludesOwnedCards() {
         AnimalStock stock = new AnimalStock();
         ArrayList<Animal> deck = new ArrayList<>();
-        for (String name : stock.getAllAnimalNames()) {
-            stock.getCard(name).ifPresent(deck::add);
+
+        for (AnimalType type : stock.getAllAnimalTypes()) {
+            stock.getCard(type).ifPresent(deck::add);
         }
         User user = new User(deck, new BoardLine());
 
-        ArrayList<String> pool = user.getRewardPool();
+        ArrayList<AnimalType> pool = user.getRewardPool();
 
         assertTrue(pool.isEmpty(),"Le pool de récompense devrait être vide si le joueur possède toutes les cartes");
     }
@@ -266,9 +267,9 @@ public class UserTest {
         }
         User user = new User(deck, new BoardLine());
 
-        ArrayList<String> pool = user.getRewardPool();
+        ArrayList<AnimalType> pool = user.getRewardPool();
 
         assertFalse(pool.isEmpty(),"Le pool de récompense devrait contenir des cartes non possédées");
-        assertFalse(pool.contains(AnimalStock.ECUREUIL),"L'Écureuil (déjà possédé) ne devrait pas apparaître dans le pool");
+        assertFalse(pool.contains(AnimalType.ECUREUIL.getDisplayName()),"L'Écureuil (déjà possédé) ne devrait pas apparaître dans le pool");
     }
 }

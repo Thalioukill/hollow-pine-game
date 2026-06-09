@@ -20,4 +20,7 @@ public class MultipleLivesAbility extends Ability{
         return "Vies ++";
     }
 
+    @Override
+    public AbilityType getType() { return AbilityType.MULTIPLE_LIVES; }
+
 }

@@ -1,4 +1,4 @@
-package textcolors;
+package textColors;
 
 public class Color {
     // Codes de réinitialisation

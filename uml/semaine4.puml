@@ -24,28 +24,28 @@ package "game" #FFF8E1 {
 
     class GameManager {
         - m_dialogue : Interactions
-        - m_gamesCount : int
-        - {final} MAX_GAMES : int = 3
+        - m_gamesCount : Integer
         - m_user : User
-        - m_strategies : ArrayList<GameStrategy>
+        - m_strategies : ArrayList<GameStrategy> '!!!!!!!!!
         --
         + <<create>> GameManager(dialogue : Interactions, user : User)
         + startCampaign() : void
-        - playNewGame() : boolean
-        - initiateOpponent(nbGames : int) : Opponent
-        - placeUserObstacles(nbGames : int) : void
+        - playNewGame() : Boolean
+        - initiateOpponent(nbGames : Integer) : Opponent
+        - placeUserObstacles(nbGames : Integer) : void
         - placeObstacles(board : HashMap, line : BoardLine) : void
         - resetForNewGame() : void
         - offerNewCard() : void
         - sacrificeStone() : void
-        - deduplicateByName(list : ArrayList<Animal>) : ArrayList<Animal>
+        - deduplicateByType(list : ArrayList<Animal>) : ArrayList<Animal>
         - displayGameResult() : void
-        - displayFinalResult(victory : boolean) : void
+        - displayFinalResult(victory : Boolean) : void
+        - getStrategy(index : Integer) : GameStrategy
     }
 
     class Game {
-        - m_score : int
-        - m_gameboard : GameBoard
+        - m_score : Integer
+        - m_gameboard : GameBoard '!!!!!
         - m_user : User
         - m_currentPlayer : Player
         - m_dialogue : Interactions
@@ -54,40 +54,39 @@ package "game" #FFF8E1 {
         - m_turnMessages : ArrayList<String>
         --
         + <<create>> Game(board : GameBoard, player : User, dialogue : Interactions, strat : GameStrategy, opponent : Opponent)
-        + runGame() : boolean
-        + takeTurn(dialogue : Interactions, human : User) : void
-        + combatPhase(attackedPlayer : Player) : int
-        - runCombat(attacker : Player, defender : Player, scoreSign : int, attackerName : String) : void
+        + runGame() : Boolean
+        - takeTurn(dialogue : Interactions, human : User) : void
+        + combatPhase(attackedPlayer : Player) : Integer
+        - runCombat(attacker : Player, defender : Player, scoreSign : Integer, attackerName : String) : void
     }
 
     package "game.strategy" #FFF3CD {
-        interface GameStrategy {
+        interface GameStrategy <<interface>> {
             + initObstaclesOpponent() : HashMap<Integer, Optional<Obstacle>>
             + initObstaclesUser() : HashMap<Integer, Optional<Obstacle>>
             + getOpponentDeck() : ArrayList<Animal>
-            + getPrevisionAction(roundNumber : int) : ArrayList<Integer>
+            + getPrevisionAction(roundNumber : Integer) : ArrayList<Integer>
             + getInitialPrevision() : ArrayList<Integer>
         }
         class FirstGame implements GameStrategy {
             + getOpponentDeck() : ArrayList<Animal>
-            + getUserDeck() : ArrayList<Animal>
             + initObstaclesOpponent() : HashMap<Integer, Optional<Obstacle>>
             + initObstaclesUser() : HashMap<Integer, Optional<Obstacle>>
-            + getPrevisionAction(roundNumber : int) : ArrayList<Integer>
+            + getPrevisionAction(roundNumber : Integer) : ArrayList<Integer>
             + getInitialPrevision() : ArrayList<Integer>
         }
         class SecondGame implements GameStrategy {
             + getOpponentDeck() : ArrayList<Animal>
             + initObstaclesOpponent() : HashMap<Integer, Optional<Obstacle>>
             + initObstaclesUser() : HashMap<Integer, Optional<Obstacle>>
-            + getPrevisionAction(roundNumber : int) : ArrayList<Integer>
+            + getPrevisionAction(roundNumber : Integer) : ArrayList<Integer>
             + getInitialPrevision() : ArrayList<Integer>
         }
         class ThirdGame implements GameStrategy {
             + getOpponentDeck() : ArrayList<Animal>
             + initObstaclesOpponent() : HashMap<Integer, Optional<Obstacle>>
             + initObstaclesUser() : HashMap<Integer, Optional<Obstacle>>
-            + getPrevisionAction(roundNumber : int) : ArrayList<Integer>
+            + getPrevisionAction(roundNumber : Integer) : ArrayList<Integer>
             + getInitialPrevision() : ArrayList<Integer>
         }
     }
@@ -96,21 +95,21 @@ package "game" #FFF8E1 {
 ' ─────────────────────────────────────────
 package "view" #FCE4EC {
     class GameBoard {
-        - {static} {final} CARD_HEIGHT : int = 9
+        - {static} {final} CARD_HEIGHT : Integer = 9
         - {static} {final} SEP : String
         - {static} {final} PREFIX : String
         - {static} {final} BORDER_EMPTY : String
         - {static} {final} BORDER_CARD : String
         - m_buffer : StringBuilder
         --
-        + display(user : User, opponent : Opponent, balance : int, messages : ArrayList<String>) : void
-        + displayCombat(user : User, opponent : Opponent, balance : int, messages : ArrayList<String>) : void
-        - renderBoardLine(line : BoardLine, color : String, isUserLine : boolean, showScore : boolean, score : int) : void
-        - appendCardLayer(optCard : Optional<Card>, layer : int, slot : int, isUser : boolean, color : String) : void
-        - getEmptySlotContent(layer : int, slot : int, isUser : boolean) : String
-        - getLayerContent(card : Card, layer : int) : String
+        + display(user : User, opponent : Opponent, balance : Integer, messages : ArrayList<String>) : void
+        + displayCombat(user : User, opponent : Opponent, balance : Integer, messages : ArrayList<String>) : void
+        - renderBoardLine(line : BoardLine, color : String, isUserLine : Boolean, showScore : Boolean, score : Integer) : void
+        - appendCardLayer(optCard : Optional<Card>, layer : Integer, slot : Integer, isUser : Boolean, color : String) : void
+        - getEmptySlotContent(layer : Integer, slot : Integer, isUser : Boolean) : String
+        - getLayerContent(card : Card, layer : Integer) : String
         - getStatLine(card : Card) : String
-        - getAbilityLine(card : Card, index : int) : String
+        - getAbilityLine(card : Card, index : Integer) : String
         - truncate(name : String) : String
         - displayHandAndDeck(user : User) : void
         - displayMessages(messages : ArrayList<String>) : void
@@ -119,27 +118,27 @@ package "view" #FCE4EC {
     class Interactions {
         - m_scanner : Scanner
         --
-        + <<create>> Interactions()
-        + <<create>> Interactions(scanner : Scanner)
-        + askNextAction(human : User, messages : ArrayList<String>) : boolean
+        + <<create>> Interactions() : Interactions
+        + askNextAction(human : User, messages : ArrayList<String>) : Boolean
         + displayMenu(human : User) : void
-        - handlePlacement(human : User, messages : ArrayList<String>) : boolean
-        - placeCard(human : User, handIndex : int, messages : ArrayList<String>) : void
-        - handleSacrifices(bloodCost : int, human : User) : void
+        - handlePlacement(human : User, messages : ArrayList<String>) : Boolean
+        - placeCard(human : User, handIndex : Integer, messages : ArrayList<String>) : void
+        - handleSacrifices(bloodCost : Integer, human : User) : void
         + draw(joueur : User) : String
-        + askPosition(human : User) : int
-        + askPositionSacrifice(human : User, alreadySacrificed : ArrayList<Integer>) : int
-        + askCardLetter(human : User) : int
-        + askConfirmation(s : String) : boolean
-        + getAttackMessage(attackerName : String, degats : int) : String
+        + askPosition(human : User) : Integer
+        + askPositionSacrifice(human : User, alreadySacrificed : ArrayList<Integer>) : Integer
+        + askCardLetter(human : User) : Integer
+        + askConfirmation(s : String) : Boolean
+        + getAttackMessage(attackerName : String, degats : Integer) : String
         + offerNewCardChoice(card1 : Animal, card2 : Animal) : Animal
         + askToSacrificeCard(pool : ArrayList<Animal>) : Animal
         + askCardToReceiveAbility(candidates : ArrayList<Animal>, ability : Ability) : Animal
         + displayTransferResult(fromName : String, abilityName : String, toName : String) : void
-        + displayGameResult(gameNumber : int) : void
-        + displayFinalResult(victory : boolean) : void
+        + displayGameResult(gameNumber : Integer) : void
+        + displayFinalResult(victory : Boolean) : void
         + displayMessage(message : String) : void
-        - toIndex(position : int) : int
+        - displayCardOption(index : Integer, card : Animal)
+        - toIndex(position : Integer) : Integer
     }
 }
 
@@ -154,13 +153,13 @@ package "model" #E8EAF6 {
             + <<create>> Player(deck : ArrayList<Animal>, bord : BoardLine)
             + addCard(card : Animal) : void
             + draw() : Animal
-            + getDeckSize() : int
-            + isEmpty() : boolean
-            + getBoardLineCardAt(index : int) : Optional<Card>
-            + combatPhase(opponent : Player) : int
-            + placeCardAt(card : Card, position : int) : void
-            + getSacrificableCount() : int
-            + removeCardAt(index : int) : void
+            + getDeckSize() : Integer
+            + isEmpty() : Boolean
+            + getBoardLineCardAt(index : Integer) : Optional<Card>
+            + combatPhase(opponent : Player) : Integer
+            + placeCardAt(card : Card, position : Integer) : void
+            + getSacrificableCount() : Integer
+            + removeCardAt(index : Integer) : void
             + getBoardLine() : BoardLine
             + notifyTurnStarted() : void
         }
@@ -177,26 +176,26 @@ package "model" #E8EAF6 {
             + getDeckSave() : ArrayList<Animal>
             + transferAbility(from : Animal, ability : Ability, to : Animal) : void
             + shuffle() : void
-            + getHandSize() : int
-            + getHandCard(index : int) : Animal
-            + removeCard(index : int) : Animal
-            + getBonesToken() : int
+            + getHandSize() : Integer
+            + getHandCard(index : Integer) : Animal
+            + removeCard(index : Integer) : Animal
+            + getBonesToken() : Integer
             + addBonesToken() : void
-            + getCardAt(position : int) : Optional<Card>
-            + hasEnoughBones(test : Animal) : boolean
-            + hasEnoughBlood(test : Animal) : boolean
-            + spendBones(amount : int) : void
-            + sacrifice(position : int) : void
-            + playCardToBoard(handIndex : int, boardPosition : int) : void
+            + getCardAt(position : Integer) : Optional<Card>
+            + hasEnoughBones(test : Animal) : Boolean
+            + hasEnoughBlood(test : Animal) : Boolean
+            + spendBones(amount : Integer) : void
+            + sacrifice(position : Integer) : void
+            + playCardToBoard(handIndex : Integer, boardPosition : Integer) : void
         }
         class Opponent extends Player {
             - m_previsionLine : BoardLine
             --
             + <<create>> Opponent(deck : ArrayList<Animal>, bord : BoardLine, previsionBoard : BoardLine)
             + applyPrevision() : void
-            + placePrevisionCard(position : int) : void
+            + placePrevisionCard(position : Integer) : void
             + opponentAction(positions : List<Integer>) : void
-            + getPrevisionCardAt(position : int) : Optional<Card>
+            + getPrevisionCardAt(position : Integer) : Optional<Card>
             + getPrevisionLine() : BoardLine
         }
     }
@@ -204,23 +203,23 @@ package "model" #E8EAF6 {
     package "model.board" #C8E6C9 {
         class BoardLine {
             - m_slots : ArrayList<Optional<Card>>
-            # m_bonesToken : int
+            # m_bonesToken : Integer
             --
             + <<create>> BoardLine()
-            + placeCardAt(card : Card, position : int) : void
-            + getCardAt(position : int) : Optional<Card>
-            + removeCardAt(position : int) : void
-            + replaceCard(position : int, newCard : Card) : void
-            + moveCard(from : int, to : int) : void
-            + isOccupied(position : int) : boolean
-            + validateIndex(position : int) : boolean
-            + getSacrificableCount() : int
+            + placeCardAt(card : Card, position : Integer) : void
+            + getCardAt(position : Integer) : Optional<Card>
+            + removeCardAt(position : Integer) : void
+            + replaceCard(position : Integer, newCard : Card) : void
+            + moveCard(from : Integer, to : Integer) : void
+            + isOccupied(position : Integer) : Boolean
+            + validateIndex(position : Integer) : Boolean
+            + getSacrificableCount() : Integer
             + clear() : void
-            + attack(opponentLine : BoardLine) : int
+            + attack(opponentLine : BoardLine) : Integer
             + notifyTurnStarted() : void
             + addBonesToken() : void
-            + spendBones(amount : int) : void
-            + getBonesToken() : int
+            + spendBones(amount : Integer) : void
+            + getBonesToken() : Integer
         }
     }
 
@@ -232,154 +231,166 @@ package "model" #E8EAF6 {
             + <<create>> Card(name : String, hp : Integer)
             + <<create>> Card(other : Card)
             + getName() : String
-            + getHealthPoints() : int
-            + {abstract} getAttackPoints() : int
-            + {abstract} isSacrificable() : boolean
+            + getHealthPoints() : Integer
+            + {abstract} getAttackPoints() : Integer
+            + {abstract} isSacrificable() : Boolean
             + {abstract} attack(target : Card) : void
-            + isDead() : boolean
-            + takeDamage(amount : int) : void
-            + isAttacked(amount : int, attacker : Animal) : void
-            + isTargetBypassed() : boolean
-            + triggerPostAttack(position : int, line : BoardLine) : void
-            + triggerStartTurn(position : int, line : BoardLine) : void
-            + survivesSacrifice() : boolean
-            + hasAbility() : boolean
+            + isDead() : Boolean
+            + takeDamage(amount : Integer) : void
+            + isAttacked(amount : Integer, attacker : Animal) : void
+            + isTargetBypassed() : Boolean
+            + triggerPostAttack(position : Integer, line : BoardLine) : void
+            + triggerStartTurn(position : Integer, line : BoardLine) : void
+            + survivesSacrifice() : Boolean
+            + hasAbility() : Boolean
             + getAbilities() : ArrayList<Ability>
         }
         class Animal extends Card {
-            - m_attackPoints : int
-            - m_bloodCost : int
-            - m_boneCost : int
+            - m_attackPoints : Integer
+            - m_bloodCost : Integer
+            - m_boneCost : Integer
             - m_abilities : ArrayList<Ability>
+            - m_animalType : AnimalType
             --
-            + <<create>> Animal(name : String, attack : int, pv : Integer, blood : int, bone : int)
+            + <<create>> Animal(name : String, attack : Integer, pv : Integer, blood : Integer, bone : Integer)
             + <<create>> Animal(other : Animal)
             + addAbility(a : Ability) : void
-            + getAttackPoints() : int
-            + getBloodCost() : int
-            + getBoneCost() : int
+            + getAttackPoints() : Integer
+            + getBloodCost() : Integer
+            + getBoneCost() : Integer
             + cloneAnimal() : Animal
             + revive() : void
-            + isSacrificable() : boolean
+            + isSacrificable() : Boolean
             + attack(target : Card) : void
-            + isAttacked(amount : int, attacker : Animal) : void
-            + triggerPostAttack(position : int, line : BoardLine) : void
-            + triggerStartTurn(position : int, line : BoardLine) : void
-            + survivesSacrifice() : boolean
-            + takeDamage(amount : int) : void
-            + setHealthPoints(amount : int) : void
-            + hasAbility() : boolean
-            + hasAnAbility(name : String) : boolean
+            + isAttacked(amount : Integer, attacker : Animal) : void
+            + triggerPostAttack(position : Integer, line : BoardLine) : void
+            + triggerStartTurn(position : Integer, line : BoardLine) : void
+            + survivesSacrifice() : Boolean
+            + takeDamage(amount : Integer) : void
+            + setHealthPoints(amount : Integer) : void
+            + hasAbility() : Boolean
+            + hasAnAbility(type : AbilityType) : Boolean
             + getAbilities() : ArrayList<Ability>
             + getTransferableAbility() : Optional<Ability>
         }
         class Obstacle extends Card {
+            - m_type : ObstacleType
             --
             + <<create>> Obstacle(name : String, hp : Integer)
             + <<create>> Obstacle(other : Obstacle)
-            + isSacrificable() : boolean
-            + getAttackPoints() : int
+            + isSacrificable() : Boolean
+            + getAttackPoints() : Integer
             + attack(target : Card) : void
             + cloneObstacle() : Obstacle
+            + getObstacleType() : ObstacleType
         }
+
+        enum AnimalType <<enumerate>> {
+            HERMINE, LOUP, ECUREUIL, ELAN, LOUVETEAU, VIPERE, GRIZZLY, CORBEAU, PORC_EPIC, PUNAISE, CHAT, COYOTE, MOINEAU
+            - m_displayName : String
+            --
+            + getDisplayName() : String
+        }
+
+        enum ObstacleType <<enumerate>> {
+            ROCHER, SAPIN
+        }
+
     }
 
     package "model.stock" #F3E5F5 {
         class AnimalStock {
             - m_templates : ArrayList<Animal>
-            + {static} {final} CHAT : String
-            + {static} {final} GRIZZLY : String
-            + {static} {final} ECUREUIL : String
-            + {static} {final} HERMINE : String
-            + {static} {final} LOUVETEAU : String
-            + {static} {final} LOUP : String
-            + {static} {final} PUNAISE : String
-            + {static} {final} ELAN : String
-            + {static} {final} VIPERE : String
-            + {static} {final} PORC_EPIC : String
-            + {static} {final} CORBEAU : String
-            + {static} {final} MOINEAU : String
-            + {static} {final} COYOTE : String
             --
             + <<create>> AnimalStock()
-            + getCard(name : String) : Optional<Animal>
-            + getAllAnimalNames() : ArrayList<String>
+            + getCard(type : AnimalType) : Optional<Animal>
+            + getAllAnimalTypes() : ArrayList<String>
         }
         class ObstacleStock {
             - m_templates : ArrayList<Obstacle>
-            + {static} {final} ROCHER : String
-            + {static} {final} SAPIN : String
             --
             + <<create>> ObstacleStock()
-            + getObstacle(name : String) : Optional<Obstacle>
+            + getObstacle(type : ObstacleType) : Optional<Obstacle>
         }
     }
 
     package "model.abilities" #E0F7FA {
         abstract class Ability <<abstract>> {
+            + {}abstract} getType() : AbilityType
             + {abstract} getName() : String
             + {abstract} getShortName() : String
             + {abstract} cloneAbility() : Ability
-            # afterAttack(self : Animal, currentPos : int, line : BoardLine) : void
-            # modifyIncomingDamage(damage : int) : int
-            # onSacrifice(self : Animal) : boolean
+            # afterAttack(self : Animal, currentPos : Integer, line : BoardLine) : void
+            # modifyIncomingDamage(damage : Integer) : Integer
+            # onSacrifice(self : Animal) : Boolean
             # onHit(self : Animal, attacker : Animal) : void
             # onAttack(card : Card) : void
-            # bypassTarget() : boolean
-            # onTurnUpdate(self : Animal, position : int, line : BoardLine) : void
+            # bypassTarget() : Boolean
+            # onTurnUpdate(self : Animal, position : Integer, line : BoardLine) : void
         }
+
+        enum AbilityType {
+            FLYING, STINKY, RUNNER, DEATH_TOUCH, SHARP_QUILLS, MULTIPLE_LIVES,GROWTH
+        }
+
+
         class GrowthAbility extends Ability {
             - {final} m_finalForm : Animal
-            - m_turnsOnBoard : int
+            - m_turnsOnBoard : Integer
             --
             + <<create>> GrowthAbility(finalForm : Animal)
-            + onTurnUpdate(self : Animal, position : int, line : BoardLine) : void
+            + onTurnUpdate(self : Animal, position : Integer, line : BoardLine) : void
             + cloneAbility() : Ability
             + getName() : String
             + getShortName() : String
+            + getType() : AbilityType
         }
         class MultipleLivesAbility extends Ability {
-            + onSacrifice(self : Animal) : boolean
+            + onSacrifice(self : Animal) : Boolean
             + cloneAbility() : Ability
             + getName() : String
             + getShortName() : String
+            + getType() : AbilityType
         }
         class RunnerAbility extends Ability {
-            + afterAttack(self : Animal, currentPos : int, line : BoardLine) : void
+            + afterAttack(self : Animal, currentPos : Integer, line : BoardLine) : void
             + cloneAbility() : Ability
             + getName() : String
             + getShortName() : String
+            + getType() : AbilityType
         }
         class StinkyAbility extends Ability {
-            + modifyIncomingDamage(damage : int) : int
+            + modifyIncomingDamage(damage : Integer) : Integer
             + cloneAbility() : Ability
             + getName() : String
             + getShortName() : String
+            + getType() : AbilityType
         }
         class FlyingAbility extends Ability {
-            + bypassTarget() : boolean
+            + bypassTarget() : Boolean
             + cloneAbility() : Ability
             + getName() : String
             + getShortName() : String
+            + getType() : AbilityType
         }
         class DeathTouchAbility extends Ability {
             + onAttack(card : Card) : void
             + cloneAbility() : Ability
             + getName() : String
             + getShortName() : String
+            + getType() : AbilityType
         }
         class SharpQuillsAbility extends Ability {
             + onHit(self : Animal, attacker : Animal) : void
             + cloneAbility() : Ability
             + getName() : String
             + getShortName() : String
+            + getType() : AbilityType
         }
     }
 }
 
-' ─────────────────────────────────────────
 '  RELATIONSHIPS
-' ─────────────────────────────────────────
 
 ' main
 Main ..> GameManager : creates >

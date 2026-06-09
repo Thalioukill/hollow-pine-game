@@ -1,6 +1,8 @@
 import game.strategy.FirstGame;
+import model.abilities.AbilityType;
 import model.board.BoardLine;
 import model.cards.Animal;
+import model.cards.AnimalType;
 import model.cards.Obstacle;
 import model.players.User;
 import model.stock.AnimalStock;
@@ -15,9 +17,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class GameManagerTest {
 
-    private Animal vipere() { return new AnimalStock().getCard(AnimalStock.VIPERE).get(); }
-    private Animal hermine() { return new AnimalStock().getCard(AnimalStock.HERMINE).get(); }
-    private Animal loup() { return new AnimalStock().getCard(AnimalStock.LOUP).get(); }
+    // méthode @Before est executé avant
+
+    private Animal vipere() { return new AnimalStock().getCard(AnimalType.VIPERE).get(); }
+    private Animal hermine() { return new AnimalStock().getCard(AnimalType.HERMINE).get(); }
+    private Animal loup() { return new AnimalStock().getCard(AnimalType.LOUP).get(); }
 
     // Pierre de sacrifice
 
@@ -34,7 +38,7 @@ public class GameManagerTest {
         model.abilities.Ability ability = from.getTransferableAbility().get();
         user.transferAbility(from, ability, to);
 
-        assertTrue(to.hasAnAbility("Contact MORTEL"),"Le Loup devrait avoir Contact Mortel après le transfert");
+        assertTrue(to.hasAnAbility(AbilityType.DEATH_TOUCH),"Le Loup devrait avoir Contact Mortel après le transfert");
     }
 
     @Test

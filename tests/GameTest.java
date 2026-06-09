@@ -1,6 +1,7 @@
 import game.strategy.FirstGame;
 import model.board.BoardLine;
 import model.cards.Animal;
+import model.cards.AnimalType;
 import model.cards.Obstacle;
 import model.players.User;
 import model.stock.AnimalStock;
@@ -14,17 +15,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class GameTest {
 
-    private Animal hermine()   { return new AnimalStock().getCard(AnimalStock.HERMINE).get(); }
-    private Animal loup()      { return new AnimalStock().getCard(AnimalStock.LOUP).get(); }
-
-
-    private User userWith(Animal... animals) {
-        ArrayList<Animal> deck = new ArrayList<>();
-        for (Animal a : animals){
-            deck.add(a);
-        }
-        return new User(deck, new BoardLine());
-    }
+    private Animal hermine() { return new AnimalStock().getCard(AnimalType.HERMINE).get(); }
+    private Animal loup() { return new AnimalStock().getCard(AnimalType.LOUP).get(); }
 
     // Victoire / Défaite
 
@@ -33,9 +25,9 @@ public class GameTest {
         BoardLine attackers = new BoardLine();
         BoardLine defenders = new BoardLine();
 
-        attackers.placeCardAt(loup(), 0); // 3
-        attackers.placeCardAt(hermine(), 1); // 1
-        attackers.placeCardAt(hermine(), 2); // 1
+        attackers.placeCardAt(loup(), 0); // ATK = 3
+        attackers.placeCardAt(hermine(), 1); // ATK = 1
+        attackers.placeCardAt(hermine(), 2); // ATK = 1
 
         int score = 0;
         score += attackers.attack(defenders);
@@ -48,9 +40,9 @@ public class GameTest {
         BoardLine opponentLine = new BoardLine();
         BoardLine userLine = new BoardLine();
 
-        opponentLine.placeCardAt(loup(), 0);// 3
-        opponentLine.placeCardAt(hermine(), 1); // 1
-        opponentLine.placeCardAt(hermine(), 2); // 1
+        opponentLine.placeCardAt(loup(), 0);// ATK = 3
+        opponentLine.placeCardAt(hermine(), 1); // ATK = 1
+        opponentLine.placeCardAt(hermine(), 2); // ATK = 1
 
         int score = 0;
         score -= opponentLine.attack(userLine);
@@ -76,9 +68,9 @@ public class GameTest {
         BoardLine attackers = new BoardLine();
         BoardLine defenders = new BoardLine();
 
-        attackers.placeCardAt(loup(), 0);    // 3
-        attackers.placeCardAt(hermine(), 1); // 1
-        attackers.placeCardAt(hermine(), 2); // 1
+        attackers.placeCardAt(loup(), 0);
+        attackers.placeCardAt(hermine(), 1);
+        attackers.placeCardAt(hermine(), 2);
 
         int score = attackers.attack(defenders); // exactement 5
 

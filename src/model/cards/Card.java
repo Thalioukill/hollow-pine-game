@@ -7,9 +7,9 @@ import java.util.ArrayList;
 
 public abstract class Card {
     protected final String m_name; // nom cahneg pas
-    protected Integer m_healthPoints;
+    protected int m_healthPoints;
 
-    public Card(String name, Integer hp){
+    public Card(String name, int hp){
         this.m_name = name;
         this.m_healthPoints = hp;
     }

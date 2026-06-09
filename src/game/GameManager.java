@@ -7,6 +7,7 @@ import game.strategy.ThirdGame;
 import model.abilities.Ability;
 import model.board.BoardLine;
 import model.cards.Animal;
+import model.cards.AnimalType;
 import model.cards.Obstacle;
 import model.players.Opponent;
 import model.players.User;
@@ -42,6 +43,7 @@ public class GameManager {
                 this.displayGameResult();
                 // Gestion de la progression entre les matchs
                 if (m_gamesCount == 2) {
+
                     this.offerNewCard();
                     this.sacrificeStone();
                 }
@@ -133,37 +135,36 @@ public class GameManager {
 
 
     private void offerNewCard() {
-        ArrayList<String> pool = this.m_user.getRewardPool();
-
+        ArrayList<AnimalType> pool = this.m_user.getRewardPool();
         Collections.shuffle(pool);
         AnimalStock animalStock = new AnimalStock();
 
-        String nameA = pool.get(0);
-        String nameB = pool.get(1);
+        AnimalType typeA = pool.get(0);
+        AnimalType typeB = pool.get(1);
 
-        Optional<Animal> optA = animalStock.getCard(nameA);
-        Optional<Animal> optB = animalStock.getCard(nameB);
+        Optional<Animal> optA = animalStock.getCard(typeA);
+        Optional<Animal> optB = animalStock.getCard(typeB);
 
         if (optA.isEmpty()) {
             throw new IllegalArgumentException("Carte récompense inconnue");
         }
         Animal choiceA = optA.get();
 
-        if(optB.isEmpty()){
+        if (optB.isEmpty()) {
             throw new IllegalArgumentException("Carte récompense inconnue");
         }
         Animal choiceB = optB.get();
 
-        // on demande à l'utilisateur
         Animal chosenAnimal = this.m_dialogue.offerNewCardChoice(choiceA, choiceB);
         this.m_user.addPermanentCard(chosenAnimal);
     }
 
-    private ArrayList<Animal> deduplicateByName(ArrayList<Animal> list) {
+
+    private ArrayList<Animal> deduplicateByType(ArrayList<Animal> list) {
         ArrayList<Animal> result = new ArrayList<>();
-        Set<String> seen = new HashSet<>();
+        Set<AnimalType> seen = new HashSet<>();
         for (Animal a : list) {
-            if (seen.add(a.getName())) { // add() retourne false si déjà présent
+            if (seen.add(a.getAnimalType())) {
                 result.add(a);
             }
         }
@@ -184,7 +185,7 @@ public class GameManager {
 
         ArrayList<Animal> candidates = new ArrayList<>(m_user.getDeckSave());
         candidates.remove(from);  // on enlève juste la carte de la liste locale pour ne pas la proposer
-        candidates = deduplicateByName(candidates); // on ne propose qu'une fois la carte pour ne pas avoir une liste entière d'écureuil par exemple....
+        candidates = deduplicateByType(candidates); // on ne propose qu'une fois la carte pour ne pas avoir une liste entière d'écureuil par exemple....
 
         Animal receiver = m_dialogue.askCardToReceiveAbility(candidates, ability);
         m_user.transferAbility(from, ability, receiver); // retire définitivement from du deckSave

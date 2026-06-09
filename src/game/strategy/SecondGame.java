@@ -1,6 +1,7 @@
 package game.strategy;
 
 import model.cards.Animal;
+import model.cards.AnimalType;
 import model.cards.Obstacle;
 import model.stock.AnimalStock;
 
@@ -14,13 +15,13 @@ public class SecondGame implements GameStrategy {
     public ArrayList<Animal> getOpponentDeck(){
         AnimalStock stock = new AnimalStock();
         ArrayList<Animal> opponentDeck = new ArrayList<>();
-        opponentDeck.add(stock.getCard(AnimalStock.LOUVETEAU).get());
-        opponentDeck.add(stock.getCard(AnimalStock.COYOTE).get());
-        opponentDeck.add(stock.getCard(AnimalStock.CORBEAU).get());
-        opponentDeck.add(stock.getCard(AnimalStock.LOUP).get());
-        opponentDeck.add(stock.getCard(AnimalStock.PUNAISE).get());
-        opponentDeck.add(stock.getCard(AnimalStock.ELAN).get());
-        opponentDeck.add(stock.getCard(AnimalStock.HERMINE).get());
+        opponentDeck.add(stock.getCard(AnimalType.LOUVETEAU).get());
+        opponentDeck.add(stock.getCard(AnimalType.COYOTE).get());
+        opponentDeck.add(stock.getCard(AnimalType.CORBEAU).get());
+        opponentDeck.add(stock.getCard(AnimalType.LOUP).get());
+        opponentDeck.add(stock.getCard(AnimalType.PUNAISE).get());
+        opponentDeck.add(stock.getCard(AnimalType.ELAN).get());
+        opponentDeck.add(stock.getCard(AnimalType.HERMINE).get());
 
         return opponentDeck;
     }

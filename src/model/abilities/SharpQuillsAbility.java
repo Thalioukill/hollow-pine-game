@@ -14,4 +14,7 @@ public class SharpQuillsAbility extends Ability {
     public String getName() { return "Piques aiguisés"; }
 
     public String getShortName() { return "Piques ⚔"; }
+
+    @Override
+    public AbilityType getType() { return AbilityType.SHARP_QUILLS; }
 }

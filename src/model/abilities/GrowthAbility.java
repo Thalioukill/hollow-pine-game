@@ -30,4 +30,7 @@ public class GrowthAbility extends Ability{
 
     public String getShortName() { return "Grandir"; }
 
+    @Override
+    public AbilityType getType() { return AbilityType.GROWTH; }
+
 }

@@ -6,18 +6,18 @@ import model.cards.Animal;
 import model.cards.Card;
 import model.players.Opponent;
 import model.players.User;
-import textcolors.Color;
+import textColors.Color;
 import java.util.ArrayList;
 import java.util.Optional;
 
 public class GameBoard {
 
     // Chaque carte fait exactement 17 caractères de large
-    private static final int    CARD_HEIGHT  = 9;
-    private static final String SEP          = "   ";               // 3 espaces entre cartes
-    private static final String PREFIX       = "          ";        // 10 espaces : marge gauche
+    private static final int CARD_HEIGHT  = 9;
+    private static final String SEP = "   "; // 3 espaces entre cartes
+    private static final String PREFIX = "          "; // 10 espaces : marge gauche
     private static final String BORDER_EMPTY = "*****************"; // 17 chars
-    private static final String BORDER_CARD  = "*---------------*"; // 17 chars
+    private static final String BORDER_CARD = "*---------------*"; // 17 chars
 
     private final StringBuilder m_buffer = new StringBuilder();
 
@@ -115,22 +115,22 @@ public class GameBoard {
             // index du slot centré : 1 + 8 + 1chiffre + 8 + 1 = 18
             return String.format("*       %d       *", slot + 1);
         }
-        return "*               *";                        // 17 chars
+        return "*               *"; // 17 chars
     }
 
     // Carte occupée
     private String getLayerContent(Card card, int layer) {
         return switch (layer) {
             case 0, 8 -> BORDER_CARD;
-            case 1    -> card.isSacrificable() ? "|    ANIMAL     |"
+            case 1 -> card.isSacrificable() ? "|    ANIMAL     |"
                     : "|   OBSTACLE    |";
-            case 2    -> String.format("| %-13s |", truncate(card.getName()));
-            case 3    -> "|---------------|";
-            case 4    -> String.format("| PV: %-9d |", card.getHealthPoints());
-            case 5    -> getStatLine(card);
-            case 6    -> getAbilityLine(card, 0);
-            case 7    -> getAbilityLine(card, 1);
-            default   -> "|               |";
+            case 2 -> String.format("| %-13s |", truncate(card.getName()));
+            case 3 -> "|---------------|";
+            case 4 -> String.format("| PV: %-9d |", card.getHealthPoints());
+            case 5 -> getStatLine(card);
+            case 6 -> getAbilityLine(card, 0);
+            case 7 -> getAbilityLine(card, 1);
+            default -> "|               |";
         };
     }
 
@@ -202,20 +202,13 @@ public class GameBoard {
                 // 6+12+7+3+8+3+9+2+7+2+11+20 = 90 chars + 2 espaces fin = 92
                 cardLine = String.format(
                         "  [%c] %-12s | PV: %-3d | Atk: %-3d | Sang: %-2d | Os: %-2d | Pouvoir: %-20s",
-                        letter,
-                        card.getName(),
-                        card.getHealthPoints(),
-                        card.getAttackPoints(),
-                        card.getBloodCost(),
-                        card.getBoneCost(),
-                        abilities);
+                        letter, card.getName(), card.getHealthPoints(), card.getAttackPoints(), card.getBloodCost(), card.getBoneCost(), abilities);
             }
 
             // Ligne de pioche ou vide
             int deckIndex = i - deckStart;
             if (deckIndex >= 0 && deckIndex < DECK_HEIGHT) {
-                System.out.printf("%-" + cardLineWidth + "s  %s%n",
-                        cardLine, deckLines[deckIndex]);
+                System.out.printf("%-" + cardLineWidth + "s  %s%n", cardLine, deckLines[deckIndex]);
             } else if (!cardLine.isEmpty()) {
                 System.out.println(cardLine);
             }

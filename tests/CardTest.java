@@ -1,7 +1,9 @@
 import model.abilities.*;
 import model.board.BoardLine;
 import model.cards.Animal;
+import model.cards.AnimalType;
 import model.cards.Obstacle;
+import model.cards.ObstacleType;
 import model.stock.AnimalStock;
 import org.junit.jupiter.api.Test;
 
@@ -9,12 +11,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class CardTest {
 
-    private Animal animal(String name, int atk, int hp, int blood, int bone) {
-        return new Animal(name, atk, hp, blood, bone);
+    private Animal animal(String name, int atk, int hp, int blood, int bone, AnimalType type) {
+        return new Animal(name, atk, hp, blood, bone, null);
     }
 
-    private Animal hermine()   { return new AnimalStock().getCard(AnimalStock.HERMINE).get(); }
-    private Animal loup()      { return new AnimalStock().getCard(AnimalStock.LOUP).get(); }
+    private Animal hermine() { return new AnimalStock().getCard(AnimalType.HERMINE).get(); }
+    private Animal loup() { return new AnimalStock().getCard(AnimalType.LOUP).get(); }
 
     // test sur AnimalStock
 
@@ -31,7 +33,7 @@ public class CardTest {
     @Test
     public void cardAttack_doesNotGoBelowZero() {
         Animal attacker = loup();
-        Animal target   = animal("Ecureuil", 0, 1, 0, 0);
+        Animal target = animal("Ecureuil", 0, 1, 0, 0, AnimalType.ECUREUIL);
 
         attacker.attack(target);
 
@@ -41,7 +43,7 @@ public class CardTest {
     @Test
     public void cardAttack_killedCardIsDetected() {
         Animal attacker = loup();
-        Animal target   = hermine();
+        Animal target = hermine();
 
         assertFalse(target.isDead(), "L'Hermine devrait etre vivante avant l'attaque");
         attacker.attack(target);
@@ -51,7 +53,7 @@ public class CardTest {
     @Test
     public void cardAttack_obstacleAbsorbsDamage() {
         Animal attacker = loup();
-        Obstacle obstacle = new Obstacle("Sapin", 3);
+        Obstacle obstacle = new Obstacle("Sapin", 3, ObstacleType.SAPIN);
 
         attacker.attack(obstacle);
 
