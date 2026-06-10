@@ -79,7 +79,7 @@ public class GameManager {
 
         placeUserObstacles(this.m_gamesCount);
 
-        // Injection de dépendances : on donne les joueurs et le plateau à la game.Game
+        // Injection de dépendances : on donne les joueurs et le plateau à la game
         Game currentGame = new Game(board, this.m_user,this.m_dialogue, strategy, opponent);
         // Appel de la logique du match (boucle de rounds)
         return currentGame.runGame();
@@ -174,7 +174,7 @@ public class GameManager {
     private void sacrificeStone(){
         ArrayList<Animal> sacrificePool = this.m_user.getSacrificePool();
 
-        // on part du principe que le deck du players.User sera généré au moins avec 1 carte avec des Abilities.
+        // on part du principe que le deck user sera généré au moins avec 1 carte avec des Abilities.
         if (sacrificePool.isEmpty()) {
             throw new IllegalStateException("Pierre de sacrifice inutilisable : AUCUNE carte avec un pouvoir dans le deck.");
         }
