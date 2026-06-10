@@ -1,3 +1,5 @@
+import model.abilities.AbilityType;
+import model.abilities.DeathTouchAbility;
 import model.board.BoardLine;
 import model.cards.Animal;
 import model.cards.AnimalType;
@@ -180,6 +182,23 @@ public class AbilitiesTest {
         assertTrue(line.getCardAt(0).isPresent());
         assertEquals("Loup", line.getCardAt(0).get().getName(),"Le Louveteau devrait se transformer en Loup au second tour.");
         assertEquals(3, line.getCardAt(0).get().getAttackPoints(),"Le Loup devrait avoir 3 ATK après sa transformation");
+    }
+
+    @Test
+    public void growth_preservesTransferredAbilitiesAfterTransformation() {
+        BoardLine line = new BoardLine();
+        Animal l = louveteau();
+        // On lui ajoute Contact Mortel (comme si on l'avait transféré)
+        l.addAbility(new DeathTouchAbility());
+        line.placeCardAt(l, 0);
+
+        line.notifyTurnStarted(); // tour 1
+        line.notifyTurnStarted(); // tour 2 : transformation
+
+        assertTrue(line.getCardAt(0).isPresent());
+        Animal loup = (Animal) line.getCardAt(0).get();
+        assertEquals("Loup", loup.getName(), "Le Louveteau devrait se transformer en Loup");
+        assertTrue(loup.hasAnAbility(AbilityType.DEATH_TOUCH),"Le Loup devrait conserver le Contact Mortel après la transformation");
     }
 
     @Test

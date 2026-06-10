@@ -65,6 +65,10 @@ public class User extends Player {
         return playerSacrificeCards;
     }
 
+    public void removePermanentCard(Animal card) {
+        this.m_deckSave.remove(card);
+    }
+
 
     public static ArrayList<Animal> deepCopyDeck(ArrayList<Animal> source) {
         ArrayList<Animal> copy = new ArrayList<>();

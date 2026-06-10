@@ -14,8 +14,15 @@ public class GrowthAbility extends Ability{
     @Override
     public void onTurnUpdate(Animal self, int position, BoardLine line) {
         m_turnsOnBoard++;
-        if (m_turnsOnBoard >= 2) { // se transforme seulement au début du deuxième tour
-            line.replaceCard(position, m_finalForm.cloneAnimal());
+        if (m_turnsOnBoard >= 2) {
+            Animal evolved = m_finalForm.cloneAnimal();
+            // Copie toutes les abilities acquises sauf GrowthAbility elle-même comme ca si on l'ajoute à une autre carte avec une ability elle la garde.
+            for (Ability a : self.getAbilities()) {
+                if (a.getType() != AbilityType.GROWTH) {
+                    evolved.addAbility(a.cloneAbility());
+                }
+            }
+            line.replaceCard(position, evolved);
         }
     }
 

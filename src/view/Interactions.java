@@ -374,7 +374,7 @@ public class Interactions {
         }
     }
 
-    public Animal askCardToReceiveAbility(ArrayList<Animal> candidates, Ability ability) {
+    public Optional<Animal> askCardToReceiveAbility(ArrayList<Animal> candidates, Ability ability) {
         System.out.println("\nChoisissez une carte pour récupérer le pouvoir de la carte que vous venez de sacrifier :");
 
         for (int i = 0; i < candidates.size(); i++) {
@@ -398,11 +398,15 @@ public class Interactions {
 
             Animal candidate = candidates.get(choice - 1);
             if (candidate.hasAnAbility(ability.getType())) {
-                System.out.println(candidate.getName() + " possède déjà le pouvoir \"" + ability.getName() + "\", choisissez une autre carte.");
+                System.out.println(candidate.getName() + " possède déjà le pouvoir \"" + ability.getName() + "\".");
+                boolean confirm = askConfirmation("Voulez-vous quand même continuer ? Le pouvoir ne sera pas ajouté. (OUI/NON) : ");
+                if (confirm) {
+                    return Optional.empty(); // signal : ne rien ajouter
+                }
                 continue;
             }
 
-            return candidate;
+            return Optional.of(candidate);
         }
     }
 

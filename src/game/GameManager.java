@@ -187,9 +187,14 @@ public class GameManager {
         candidates.remove(from);  // on enlève juste la carte de la liste locale pour ne pas la proposer
         candidates = deduplicateByType(candidates); // on ne propose qu'une fois la carte pour ne pas avoir une liste entière d'écureuil par exemple....
 
-        Animal receiver = m_dialogue.askCardToReceiveAbility(candidates, ability);
-        m_user.transferAbility(from, ability, receiver); // retire définitivement from du deckSave
-        this.m_dialogue.displayTransferResult(from.getName(), ability.getName(), receiver.getName());
+        Optional<Animal> optReceiver = m_dialogue.askCardToReceiveAbility(candidates, ability);
+        if (optReceiver.isPresent()) {
+            Animal receiver = optReceiver.get();
+            m_user.transferAbility(from, ability, receiver);
+            this.m_dialogue.displayTransferResult(from.getName(), ability.getName(), receiver.getName());
+        } else {
+            m_user.removePermanentCard(from);
+        }
     }
 
     private void displayFinalResult(boolean victory) {

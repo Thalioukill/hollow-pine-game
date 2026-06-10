@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class CardTest {
 
     private Animal animal(String name, int atk, int hp, int blood, int bone, AnimalType type) {
-        return new Animal(name, atk, hp, blood, bone, null);
+        return new Animal(name, atk, hp, blood, bone, type);
     }
 
     private Animal hermine() { return new AnimalStock().getCard(AnimalType.HERMINE).get(); }

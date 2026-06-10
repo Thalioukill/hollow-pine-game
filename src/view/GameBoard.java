@@ -158,7 +158,7 @@ public class GameBoard {
     }
 
      // Main + pioche côte à côte
-    // cardLine fait exactement 92 chars (calculé)
+    // cardLine fait exactement 95 chars
     // La pioche (6 lignes) est centrée verticalement sur la main
     private void displayHandAndDeck(User user) {
         int handSize = user.getHandSize();
@@ -170,8 +170,8 @@ public class GameBoard {
         // Ligne de la pioche commençant à deckStart dans la liste des lignes de main
         int deckStart = Math.max(0, (handSize - DECK_HEIGHT) / 2);
 
-        // Largeur fixe d'une ligne de carte : 95
-        int cardLineWidth = 95;
+        // Largeur fixe d'une ligne de carte : 96
+        int cardLineWidth = 96;
 
         System.out.println("\nVotre main :");
 
@@ -196,12 +196,12 @@ public class GameBoard {
                     }
                     abilities = sb.toString();
                 }
-                // Tronquer à 17 chars pour l'alignement (deux abilities peut décaler la pioche...)
-                if (abilities.length() > 20) {
-                    abilities = abilities.substring(0, 17) + "...";
+                // Tronquer à 21 chars pour l'alignement (deux abilities peut décaler la pioche...)
+                if (abilities.length() > 21) {
+                    abilities = abilities.substring(0, 18) + "...";
                 }
 
-                cardLine = String.format( "  [%c] %-12s | PV: %-3d | Atk: %-3d | Sang: %-2d | Os: %-2d | Pouvoir(s): %-20s", letter, card.getName(), card.getHealthPoints(), card.getAttackPoints(), card.getBloodCost(), card.getBoneCost(), abilities);
+                cardLine = String.format( "  [%c] %-12s | PV: %-3d | Atk: %-3d | Sang: %-2d | Os: %-2d | Pouvoir(s): %-21s", letter, card.getName(), card.getHealthPoints(), card.getAttackPoints(), card.getBloodCost(), card.getBoneCost(), abilities);
             }
 
             // Ligne de pioche ou vide
