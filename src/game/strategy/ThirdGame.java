@@ -50,11 +50,6 @@ public class ThirdGame implements GameStrategy {
         return listeObstacles;
     }
 
-    public ArrayList<Animal> getUserDeck(){
-        return null;
-    }
-
-
     @Override
     public ArrayList<Integer> getPrevisionAction(int roundNumber) {
         return switch (roundNumber) {

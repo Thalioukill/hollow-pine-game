@@ -17,16 +17,16 @@ package "main" #EEF7EE {
         + {static} main(args : String[]) : void
         - {static} buildPlayerDeck(deck : ArrayList<Animal>) : void
     }
+    Main ..> GameManager : creates >
+    Main ..> User : creates >
+    Main ..> AnimalStock : uses >
 }
 
 
 package "game" #FFF8E1 {
 
     class GameManager {
-        - m_dialogue : Interactions
         - m_gamesCount : Integer
-        - m_user : User
-        - m_strategies : ArrayList<GameStrategy> '!!!!!!!!!
         --
         + <<create>> GameManager(dialogue : Interactions, user : User)
         + startCampaign() : void
@@ -42,16 +42,13 @@ package "game" #FFF8E1 {
         - displayFinalResult(victory : Boolean) : void
         - getStrategy(index : Integer) : GameStrategy
     }
+    GameManager "1" *--> "3 -m_startegies" GameStrategy : holds >
+    GameManager "1" o--> "1 -m_dialogue" Interactions : uses >
+    GameManager "1" o--> "1 -m_user" User : manages >
+
 
     class Game {
         - m_score : Integer
-        - m_gameboard : GameBoard '!!!!!
-        - m_user : User
-        - m_currentPlayer : Player
-        - m_dialogue : Interactions
-        - m_strategy : GameStrategy
-        - m_opponent : Opponent
-        - m_turnMessages : ArrayList<String>
         --
         + <<create>> Game(board : GameBoard, player : User, dialogue : Interactions, strat : GameStrategy, opponent : Opponent)
         + runGame() : Boolean
@@ -59,6 +56,13 @@ package "game" #FFF8E1 {
         + combatPhase(attackedPlayer : Player) : Integer
         - runCombat(attacker : Player, defender : Player, scoreSign : Integer, attackerName : String) : void
     }
+    Game "1" o--> "1 -m_gameboard" GameBoard
+    Game "1" o--> "1 -m_user" User
+    Game "1" o--> "1 -m_dialogue" Interactions
+    Game "1" o--> "1 -m_strategy" GameStrategy
+    Game "1" o--> "1 -m_opponent" Opponent
+    'pointe juste vers soit le user soit l'opponent
+    Game ..> Player : m_currentPlayer >
 
     package "game.strategy" #FFF3CD {
         interface GameStrategy <<interface>> {
@@ -69,6 +73,7 @@ package "game" #FFF8E1 {
             + getInitialPrevision() : ArrayList<Integer>
         }
         class FirstGame implements GameStrategy {
+            + <<create>> FirstGame()
             + getOpponentDeck() : ArrayList<Animal>
             + initObstaclesOpponent() : HashMap<Integer, Optional<Obstacle>>
             + initObstaclesUser() : HashMap<Integer, Optional<Obstacle>>
@@ -76,6 +81,7 @@ package "game" #FFF8E1 {
             + getInitialPrevision() : ArrayList<Integer>
         }
         class SecondGame implements GameStrategy {
+            + <<create>> SecondGame()
             + getOpponentDeck() : ArrayList<Animal>
             + initObstaclesOpponent() : HashMap<Integer, Optional<Obstacle>>
             + initObstaclesUser() : HashMap<Integer, Optional<Obstacle>>
@@ -83,6 +89,7 @@ package "game" #FFF8E1 {
             + getInitialPrevision() : ArrayList<Integer>
         }
         class ThirdGame implements GameStrategy {
+            + <<create>> ThirdGame()
             + getOpponentDeck() : ArrayList<Animal>
             + initObstaclesOpponent() : HashMap<Integer, Optional<Obstacle>>
             + initObstaclesUser() : HashMap<Integer, Optional<Obstacle>>
@@ -100,6 +107,7 @@ package "view" #FCE4EC {
         - {static} {final} PREFIX : String
         - {static} {final} BORDER_EMPTY : String
         - {static} {final} BORDER_CARD : String
+        'On le représente ici ?
         - m_buffer : StringBuilder
         --
         + display(user : User, opponent : Opponent, balance : Integer, messages : ArrayList<String>) : void
@@ -116,20 +124,24 @@ package "view" #FCE4EC {
     }
 
     class Interactions {
+        'pareil que le stringBuilder ?
         - m_scanner : Scanner
+        - m_turnMessages : ArrayList<String>
         --
-        + <<create>> Interactions() : Interactions
-        + askNextAction(human : User, messages : ArrayList<String>) : Boolean
+        + <<create>> Interactions()
+        + addMessage(message : String) : void
+        + getAndClearMessages() : ArrayList<String>
+        + askNextAction(human : User) : Boolean
         + displayMenu(human : User) : void
-        - handlePlacement(human : User, messages : ArrayList<String>) : Boolean
-        - placeCard(human : User, handIndex : Integer, messages : ArrayList<String>) : void
+        - handlePlacement(human : User) : Boolean
+        - placeCard(human : User, handIndex : Integer) : void
         - handleSacrifices(bloodCost : Integer, human : User) : void
-        + draw(joueur : User) : String
+        + draw(joueur : User) : void
         + askPosition(human : User) : Integer
         + askPositionSacrifice(human : User, alreadySacrificed : ArrayList<Integer>) : Integer
         + askCardLetter(human : User) : Integer
         + askConfirmation(s : String) : Boolean
-        + getAttackMessage(attackerName : String, degats : Integer) : String
+        + addAttackMessage(attackerName : String, degats : Integer) : void
         + offerNewCardChoice(card1 : Animal, card2 : Animal) : Animal
         + askToSacrificeCard(pool : ArrayList<Animal>) : Animal
         + askCardToReceiveAbility(candidates : ArrayList<Animal>, ability : Ability) : Animal
@@ -137,7 +149,7 @@ package "view" #FCE4EC {
         + displayGameResult(gameNumber : Integer) : void
         + displayFinalResult(victory : Boolean) : void
         + displayMessage(message : String) : void
-        - displayCardOption(index : Integer, card : Animal)
+        - displayCardOption(index : Integer, card : Animal) : void
         - toIndex(position : Integer) : Integer
     }
 }
@@ -147,9 +159,6 @@ package "model" #E8EAF6 {
 
     package "model.players" #D1D9FF {
         abstract class Player <<abstract>> {
-            # m_boardLine : BoardLine
-            # m_deck : ArrayList<Animal>
-            --
             + <<create>> Player(deck : ArrayList<Animal>, bord : BoardLine)
             + addCard(card : Animal) : void
             + draw() : Animal
@@ -163,14 +172,14 @@ package "model" #E8EAF6 {
             + getBoardLine() : BoardLine
             + notifyTurnStarted() : void
         }
+        Player "1" o--> "1 # m_boardLine" BoardLine : m_boardLine >
+        Player "1" o--> "* # m_deck" Animal : m_deck >
+
         class User extends Player {
-            - m_hand : ArrayList<Animal>
-            - m_deckSave : ArrayList<Animal>
-            --
             + <<create>> User(deck : ArrayList<Animal>, bord : BoardLine)
             + addPermanentCard(card : Animal) : void
             + resetForNewGame(freshDeck : ArrayList<Animal>) : void
-            + getRewardPool() : ArrayList<String>
+            + getRewardPool() : ArrayList<AnimalType>
             + getSacrificePool() : ArrayList<Animal>
             + {static} deepCopyDeck(source : ArrayList<Animal>) : ArrayList<Animal>
             + getDeckSave() : ArrayList<Animal>
@@ -188,9 +197,10 @@ package "model" #E8EAF6 {
             + sacrifice(position : Integer) : void
             + playCardToBoard(handIndex : Integer, boardPosition : Integer) : void
         }
+        User "1" *--> "* -m_hand" Animal
+        User "1" o--> "* -m_deckSave" Animal
+
         class Opponent extends Player {
-            - m_previsionLine : BoardLine
-            --
             + <<create>> Opponent(deck : ArrayList<Animal>, bord : BoardLine, previsionBoard : BoardLine)
             + applyPrevision() : void
             + placePrevisionCard(position : Integer) : void
@@ -198,12 +208,12 @@ package "model" #E8EAF6 {
             + getPrevisionCardAt(position : Integer) : Optional<Card>
             + getPrevisionLine() : BoardLine
         }
+        Opponent "1" o--> "1 -m_previsionLine" BoardLine
     }
 
     package "model.board" #C8E6C9 {
         class BoardLine {
-            - m_slots : ArrayList<Optional<Card>>
-            # m_bonesToken : Integer
+            - m_bonesToken : Integer
             --
             + <<create>> BoardLine()
             + placeCardAt(card : Card, position : Integer) : void
@@ -221,11 +231,12 @@ package "model" #E8EAF6 {
             + spendBones(amount : Integer) : void
             + getBonesToken() : Integer
         }
+        BoardLine "1" *--> "0..4 -m_solts" Card
     }
 
     package "model.cards" #FFE0B2 {
         abstract class Card <<abstract>> {
-            # m_name : String
+            # {final} m_name : String
             # m_healthPoints : Integer
             --
             + <<create>> Card(name : String, hp : Integer)
@@ -249,8 +260,6 @@ package "model" #E8EAF6 {
             - m_attackPoints : Integer
             - m_bloodCost : Integer
             - m_boneCost : Integer
-            - m_abilities : ArrayList<Ability>
-            - m_animalType : AnimalType
             --
             + <<create>> Animal(name : String, attack : Integer, pv : Integer, blood : Integer, bone : Integer)
             + <<create>> Animal(other : Animal)
@@ -273,9 +282,12 @@ package "model" #E8EAF6 {
             + getAbilities() : ArrayList<Ability>
             + getTransferableAbility() : Optional<Ability>
         }
+        Animal "1" *--> "* -m_abilities" Ability
+        'c'est une enum... on fait comment ?
+        Animal --> AnimalType : m_animalType
+
+
         class Obstacle extends Card {
-            - m_type : ObstacleType
-            --
             + <<create>> Obstacle(name : String, hp : Integer)
             + <<create>> Obstacle(other : Obstacle)
             + isSacrificable() : Boolean
@@ -284,6 +296,7 @@ package "model" #E8EAF6 {
             + cloneObstacle() : Obstacle
             + getObstacleType() : ObstacleType
         }
+        Obstacle ..> ObstacleType : -m_type
 
         enum AnimalType <<enumerate>> {
             HERMINE, LOUP, ECUREUIL, ELAN, LOUVETEAU, VIPERE, GRIZZLY, CORBEAU, PORC_EPIC, PUNAISE, CHAT, COYOTE, MOINEAU
@@ -300,23 +313,24 @@ package "model" #E8EAF6 {
 
     package "model.stock" #F3E5F5 {
         class AnimalStock {
-            - m_templates : ArrayList<Animal>
-            --
             + <<create>> AnimalStock()
             + getCard(type : AnimalType) : Optional<Animal>
-            + getAllAnimalTypes() : ArrayList<String>
+            + getAllAnimalTypes() : ArrayList<AnimalType>
         }
+        AnimalStock "1" *--> "* -m_templates" Animal
+
         class ObstacleStock {
             - m_templates : ArrayList<Obstacle>
             --
             + <<create>> ObstacleStock()
             + getObstacle(type : ObstacleType) : Optional<Obstacle>
         }
+        ObstacleStock "1" *--> "* -m_templates" Obstacle
     }
 
     package "model.abilities" #E0F7FA {
         abstract class Ability <<abstract>> {
-            + {}abstract} getType() : AbilityType
+            + {abstract} getType() : AbilityType
             + {abstract} getName() : String
             + {abstract} getShortName() : String
             + {abstract} cloneAbility() : Ability
@@ -335,7 +349,6 @@ package "model" #E8EAF6 {
 
 
         class GrowthAbility extends Ability {
-            - {final} m_finalForm : Animal
             - m_turnsOnBoard : Integer
             --
             + <<create>> GrowthAbility(finalForm : Animal)
@@ -345,6 +358,8 @@ package "model" #E8EAF6 {
             + getShortName() : String
             + getType() : AbilityType
         }
+        GrowthAbility "1" o--> "1 - {final} m_finalForm" Animal
+
         class MultipleLivesAbility extends Ability {
             + onSacrifice(self : Animal) : Boolean
             + cloneAbility() : Ability
@@ -352,6 +367,7 @@ package "model" #E8EAF6 {
             + getShortName() : String
             + getType() : AbilityType
         }
+
         class RunnerAbility extends Ability {
             + afterAttack(self : Animal, currentPos : Integer, line : BoardLine) : void
             + cloneAbility() : Ability
@@ -359,6 +375,7 @@ package "model" #E8EAF6 {
             + getShortName() : String
             + getType() : AbilityType
         }
+
         class StinkyAbility extends Ability {
             + modifyIncomingDamage(damage : Integer) : Integer
             + cloneAbility() : Ability
@@ -366,6 +383,7 @@ package "model" #E8EAF6 {
             + getShortName() : String
             + getType() : AbilityType
         }
+
         class FlyingAbility extends Ability {
             + bypassTarget() : Boolean
             + cloneAbility() : Ability
@@ -373,6 +391,7 @@ package "model" #E8EAF6 {
             + getShortName() : String
             + getType() : AbilityType
         }
+
         class DeathTouchAbility extends Ability {
             + onAttack(card : Card) : void
             + cloneAbility() : Ability
@@ -380,6 +399,7 @@ package "model" #E8EAF6 {
             + getShortName() : String
             + getType() : AbilityType
         }
+
         class SharpQuillsAbility extends Ability {
             + onHit(self : Animal, attacker : Animal) : void
             + cloneAbility() : Ability
@@ -389,43 +409,5 @@ package "model" #E8EAF6 {
         }
     }
 }
-
-'  RELATIONSHIPS
-
-' main
-Main ..> GameManager : creates >
-Main ..> User : creates >
-Main ..> AnimalStock : uses >
-
-' game
-GameManager "1" *--> "1" Interactions : uses >
-GameManager "1" o--> "1" User : manages >
-GameManager "1" *--> "3" GameStrategy : holds >
-
-Game "1" *--> "1" GameBoard : displays >
-Game "1" o--> "1" User : plays with >
-Game "1" *--> "1" Opponent : fights >
-Game "1" o--> "1" Interactions : interacts >
-Game "1" o--> "1" GameStrategy : uses >
-
-' model.players
-Player "1" *--> "1" BoardLine : m_boardLine >
-Player "1" o--> "*" Animal : m_deck >
-User "1" o--> "*" Animal : m_hand >
-User "1" o--> "*" Animal : m_deckSave >
-Opponent "1" *--> "1" BoardLine : m_previsionLine >
-
-' model.board
-BoardLine "1" o--> "0..4" Card : m_slots >
-
-' model.cards
-Animal "1" o--> "*" Ability : m_abilities >
-
-' model.stock
-AnimalStock "1" *--> "*" Animal : m_templates >
-ObstacleStock "1" *--> "*" Obstacle : m_templates >
-
-' model.abilities
-GrowthAbility "1" o--> "1" Animal : m_finalForm >
 
 @enduml

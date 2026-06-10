@@ -32,7 +32,7 @@ public class Opponent extends Player {
     public void placePrevisionCard(int position){
         if (!m_previsionLine.isOccupied(position)) {
             Animal animal = this.draw(); // lance NoSuchElementException si vide = bug
-            m_previsionLine.placeCardAt(animal, position);
+            this.m_previsionLine.placeCardAt(animal, position);
         }
     }
 

@@ -234,7 +234,7 @@ public class Interactions {
     public int askCardLetter(User human) {
         char maxLetter = (char) ('A' + human.getHandSize() - 1);
         while (true) {
-            String message = (maxLetter == 'A') ? "Choisissez une carte dans votre main (il n'y a plus que la carte A... Le choix va être dur) ou [X] pour annuler: " : "Choisissez une carte dans votre main (lettre entre A et " + maxLetter + ") ou saisissez [E] pour annuler : ";
+            String message = (maxLetter == 'A') ? "Choisissez une carte dans votre main (il n'y a plus que la carte A... Le choix va être dur)  ou [X] pour annuler : " : "Choisissez une carte dans votre main (lettre entre A et " + maxLetter + ")  ou [X] pour annuler: ";
 
             System.out.print(message);
 

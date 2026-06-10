@@ -9,7 +9,7 @@ import java.util.Set;
 
 public class BoardLine {
     private final ArrayList<Optional<Card>> m_slots;
-    protected int m_bonesToken;
+    private int m_bonesToken;
 
     public BoardLine() {
         m_slots = new ArrayList<>();

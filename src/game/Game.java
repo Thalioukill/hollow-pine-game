@@ -61,7 +61,7 @@ public class Game {
             // Tour de l'adversaire
             this.m_currentPlayer = this.m_opponent;
 
-            ArrayList<Integer> action = this.m_strategy.getPrevisionAction(nbRounds); // L'players.Opponent place ses cartes sur sa ligne de jeu.
+            ArrayList<Integer> action = this.m_strategy.getPrevisionAction(nbRounds); // L'Opponent place ses cartes sur sa ligne de jeu.
             this.m_currentPlayer.notifyTurnStarted(); // croissance pour les louveteaux de l'opponent.
             this.m_opponent.opponentAction(action);
 
