@@ -213,7 +213,7 @@ package "model" #E8EAF6 {
 
     package "model.board" #C8E6C9 {
         class BoardLine {
-            - m_bonesToken : Integer
+            - {final} m_bonesToken : Integer
             --
             + <<create>> BoardLine()
             + placeCardAt(card : Card, position : Integer) : void

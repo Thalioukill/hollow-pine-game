@@ -9,7 +9,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 public abstract class Player {
-    protected BoardLine m_boardLine;
+    protected final BoardLine m_boardLine;
     protected ArrayList<Animal> m_deck;
 
     public Player(ArrayList<Animal> deck, BoardLine bord) {

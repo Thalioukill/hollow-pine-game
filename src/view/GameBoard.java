@@ -170,8 +170,8 @@ public class GameBoard {
         // Ligne de la pioche commençant à deckStart dans la liste des lignes de main
         int deckStart = Math.max(0, (handSize - DECK_HEIGHT) / 2);
 
-        // Largeur fixe d'une ligne de carte : 92 chars (calculé précisément)
-        int cardLineWidth = 92;
+        // Largeur fixe d'une ligne de carte : 95
+        int cardLineWidth = 95;
 
         System.out.println("\nVotre main :");
 
@@ -189,20 +189,19 @@ public class GameBoard {
                 if (card.hasAbility()) {
                     StringBuilder sb = new StringBuilder();
                     for (Ability a : card.getAbilities()) {
-                        if (!sb.isEmpty()) sb.append(", ");
-                        sb.append(a.getName());
+                        if(!sb.isEmpty()){
+                            sb.append(", ");
+                        }
+                        sb.append(a.getShortName());
                     }
                     abilities = sb.toString();
                 }
-                // Tronquer à 20 chars pour l'alignement (deux abilities peut décaler la pioche...)
+                // Tronquer à 17 chars pour l'alignement (deux abilities peut décaler la pioche...)
                 if (abilities.length() > 20) {
                     abilities = abilities.substring(0, 17) + "...";
                 }
 
-                // 6+12+7+3+8+3+9+2+7+2+11+20 = 90 chars + 2 espaces fin = 92
-                cardLine = String.format(
-                        "  [%c] %-12s | PV: %-3d | Atk: %-3d | Sang: %-2d | Os: %-2d | Pouvoir: %-20s",
-                        letter, card.getName(), card.getHealthPoints(), card.getAttackPoints(), card.getBloodCost(), card.getBoneCost(), abilities);
+                cardLine = String.format( "  [%c] %-12s | PV: %-3d | Atk: %-3d | Sang: %-2d | Os: %-2d | Pouvoir(s): %-20s", letter, card.getName(), card.getHealthPoints(), card.getAttackPoints(), card.getBloodCost(), card.getBoneCost(), abilities);
             }
 
             // Ligne de pioche ou vide

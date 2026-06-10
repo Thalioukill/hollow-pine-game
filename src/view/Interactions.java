@@ -139,7 +139,9 @@ public class Interactions {
             if (attackerName.equals("Vous")) {
                 addMessage("Votre attaque n'a pas infligé de dégâts directs.");
             }
-            addMessage("L'adversaire ne vous a pas infligé de dégâts directs.");
+            else{
+                addMessage("L'adversaire ne vous a pas infligé de dégâts directs.");
+            }
         }
         else{
             if (attackerName.equals("Vous")) {
@@ -234,7 +236,7 @@ public class Interactions {
     public int askCardLetter(User human) {
         char maxLetter = (char) ('A' + human.getHandSize() - 1);
         while (true) {
-            String message = (maxLetter == 'A') ? "Choisissez une carte dans votre main (il n'y a plus que la carte A... Le choix va être dur)  ou [X] pour annuler : " : "Choisissez une carte dans votre main (lettre entre A et " + maxLetter + ")  ou [X] pour annuler: ";
+            String message = (maxLetter == 'A') ? "Choisissez une carte dans votre main (il n'y a plus que la carte A... Le choix va être dur) ou [X] pour annuler : " : "Choisissez une carte dans votre main (lettre entre A et " + maxLetter + ")  ou [X] pour annuler: ";
 
             System.out.print(message);
 
@@ -253,7 +255,7 @@ public class Interactions {
                 if (Character.isLetter(letter) && letter >= 'A' && letter <= maxLetter) {
                     return letter - 'A'; // Retourne l'index 0, 1, 2... directement
                 } else {
-                    System.out.println("Lettre incorrecte ! Veuillez choisir entre A et " + maxLetter + ".");
+                    System.out.println("Lettre incorrecte ! Veuillez choisir entre A et " + maxLetter + " ou X pour annuler.");
                 }
             }
             // La boucle continue tant qu'on n'a pas fait de 'return'
