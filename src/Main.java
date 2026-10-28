@@ -13,7 +13,7 @@ public class Main
     public static void main(String[] args)
     {
         Interactions dialogue = new Interactions();
-        dialogue.displayMessage("Un nouveau challenger... Cela faisait une éternité.");
+        dialogue.displayMessage("\n\nUn nouveau challenger... Cela faisait une éternité.");
 
         ArrayList<Animal> playerDeck = new ArrayList<Animal>();
         buildPlayerDeck(playerDeck);
