@@ -79,7 +79,7 @@ public class Interactions {
         // Carte à coût en SANG
         if (card.getBloodCost() > 0) {
             if (!human.hasEnoughBlood(card)) {
-                displayMessage("Pas assez de créatures à sacrifier pour poser cette carte, veuillez en choisir une autre coutant moins de " + human.getSacrificableCount() + ".");
+                displayMessage("Pas assez de créatures à sacrifier pour poser cette carte, veuillez en choisir une autre coûtant au plus " + human.getSacrificableCount() + ".");
                 return handlePlacement(human); // reboucle sans réafficher
             }
             handleSacrifices(card.getBloodCost(), human);
@@ -166,7 +166,6 @@ public class Interactions {
             } else if (input.equals("NON")) {
                 return false;
             }
-            // ERREURRRR
             System.out.println("Veuillez saisir OUI ou NON");
         }
     }
@@ -288,7 +287,7 @@ public class Interactions {
                 addMessage("Oups il n'y a plus de cartes dans la pioche...");
             }
         } else {
-            addMessage("Vous avez décidé de ne pas piocher... Étais-ce un bon choix...");
+            addMessage("Vous avez décidé de ne pas piocher... Était-ce un bon choix...");
         }
     }
 
@@ -302,7 +301,7 @@ public class Interactions {
         if (victory) {
             System.out.println("\nFélicitations ! Vous avez vaincu Leshy et survécu à la forêt. La nuit s'achève enfin...");
         } else {
-            System.out.println("\nL'obscurité vous englouti... Partie terminée.");
+            System.out.println("\nL'obscurité vous engloutit... Partie terminée.");
         }
     }
 
