@@ -21,7 +21,7 @@ public class GameManager {
     private int m_gamesCount;
     private final User m_user;
 
-    // liste des stratégies du players.Opponent...
+    // liste des stratégies de l'Opponent...
     private final ArrayList<GameStrategy> m_strategies = new ArrayList<>(List.of(new FirstGame(), new SecondGame(), new ThirdGame()));
 
     public GameManager(Interactions dialogue, User user) {
