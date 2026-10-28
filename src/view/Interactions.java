@@ -147,7 +147,9 @@ public class Interactions {
             if (attackerName.equals("Vous")) {
                 addMessage("Vous avez infligé " + degats + " dégât(s) direct(s) à Leshy, continuez comme cela !");
             }
-            addMessage("L'adversaire vous a infligé " + degats + " dégât(s), cela semble mal parti...");
+            else {
+                addMessage("L'adversaire vous a infligé " + degats + " dégât(s), cela semble mal parti...");
+            }
         }
     }
 
