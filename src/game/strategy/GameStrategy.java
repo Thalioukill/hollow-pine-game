@@ -16,7 +16,7 @@ public interface GameStrategy {
 
     ArrayList<Integer> getPrevisionAction(int roundNumber);
 
-    // pour initialiser le previsionLine dans le game.GameManager avant de faire les rounds...
+    // pour initialiser le previsionLine dans le GameManager avant de faire les rounds...
     ArrayList<Integer> getInitialPrevision();
 
 }

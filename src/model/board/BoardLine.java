@@ -121,7 +121,7 @@ public class BoardLine {
 
                     if (target.isDead()) {
                         opponentLine.removeCardAt(i);
-                        // meme si l'players.Opponent n'utilise pas ses os il faut quand meme que la méthode puisse permettre d'implémenter cela...
+                        // meme si l'Opponent n'utilise pas ses os il faut quand meme que la méthode puisse permettre d'implémenter cela...
                         opponentLine.addBonesToken();
                     }
                 }

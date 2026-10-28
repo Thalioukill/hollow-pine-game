@@ -49,7 +49,7 @@ public class Opponent extends Player {
 
     @Override
     public String toString() {
-        return "players.Opponent[" + super.toString() + ", prévision=" + m_previsionLine + "]";
+        return "Opponent[" + super.toString() + ", prévision=" + m_previsionLine + "]";
     }
 
     public BoardLine getPrevisionLine() {

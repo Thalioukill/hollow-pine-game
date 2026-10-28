@@ -125,7 +125,7 @@ public class User extends Player {
         this.m_boardLine.addBonesToken();
     }
 
-    // ----- code pour la board.BoardLine
+    // ----- code pour la BoardLine
     public Optional<Card> getCardAt(int position){
         return this.m_boardLine.getCardAt(position);
     }
@@ -152,7 +152,7 @@ public class User extends Player {
     public void playCardToBoard(int handIndex, int boardPosition) {
         Card cardToPlay = this.m_hand.remove(handIndex);
 
-        // On appelle placeCardAt pour la déposer sur la board.BoardLine
+        // On appelle placeCardAt pour la déposer sur la BoardLine
         this.placeCardAt(cardToPlay, boardPosition);
     }
 

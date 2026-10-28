@@ -13,8 +13,7 @@ public class Main
     public static void main(String[] args)
     {
         Interactions dialogue = new Interactions();
-        //dialogue.displayTitle();
-        dialogue.displayMessage("Another challenger... It has been ages.");
+        dialogue.displayMessage("Un nouveau challenger... Cela faisait une éternité.");
 
         ArrayList<Animal> playerDeck = new ArrayList<Animal>();
         buildPlayerDeck(playerDeck);
@@ -30,7 +29,7 @@ public class Main
 
     }
     private static void buildPlayerDeck(ArrayList<Animal> playerDeck){
-        // Initialisation à l'extérieur des objets game.Game pour la persistance
+        // Initialisation à l'extérieur des objets Game pour la persistance
         AnimalStock stock = new AnimalStock();
 
         // Création du deck avec les 15 cartes de départ (majorité d'écureuils)

@@ -76,7 +76,7 @@ public class AnimalStock {
 
     @Override
     public String toString() {
-        return "CardStock(available=" + m_templates.size() + ")";
+        return "AnimalStock(available=" + m_templates.size() + ")";
     }
 }
 

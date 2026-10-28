@@ -44,7 +44,7 @@ public abstract class Player {
 
     // ---------
 
-    //------- code pour la board.BoardLine
+    //------- code pour la BoardLine
 
     // il ne faut pas gérer la position ici ?
     public Optional<Card> getBoardLineCardAt(int index) {

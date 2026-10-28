@@ -123,7 +123,7 @@ public class Animal extends Card {
     public void triggerStartTurn(int position, BoardLine line) {
         // On parcourt la liste générique des capacités
         for (Ability a : m_abilities) {
-            // 'this' est passé car l'abilities.Ability a besoin de l'animal pour le transformer
+            // 'this' est passé car l'Ability a besoin de l'animal pour le transformer
             a.onTurnUpdate(this, position, line);
         }
     }

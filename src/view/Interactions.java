@@ -347,7 +347,7 @@ public class Interactions {
         }
     }
 
-    // le deck aura toujours une carte avec une abilities.Ability au départ instancié dans le main... mais sinon on peut gérer cela ici...
+    // le deck aura toujours une carte avec une Ability au départ instancié dans le main... mais sinon on peut gérer cela ici...
     public Animal askToSacrificeCard(ArrayList<Animal> pool) {
         System.out.println("\n--- PIERRE DE SACRIFICE ---");
         System.out.println("Choisissez une carte à sacrifier pour récupérer son pouvoir :");

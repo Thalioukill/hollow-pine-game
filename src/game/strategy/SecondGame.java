@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class SecondGame implements GameStrategy {
-    // méthode qui stocke juste les cartes à mettre dans le deck de l'players.Opponent !
+    // méthode qui stocke juste les cartes à mettre dans le deck de l'Opponent !
     public ArrayList<Animal> getOpponentDeck(){
         AnimalStock stock = new AnimalStock();
         ArrayList<Animal> opponentDeck = new ArrayList<>();
