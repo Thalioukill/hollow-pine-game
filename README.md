@@ -36,7 +36,7 @@ Le sujet a été conçu en deux phases, avec des rendus hebdomadaires, pour déc
 
 - **Programmation orientée objet** : un code découpé en classes, chacune avec une responsabilité claire
 - **Code propre** : respect des conventions de code et des principes SOLID pour un code facile à faire évoluer
-- **Tests unitaires** : 78 tests JUnit 5 sur les classes les plus importantes
+- **Tests unitaires** : 79 tests JUnit 5 sur les classes les plus importantes
 - **Modélisation** : diagrammes de classes UML (PlantUML), mis à jour chaque semaine
 
 ## ♤ Déroulement du jeu
