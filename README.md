@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/banner_hollow_pine.png" alt="Hollow Pine" width="800">
+</p>
+
 # Hollow Pine
 
 Hollow Pine est une application console réalisée en trinôme dans le cadre d'un projet (BUT Informatique, Université de Strasbourg). 
