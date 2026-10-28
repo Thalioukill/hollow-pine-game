@@ -203,6 +203,17 @@ Le diagramme de classes se trouve dans `uml/diagramme_UML.puml` (lisible avec Pl
 
 Projet réalisé en trinôme du 4 mai au 10 juin 2026, Université de Strasbourg.
 
+
 ## ♤ Crédits
 
-Jeu original : *Inscryption* (Daniel Mullins Games). Hollow Pine est un exercice pédagogique sans but commercial, non affilié aux auteurs du jeu original.
+- **Jeu d'origine** : *Inscryption* (Daniel Mullins Games), dont Hollow Pine reprend les grands principes sous une forme simplifiée.
+- **Cadre pédagogique** : projet réalisé à l'IUT Robert Schuman (département informatique), qui en a fourni le sujet, l'encadrement et les conseils.
+- **Statut** : exercice pédagogique sans but commercial, non affilié aux auteurs du jeu original.
+  
+
+## ♤ Licence
+
+Code distribué sous licence MIT (voir le fichier [LICENSE](LICENSE)).
+
+© 2026 Thalia Herzog, Chuluunkhuu Khosgerel et Fanny Hertz
+
