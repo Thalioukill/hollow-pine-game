@@ -65,7 +65,11 @@ Quand vous terminez votre tour, vos cartes attaquent. Les événements du tour s
 
 Après la deuxième partie, vous choisissez une nouvelle carte parmi deux, puis vous pouvez utiliser la **pierre de sacrifice** pour transférer le pouvoir d'une carte à une autre.
 
-![Récompense et pierre de sacrifice](assets/sacrifice_stone.png)
+<details>
+<summary>Voir un exemple : récompense et pierre de sacrifice</summary>
+<br>
+  <p align="center"><img alt="Récompense et pierre de sacrifice" src="assets/sacrifice_stone.png" width="700"></p>
+</details>
 
 ### Commandes
 
