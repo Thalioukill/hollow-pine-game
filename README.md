@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/banner_hollow_pine.png" alt="Hollow Pine" width="800">
+  <img src="assets/banner_hollow_pine.png" alt="Hollow Pine" width="100%">
 </p>
 
 # Hollow Pine
@@ -9,21 +9,22 @@ Hollow Pine est une application console réalisée en trinôme dans le cadre d'u
 > Une cabane isolée au coeur d'une forêt silencieuse, un adversaire aux yeux inquiétants, et un étrange jeu de cartes dont vous ne repartirez qu'en le gagnant...
 
 
-## Le jeu original
+## ♤ Le jeu original
 
 Hollow Pine s'inspire d'**Inscryption** (Daniel Mullins Games, 2021), un jeu vidéo qui mélange jeu de cartes, roguelike et ambiance d'horreur. Son système de coûts est original : on paie en **sacrifiant ses propres créatures** (gouttes de sang) ou en dépensant les **os** des créatures mortes, et les cartes possèdent des **pouvoirs** qui changent la façon de jouer.
 
 Hollow Pine reprend ces principes dans une version **très simplifiée**, en mode console. Plus d'informations sur le jeu original : [Wikipédia](https://fr.wikipedia.org/wiki/Inscryption).
 
-## Le projet
+## ♤ Le projet
 
-| | |
-|---|---|
-| **Durée** | 5 semaines (mai à juin 2026) |
-| **Équipe** | Trinôme |
-| **Technologies** | Java, JUnit, PlantUML, Git, IntelliJ IDEA |
-| **Rendus** | Un rendu par semaine, plus un rendu final |
+<br>
 
+| Contraintes  |                                           |
+|--------------|-------------------------------------------|
+| Durée        | 5 semaines (mai à juin 2026)              |
+| Équipe       | Trinôme                                   |
+| Technologies | Java, JUnit, PlantUML, Git, IntelliJ IDEA |
+| Rendus       | Un rendu par semaine, plus un rendu final |
 ### Une progression en deux phases
 
 Le sujet a été conçu en deux phases, avec des rendus hebdomadaires, pour découper le travail en petites tâches et faire évoluer le code au fil des semaines.
@@ -38,7 +39,7 @@ Le sujet a été conçu en deux phases, avec des rendus hebdomadaires, pour déc
 - **Tests unitaires** : 78 tests JUnit 5 sur les classes les plus importantes
 - **Modélisation** : diagrammes de classes UML (PlantUML), mis à jour chaque semaine
 
-## Déroulement du jeu
+## ♤ Déroulement du jeu
 
 Face à vous, **Leshy** joue sur la ligne du haut ; vous jouez sur la ligne du bas, qui compte quatre emplacements (de `1` à `4`). Le premier à creuser **5 points d'écart** (la balance, à gauche du plateau) remporte la partie, et il faut gagner les **3 parties**, de plus en plus difficiles, pour s'échapper de ses griffes.
 
@@ -78,15 +79,15 @@ Les saisies fonctionnent en majuscules comme en minuscules.
 
 Les saisies invalides sont refusées et redemandées, avec une explication.
 
-## Installation et lancement
+## ♤ Installation et lancement
 
 **Prérequis** : Java JDK 21 ou plus récent et Git.
 
 > ⚠️ Vérifiez que **les deux** commandes `java -version` et `javac -version` affichent la version 21 ou plus. Sous Linux, il arrive que `java` soit en 21 et `javac` (le compilateur) en 17 : la compilation échoue alors avec des erreurs `cannot find symbol` sur `getFirst()` ou `removeFirst()`. Dans ce cas, installez le JDK complet (`sudo apt install openjdk-21-jdk` sous Ubuntu).
 
 ```bash
-git clone https://github.com/<votre-pseudo>/hollow-pine-cards.git
-cd hollow-pine-cards
+git clone https://github.com/Thalioukill/hollow-pine-game.git
+cd hollow-pine-game
 ```
 
 **Avec IntelliJ IDEA** : ouvrez le dossier du projet (*File > Open*), puis lancez `src/Main.java`.
@@ -106,7 +107,7 @@ java -cp out Main
 
 À lancer depuis la racine du projet (le dossier qui contient `src/`).
 
-## Lancer les tests
+## ♤ Lancer les tests
 
 Les tests utilisent JUnit 5 (lanceur fourni dans `deps/`) et couvrent les pouvoirs, le plateau, les cartes, la gestion de partie, l'adversaire et le joueur.
 
@@ -121,10 +122,10 @@ java -jar deps/junit-platform-console-standalone.jar execute --class-path out/te
 
 À la fin, le résumé doit indiquer `0 tests failed`. Dans IntelliJ, vous pouvez aussi faire un clic droit sur le dossier `tests` puis *Run Tests*.
 
-## Structure du dépôt
+## ♤ Structure du dépôt
 
 ```
-hollow-pine-cards/
+hollow-pine-game/
 ├── deps/                           # bibliothèques de test (JUnit, Hamcrest)
 │   ├── hamcrest-core-1.3.jar
 │   ├── junit-4.13.2.jar
@@ -191,17 +192,17 @@ hollow-pine-cards/
 
 Chaque pouvoir est une classe séparée, ce qui permet d'en ajouter un sans modifier le reste du code. De même, chaque partie correspond à une stratégie (`FirstGame`, `SecondGame`, `ThirdGame`) qui implémente `GameStrategy`.
 
-## Conception
+## ♤ Conception
 
 Le diagramme de classes se trouve dans `uml/diagramme_UML.puml` (lisible avec PlantUML). L'affichage et les saisies sont regroupés dans le package `view`, séparés de la logique du jeu, et le code est organisé en packages.
 
 
-## Auteurs du README
+## ♤ Auteurs du README
 
 - Thalia Herzog
 
 Projet réalisé en trinôme du 4 mai au 10 juin 2026, Université de Strasbourg.
 
-## Crédits
+## ♤ Crédits
 
 Jeu original : *Inscryption* (Daniel Mullins Games). Hollow Pine est un exercice pédagogique sans but commercial, non affilié aux auteurs du jeu original.
