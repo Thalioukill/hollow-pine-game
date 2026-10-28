@@ -25,6 +25,7 @@ Hollow Pine reprend ces principes dans une version **très simplifiée**, en mod
 | Équipe       | Trinôme                                   |
 | Technologies | Java, JUnit, PlantUML, Git, IntelliJ IDEA |
 | Rendus       | Un rendu par semaine, plus un rendu final |
+
 ### Une progression en deux phases
 
 Le sujet a été conçu en deux phases, avec des rendus hebdomadaires, pour découper le travail en petites tâches et faire évoluer le code au fil des semaines.
@@ -63,6 +64,8 @@ Quand vous terminez votre tour, vos cartes attaquent. Les événements du tour s
 ### 4. Fin de la deuxième partie
 
 Après la deuxième partie, vous choisissez une nouvelle carte parmi deux, puis vous pouvez utiliser la **pierre de sacrifice** pour transférer le pouvoir d'une carte à une autre.
+
+![Récompense et pierre de sacrifice](assets/sacrifice_stone.png)
 
 ### Commandes
 
@@ -133,6 +136,8 @@ hollow-pine-game/
 ├── docs/
 │   └── REGLES.md                   # règles détaillées du jeu
 ├── assets/                         # images et vidéos du README
+│   ├── banner_hollow_pine.png
+│   └── sacrifice_stone.png      
 ├── out/
 │   └── .gitkeep                    # dossier des fichiers compilés (ignorés par Git)
 ├── src/
@@ -195,13 +200,6 @@ Chaque pouvoir est une classe séparée, ce qui permet d'en ajouter un sans modi
 ## ♤ Conception
 
 Le diagramme de classes se trouve dans `uml/diagramme_UML.puml` (lisible avec PlantUML). L'affichage et les saisies sont regroupés dans le package `view`, séparés de la logique du jeu, et le code est organisé en packages.
-
-
-## ♤ Auteurs du README
-
-- Thalia Herzog
-
-Projet réalisé en trinôme du 4 mai au 10 juin 2026, Université de Strasbourg.
 
 
 ## ♤ Crédits
