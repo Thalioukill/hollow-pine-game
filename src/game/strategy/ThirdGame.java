@@ -24,6 +24,7 @@ public class ThirdGame implements GameStrategy {
         opponentDeck.add(stock.getCard(AnimalType.PUNAISE).get());
         opponentDeck.add(stock.getCard(AnimalType.LOUVETEAU).get());
         opponentDeck.add(stock.getCard(AnimalType.ELAN).get());
+        opponentDeck.add(stock.getCard(AnimalType.CORBEAU).get());
 
         return opponentDeck;
     }
@@ -44,8 +45,8 @@ public class ThirdGame implements GameStrategy {
         }
 
         // On récupère l'Optional directement depuis le stock
-        Optional<Obstacle> sapin = stock.getObstacle(ObstacleType.ROCHER);
-        listeObstacles.put(2, sapin);
+        Optional<Obstacle> rocher = stock.getObstacle(ObstacleType.ROCHER);
+        listeObstacles.put(2, rocher);
 
         return listeObstacles;
     }
