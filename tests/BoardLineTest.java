@@ -185,4 +185,17 @@ public class BoardLineTest {
         assertTrue(user.getBoardLineCardAt(2).isPresent(),"getBoardLineCardAt(2) devrait retourner le Loup");
         assertEquals("Loup", user.getBoardLineCardAt(2).get().getName());
     }
+
+    @Test
+    void board_attackerKilledByQuillsIsRemoved() {
+        AnimalStock stock = new AnimalStock();
+        BoardLine attackerLine = new BoardLine();
+        BoardLine defenderLine = new BoardLine();
+        attackerLine.placeCardAt(stock.getCard(AnimalType.LOUVETEAU).get(), 0); // 1 PV
+        defenderLine.placeCardAt(stock.getCard(AnimalType.PORC_EPIC).get(), 0); // riposte 1
+
+        attackerLine.attack(defenderLine);
+
+        assertTrue(attackerLine.getCardAt(0).isEmpty());
+    }
 }

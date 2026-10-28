@@ -125,6 +125,11 @@ public class BoardLine {
                         opponentLine.addBonesToken();
                     }
                 }
+                if (attackerCard.isDead()) {
+                    this.removeCardAt(i);
+                    this.addBonesToken();
+                    continue; // une carte morte ne se déplace pas (Coureur) et ne déclenche rien
+                }
                 attackerCard.triggerPostAttack(i, this);
             }
         }
