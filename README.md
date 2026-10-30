@@ -50,7 +50,7 @@ Face à vous, **Leshy** occupe les deux lignes du haut (ses prochaines cartes et
 <summary>🎬 Voir une partie complète (5 min)</summary>
 <br>
 
-LE_LIEN_VIDEO
+https://github.com/user-attachments/assets/979f1c31-ebcf-4d39-a3bc-31d9e72bc060
 
 </details>
 
