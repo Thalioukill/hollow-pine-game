@@ -42,33 +42,90 @@ Le sujet a été conçu en deux phases, avec des rendus hebdomadaires, pour déc
 
 ## ♤ Déroulement du jeu
 
-Face à vous, **Leshy** joue sur la ligne du haut ; vous jouez sur la ligne du bas, qui compte quatre emplacements (de `1` à `4`). Le premier à creuser **5 points d'écart** (la balance, à gauche du plateau) remporte la partie, et il faut gagner les **3 parties**, de plus en plus difficiles, pour s'échapper de ses griffes.
+Face à vous, **Leshy** occupe les deux lignes du haut (ses prochaines cartes et ses cartes en jeu) ; vous jouez sur la ligne du bas, qui compte quatre emplacements (de `1` à `4`). Le premier à creuser **5 points d'écart** (la balance, à gauche du plateau) remporte la partie, et il faut gagner les **3 parties**, de plus en plus difficiles, pour s'échapper de ses griffes.
 
 > 📖 Toutes les règles (cartes, pouvoirs, obstacles, coûts en sang et en os) sont détaillées dans [docs/REGLES.md](docs/REGLES.md).
+
+<details>
+<summary>🎬 Voir une partie complète (5 min)</summary>
+<br>
+
+LE_LIEN_VIDEO
+
+</details>
 
 ### 1. Annonce de l'adversaire et pioche
 
 La ligne du haut annonce les cartes que Leshy jouera au tour suivant, puis le jeu vous propose de piocher.
 
+<p align="center">
+  <a href="assets/board.png"><img alt="Plateau de jeu : ligne de prédiction, ligne d'attaque de Leshy et ligne du joueur" src="assets/board.png" width="700"></a>
+  <br>
+  <sub>Les trois lignes du plateau : les prédictions de Leshy, ses cartes en jeu et les vôtres</sub>
+</p>
 
 ### 2. Pose des cartes
 
 Vous choisissez une carte de votre main (par sa lettre), puis un emplacement, en payant son coût en sang ou en os. Les pouvoirs des cartes sont affichés directement dessus.
 
+<details>
+<summary>Voir un exemple : poser une carte en sacrifiant des animaux</summary>
+<br>
+<p align="center">
+  <img alt="Pose d'une carte en sacrifiant des animaux" src="assets/play_sacrifice.gif" width="450">
+  <br>
+  <sub>Deux Écureuils sont sacrifiés pour payer les 2 gouttes de sang de l'Élan</sub>
+</p>
+</details>
 
 ### 3. Attaques et score
 
 Quand vous terminez votre tour, vos cartes attaquent. Les événements du tour s'affichent sous le plateau, puis Leshy joue à son tour.
 
+<div align="center">
+<table>
+  <tr>
+    <td align="center">
+      <a href="assets/attack_player.png"><img alt="Vos cartes attaquent Leshy" src="assets/attack_player.png" height="420"></a>
+      <br>
+      <sub>Vos cartes attaquent : 3 dégâts infligés à Leshy</sub>
+    </td>
+    <td width="30"></td>
+    <td align="center">
+      <a href="assets/attack_leshy.png"><img alt="Leshy attaque à son tour" src="assets/attack_leshy.png" height="420"></a>
+      <br>
+      <sub>Leshy riposte : 1 dégât, la balance redescend</sub>
+    </td>
+  </tr>
+</table>
+<sub>🔍 Cliquez sur une capture pour l'agrandir</sub>
+</div>
 
 ### 4. Fin de la deuxième partie
 
 Après la deuxième partie, vous choisissez une nouvelle carte parmi deux, puis vous pouvez utiliser la **pierre de sacrifice** pour transférer le pouvoir d'une carte à une autre.
 
 <details>
-<summary>Voir un exemple : récompense et pierre de sacrifice</summary>
+<summary>Voir deux exemples : récompense et pierre de sacrifice</summary>
 <br>
-  <p align="center"><img alt="Récompense et pierre de sacrifice" src="assets/sacrifice_stone.png" width="700"></p>
+<div align="center">
+<table>
+  <tr>
+    <td align="center">
+      <a href="assets/sacrifice_stone_viper.png"><img alt="Pierre de sacrifice : le pouvoir Contact mortel de la Vipère" src="assets/sacrifice_stone_viper.png" height="380"></a>
+      <br>
+      <sub>« Contact mortel » de la Vipère transféré à l'Hermine</sub>
+    </td>
+    <td width="30"></td>
+    <td align="center">
+      <a href="assets/sacrifice_stone_cat.png"><img alt="Pierre de sacrifice : le pouvoir Nombreuses vies du Chat" src="assets/sacrifice_stone_cat.png" height="380"></a>
+      <br>
+      <sub>« Nombreuses vies » du Chat transféré à l'Hermine</sub>
+    </td>
+  </tr>
+</table>
+<sub>🔍 Cliquez sur une capture pour l'agrandir</sub>
+</div>
 </details>
 
 ### Commandes
@@ -139,9 +196,14 @@ hollow-pine-game/
 │   └── junit-platform-console-standalone.jar   # lanceur JUnit 5
 ├── docs/
 │   └── REGLES.md                   # règles détaillées du jeu
-├── assets/                         # images et vidéos du README
+├── assets/                         # images et GIF du README
 │   ├── banner_hollow_pine.png
-│   └── sacrifice_stone.png      
+│   ├── board.png
+│   ├── play_sacrifice.gif
+│   ├── attack_player.png
+│   ├── attack_leshy.png
+│   ├── sacrifice_stone_viper.png
+│   └── sacrifice_stone_cat.png  
 ├── out/
 │   └── .gitkeep                    # dossier des fichiers compilés (ignorés par Git)
 ├── src/
